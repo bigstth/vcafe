@@ -6,6 +6,6 @@ import { logger } from 'hono/logger'
 const app = new Hono()
     .use('*', logger())
     .route('/', appRoutes)
-    .use('*', serveStatic({ root: './static' }))
+    .use('*', serveStatic({ root: '../client/dist' }))
 
 export default app

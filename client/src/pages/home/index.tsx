@@ -1,18 +1,16 @@
 import { useState } from 'react'
 import beaver from '@/assets/beaver.svg'
-import { hcWithType } from 'server/dist/client'
 import { Button } from '@/components/ui/button'
+import { api } from '@/lib/api'
+import { authClient } from '@/lib/auth-client'
 
-const client = hcWithType('/')
-
-type ResponseType = Awaited<ReturnType<typeof client.api.hello.$get>>
+type ResponseType = Awaited<ReturnType<typeof api.hello.$get>>
 
 function Home() {
     const [data, setData] = useState<Awaited<ReturnType<ResponseType['json']>> | undefined>()
     async function sendRequest() {
-        console.log('testt')
         try {
-            const res = await client.api.hello.$get()
+            const res = await api.hello.$get()
             if (!res.ok) {
                 console.log('Error fetching data')
                 return
@@ -24,12 +22,40 @@ function Home() {
         }
     }
 
+    const getSession = async () => {
+        const session = await authClient.getSession()
+
+        console.log(session, 'session')
+    }
+
+    const signIn = async () => {
+        const data = await authClient.signIn.social({
+            provider: 'google',
+        })
+
+        console.log(data, 'data')
+    }
+
+    const signOut = async () => {
+        const data = await authClient.signOut()
+
+        console.log(data, 'data')
+    }
+
     return (
         <div className="max-w-xl mx-auto flex flex-col gap-6 items-center justify-center min-h-screen">
             <a href="https://github.com/stevedylandev/bhvr" target="_blank">
                 <img src={beaver} className="w-16 h-16 cursor-pointer" alt="beaver logo" />
             </a>
-
+            <Button onClick={signIn} className="mb-4">
+                Sign In with Google
+            </Button>
+            <Button onClick={signOut} className="mb-4">
+                Sign Out
+            </Button>
+            <Button onClick={getSession} className="mb-4">
+                Get Session
+            </Button>
             <h1 className="text-5xl font-black">bhvr</h1>
             <h2 className="text-2xl font-bold">Bun + Hono + Vite + React</h2>
             <p>A typesafe fullstack monorepo</p>
