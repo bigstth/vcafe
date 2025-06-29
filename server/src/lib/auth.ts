@@ -16,6 +16,13 @@ export const auth = betterAuth({
             verification,
         },
     }),
+    rateLimit: {
+        enabled: true,
+        window: 10,
+        max: 20,
+        storage: 'memory',
+        modelName: 'rateLimit',
+    },
     emailAndPassword: {
         enabled: true,
     },
@@ -34,8 +41,8 @@ export const auth = betterAuth({
         // },
     },
     cors: {
-        origin: ['http://localhost:5173', 'http://127.0.0.1:5173'],
+        origin: ['https://vcafe.xyz', 'http://localhost:5173', 'http://127.0.0.1:5173'],
         credentials: true,
     },
-    trustedOrigins: ['http://localhost:5173', 'http://127.0.0.1:5173'],
+    trustedOrigins: ['https://vcafe.xyz', 'http://localhost:5173', 'http://127.0.0.1:5173'],
 })
