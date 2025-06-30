@@ -1,9 +1,10 @@
 import { Hono } from 'hono'
 import type { ApiResponse } from 'shared/dist'
 import { auth } from './lib/auth'
+import { protect } from './middleware/auth'
 
 const appRoutes = new Hono()
-    .get('/api/hello', async (c) => {
+    .get('/api/hello', protect, async (c) => {
         const data: ApiResponse = {
             message: 'Hello BHVR!',
             success: true,

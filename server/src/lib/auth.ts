@@ -1,4 +1,4 @@
-import { user, session, account, verification } from '../db/schema'
+import { user, session, account, verification } from '../db/user-schema'
 import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import 'dotenv/config'
