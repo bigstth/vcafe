@@ -2,7 +2,7 @@ import { Hono } from 'hono'
 import { auth } from './lib/auth'
 import { protect } from './middleware/auth'
 import { getMeController } from './user/user-controller'
-import { errorHandler } from './lib/error'
+import { errorHandler } from './middleware/error-handler'
 
 const appRoutes = new Hono()
     .use('*', errorHandler)
