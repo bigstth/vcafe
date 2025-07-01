@@ -1,13 +1,15 @@
 import { Hono } from 'hono'
 import { serveStatic } from 'hono/bun'
-import { appRoutes } from './routes'
 import { logger } from 'hono/logger'
 import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
+import { errorHandler } from './middleware/error-handler'
+import { appRoutes } from './routes'
 
 const app = new Hono()
     .use('*', logger())
-    .route('/', appRoutes)
+    .use('*', errorHandler)
+    .route('/api', appRoutes)
     .use('*', serveStatic({ root: '../client/dist' }))
 
 app.notFound(async (c) => {

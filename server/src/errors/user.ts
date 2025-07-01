@@ -1,5 +1,3 @@
-import type { ErrorResponseType } from './types'
-
 export const userNotFoundError: ErrorResponseType = {
     en: 'User not found',
     th: 'ไม่พบผู้ใช้',

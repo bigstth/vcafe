@@ -1,72 +1,85 @@
 import { useState } from 'react'
-import beaver from '@/assets/beaver.svg'
 import { Button } from '@/components/ui/button'
 import { api } from '@/lib/api'
 import { authClient } from '@/lib/auth-client'
 
-type ResponseType = Awaited<ReturnType<typeof api.me.$get>>
+type MeResponseType = Awaited<ReturnType<typeof api.user.me.$get>>
+type PostsResponseType = Awaited<ReturnType<typeof api.posts.$get>>
 
 function Home() {
-    const [data, setData] = useState<Awaited<ReturnType<ResponseType['json']>> | undefined>()
-    console.log(data, 'data')
+    const [me, setMe] = useState<Awaited<ReturnType<MeResponseType['json']>> | undefined>()
+    const [posts, setPosts] = useState<Awaited<ReturnType<PostsResponseType['json']>> | undefined>()
+
     async function getMe() {
         try {
-            const res = await api.me.$get()
+            const res = await api.user.me.$get()
             if (!res.ok) {
                 console.log('Error fetching data')
                 return
             }
             const data = await res.json()
-            setData(data)
+            setMe(data)
         } catch (error) {
             console.log(error)
         }
     }
 
-    const getSession = async () => {
-        const session = await authClient.getSession()
-
-        console.log(session, 'session')
+    async function getPosts() {
+        try {
+            const res = await api.posts.$get({
+                query: {
+                    limit: '10',
+                    offset: '0',
+                    orderBy: 'desc',
+                },
+            })
+            if (!res.ok) {
+                console.log('Error fetching data')
+                return
+            }
+            const data = await res.json()
+            setPosts(data)
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     const signIn = async () => {
-        const data = await authClient.signIn.social({
+        await authClient.signIn.social({
             provider: 'google',
         })
-
-        console.log(data, 'data')
     }
 
     const signOut = async () => {
-        const data = await authClient.signOut()
-
-        console.log(data, 'data')
+        await authClient.signOut()
     }
 
     return (
-        <div className="max-w-xl mx-auto flex flex-col gap-6 items-center justify-center min-h-screen">
-            <a href="https://github.com/stevedylandev/bhvr" target="_blank">
-                <img src={beaver} className="w-16 h-16 cursor-pointer" alt="beaver logo" />
-            </a>
-            <Button onClick={signIn} className="mb-4">
-                Sign In with Google
-            </Button>
-            <Button onClick={signOut} className="mb-4">
-                Sign Out
-            </Button>
-            <Button onClick={getSession} className="mb-4">
-                Get Session
-            </Button>
-            <h1 className="text-5xl font-black">bhvr</h1>
-            <h2 className="text-2xl font-bold">Bun + Hono + Vite + React</h2>
-            <p>A typesafe fullstack monorepo</p>
-            <div className="flex items-center gap-4">
-                <Button onClick={() => getMe()}>Call API</Button>
-                <Button variant="secondary" asChild>
-                    <a target="_blank" href="https://bhvr.dev">
-                        Docs
-                    </a>
+        <div className="p-4">
+            <div className="flex gap-2">
+                <Button onClick={signIn} className="mb-4">
+                    Sign In with Google
                 </Button>
+                <Button onClick={signOut} className="mb-4">
+                    Sign Out
+                </Button>
+                <Button onClick={() => getMe()}>Get Me</Button>
+                <Button onClick={() => getPosts()}>Get Posts</Button>
+            </div>
+            <div className="w-full text-balance">
+                {me && (
+                    <div className="mb-4">
+                        <h2>Me:</h2>
+                        <pre className="whitespace-pre-wrap break-words">{JSON.stringify(me, null, 2) ?? ''}</pre>
+                    </div>
+                )}
+
+                {posts && (
+                    <div className="mb-4">
+                        <h2>Posts:</h2>
+                        <pre className="whitespace-pre-wrap break-words">{JSON.stringify(posts, null, 2)}</pre>
+                    </div>
+                )}
             </div>
         </div>
     )

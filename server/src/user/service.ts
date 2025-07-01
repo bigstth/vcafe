@@ -1,5 +1,5 @@
 import { AppError } from '@server/lib/error'
-import { getMeRepository } from './user-repository'
+import { getMeRepository } from './repository'
 import { userNotFoundError } from '@server/errors/user'
 
 export const getMeService = async (id: string) => {
