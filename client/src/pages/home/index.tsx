@@ -4,13 +4,14 @@ import { Button } from '@/components/ui/button'
 import { api } from '@/lib/api'
 import { authClient } from '@/lib/auth-client'
 
-type ResponseType = Awaited<ReturnType<typeof api.hello.$get>>
+type ResponseType = Awaited<ReturnType<typeof api.me.$get>>
 
 function Home() {
     const [data, setData] = useState<Awaited<ReturnType<ResponseType['json']>> | undefined>()
-    async function sendRequest() {
+    console.log(data, 'data')
+    async function getMe() {
         try {
-            const res = await api.hello.$get()
+            const res = await api.me.$get()
             if (!res.ok) {
                 console.log('Error fetching data')
                 return
@@ -60,21 +61,13 @@ function Home() {
             <h2 className="text-2xl font-bold">Bun + Hono + Vite + React</h2>
             <p>A typesafe fullstack monorepo</p>
             <div className="flex items-center gap-4">
-                <Button onClick={() => sendRequest()}>Call API</Button>
+                <Button onClick={() => getMe()}>Call API</Button>
                 <Button variant="secondary" asChild>
                     <a target="_blank" href="https://bhvr.dev">
                         Docs
                     </a>
                 </Button>
             </div>
-            {data && (
-                <pre className="bg-gray-100 p-4 rounded-md">
-                    <code>
-                        Message: {data.message} <br />
-                        Success: {data.success.toString()}
-                    </code>
-                </pre>
-            )}
         </div>
     )
 }

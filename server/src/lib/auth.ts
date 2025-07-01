@@ -1,10 +1,8 @@
+import { db } from '@server/db/db-instance'
 import { user, session, account, verification } from '../db/user-schema'
 import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import 'dotenv/config'
-import { drizzle } from 'drizzle-orm/node-postgres'
-
-const db = drizzle(process.env.DATABASE_URL!)
 
 export const auth = betterAuth({
     database: drizzleAdapter(db, {

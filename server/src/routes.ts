@@ -1,17 +1,13 @@
 import { Hono } from 'hono'
-import type { ApiResponse } from 'shared/dist'
 import { auth } from './lib/auth'
 import { protect } from './middleware/auth'
+import { getMeController } from './user/user-controller'
+import { errorHandler } from './lib/error'
 
 const appRoutes = new Hono()
-    .get('/api/hello', protect, async (c) => {
-        const data: ApiResponse = {
-            message: 'Hello BHVR!',
-            success: true,
-        }
-        return c.json(data, { status: 200 })
-    })
+    .use('*', errorHandler)
     .on(['POST', 'GET'], '/api/auth/**', (c) => auth.handler(c.req.raw))
+    .get('/api/me', protect, (c) => getMeController(c))
 
 export { appRoutes }
 
