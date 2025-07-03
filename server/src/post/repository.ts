@@ -17,6 +17,13 @@ export interface GetPostsResult {
     hasMore: boolean
 }
 
+export interface CreatePostData {
+    id: string
+    userId: string
+    content: string
+    visibility?: 'public' | 'follower_only' | 'membership_only'
+}
+
 export const getAllPostsRepository = async (options: GetPostsOptions): Promise<GetPostsResult> => {
     const { limit, offset, orderBy = 'desc' } = options
 
@@ -37,6 +44,25 @@ export const getAllPostsRepository = async (options: GetPostsOptions): Promise<G
         total,
         hasMore,
     }
+}
+
+export const createPostRepository = async (data: CreatePostData): Promise<Post> => {
+    const newPost: NewPost = {
+        id: data.id,
+        userId: data.userId,
+        content: data.content,
+        visibility: data.visibility || 'public',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+    }
+
+    const result = await db.insert(posts).values(newPost).returning()
+
+    if (!result[0]) {
+        throw new Error('Failed to create post')
+    }
+
+    return result[0]
 }
 
 export const getPostByIdRepository = async (id: string): Promise<Post | undefined> => {
