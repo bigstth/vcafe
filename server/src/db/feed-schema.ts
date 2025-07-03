@@ -1,11 +1,13 @@
-import { relations } from 'drizzle-orm'
-import { text, timestamp, primaryKey, integer, serial, pgEnum, pgTable } from 'drizzle-orm/pg-core'
+import { relations, sql } from 'drizzle-orm'
+import { text, timestamp, primaryKey, integer, serial, pgEnum, pgTable, uuid } from 'drizzle-orm/pg-core'
 import { user } from './user-schema'
 
 export const postVisibilityEnum = pgEnum('post_visibility', ['public', 'follower_only', 'membership_only'])
 
 export const posts = pgTable('posts', {
-    id: text('id').primaryKey(),
+    id: uuid('id')
+        .primaryKey()
+        .default(sql`uuid_generate_v4()`),
     userId: text('user_id')
         .notNull()
         .references(() => user.id, { onDelete: 'cascade' }),
@@ -16,12 +18,14 @@ export const posts = pgTable('posts', {
 })
 
 export const comments = pgTable('comments', {
-    id: text('id').primaryKey(),
+    id: uuid('id')
+        .primaryKey()
+        .default(sql`uuid_generate_v4()`),
     content: text('content').notNull(),
     userId: text('user_id')
         .notNull()
         .references(() => user.id, { onDelete: 'cascade' }),
-    postId: text('post_id')
+    postId: uuid('post_id')
         .notNull()
         .references(() => posts.id, { onDelete: 'cascade' }),
     createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -67,8 +71,10 @@ export const memberships = pgTable(
 )
 
 export const postImages = pgTable('post_images', {
-    id: text('id').primaryKey(),
-    postId: text('post_id')
+    id: uuid('id')
+        .primaryKey()
+        .default(sql`uuid_generate_v4()`),
+    postId: uuid('post_id')
         .notNull()
         .references(() => posts.id, { onDelete: 'cascade' }),
     url: text('url').notNull(),
@@ -83,7 +89,7 @@ export const postLikes = pgTable(
         userId: text('user_id')
             .notNull()
             .references(() => user.id, { onDelete: 'cascade' }),
-        postId: text('post_id')
+        postId: uuid('post_id')
             .notNull()
             .references(() => posts.id, { onDelete: 'cascade' }),
         createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -101,7 +107,7 @@ export const commentLikes = pgTable(
         userId: text('user_id')
             .notNull()
             .references(() => user.id, { onDelete: 'cascade' }),
-        commentId: text('comment_id')
+        commentId: uuid('comment_id')
             .notNull()
             .references(() => comments.id, { onDelete: 'cascade' }),
         createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -121,7 +127,7 @@ export const hashtags = pgTable('hashtags', {
 export const postHashtags = pgTable(
     'post_hashtags',
     {
-        postId: text('post_id')
+        postId: uuid('post_id')
             .notNull()
             .references(() => posts.id, { onDelete: 'cascade' }),
         hashtagId: integer('hashtag_id')
@@ -138,7 +144,7 @@ export const postHashtags = pgTable(
 export const postMentions = pgTable(
     'post_mentions',
     {
-        postId: text('post_id')
+        postId: uuid('post_id')
             .notNull()
             .references(() => posts.id, { onDelete: 'cascade' }),
         mentionedUserId: text('user_id')

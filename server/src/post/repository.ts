@@ -1,9 +1,7 @@
 import { db } from '@server/db/db-instance'
 import { posts } from '@server/db/feed-schema'
+import type { NewPost, Post } from '@server/types/schema'
 import { desc, asc, count } from 'drizzle-orm'
-
-type Post = typeof posts.$inferSelect
-type NewPost = typeof posts.$inferInsert
 
 export interface GetPostsOptions {
     limit: number
@@ -18,7 +16,6 @@ export interface GetPostsResult {
 }
 
 export interface CreatePostData {
-    id: string
     userId: string
     content: string
     visibility?: 'public' | 'follower_only' | 'membership_only'
@@ -48,7 +45,6 @@ export const getAllPostsRepository = async (options: GetPostsOptions): Promise<G
 
 export const createPostRepository = async (data: CreatePostData): Promise<Post> => {
     const newPost: NewPost = {
-        id: data.id,
         userId: data.userId,
         content: data.content,
         visibility: data.visibility || 'public',
