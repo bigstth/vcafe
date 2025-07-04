@@ -44,6 +44,28 @@ function Home() {
         }
     }
 
+    async function createPost() {
+        try {
+            const res = await api.posts.$post({
+                json: {
+                    content: 'Hello, this is a new post!',
+                    visibility: 'public',
+                },
+            })
+
+            if (!res.ok) {
+                console.log('Error fetching data')
+                return
+            }
+
+            const data = await res.json()
+            console.log(data, 'data')
+            getPosts()
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     const signIn = async () => {
         await authClient.signIn.social({
             provider: 'google',
@@ -65,6 +87,7 @@ function Home() {
                 </Button>
                 <Button onClick={() => getMe()}>Get Me</Button>
                 <Button onClick={() => getPosts()}>Get Posts</Button>
+                <Button onClick={() => createPost()}>Create Posts</Button>
             </div>
             <div className="w-full text-balance">
                 {me && (

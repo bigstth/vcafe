@@ -4,9 +4,7 @@ import type { Context } from 'hono'
 
 export const getAllPostsController = async (c: Context) => {
     try {
-        const limit = parseInt(c.req.query('limit') || '10')
-        const offset = parseInt(c.req.query('offset') || '0')
-        const orderBy = (c.req.query('orderBy') as 'asc' | 'desc') || 'desc'
+        const { limit, offset, orderBy } = c.get('validatedQuery')
 
         const posts = await getAllPostsService({
             limit,
@@ -22,11 +20,8 @@ export const getAllPostsController = async (c: Context) => {
 
 export const createPostController = async (c: Context) => {
     try {
-        const data = await c.req.json<{ content: string; visibility?: 'public' | 'follower_only' | 'membership_only' }>()
+        const data = c.get('validatedJson')
         const user = c.get('user')
-        if (!user.id || !data.content) {
-            return c.json({ error: 'User ID and content are required' }, 400)
-        }
 
         const newPost = await createPostService({ userId: user.id, ...data })
 

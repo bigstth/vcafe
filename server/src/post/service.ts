@@ -1,6 +1,6 @@
+import { noPostFoundError } from './errors'
 import { createPostRepository, getAllPostsRepository, type GetPostsOptions, type GetPostsResult } from './repository'
 import { AppError } from '@server/lib/error'
-import { noPostFoundError } from '@server/errors/post'
 
 export interface CreatePostData {
     userId: string

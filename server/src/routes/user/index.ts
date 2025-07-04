@@ -4,4 +4,4 @@ import { Hono } from 'hono'
 
 const userRoutes = new Hono().get('/me', protect, getMeController)
 
-export { userRoutes }
+export default userRoutes
