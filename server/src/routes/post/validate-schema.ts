@@ -6,6 +6,10 @@ export const getAllPostsSchema = z.object({
     orderBy: z.enum(['asc', 'desc']).default('desc'),
 })
 
+export const getPostSchema = z.object({
+    id: z.string().uuid('Invalid post ID format'),
+})
+
 export const createPostSchema = z.object({
     content: z.string().min(1, 'Content is required').max(1000, 'Content too long'),
     visibility: z.enum(['public', 'follower_only', 'membership_only']).default('public'),

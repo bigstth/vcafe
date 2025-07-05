@@ -43,12 +43,17 @@ export const getAllPostsRepository = async (options: GetPostsOptions): Promise<G
     }
 }
 
-export const getPostImagesRepository = async (postId: string) => {
-    const result = (await db.select().from(postImages).where(eq(postImages.postId, postId))).sort((a, b) => a.displayOrder - b.displayOrder)
+export const getPostRepository = async (id: string): Promise<Post | undefined> => {
+    return db
+        .select()
+        .from(posts)
+        .where(eq(posts.id, id))
+        .limit(1)
+        .then((result) => result[0])
+}
 
-    if (!result[0]) {
-        throw new Error('Failed to get post images')
-    }
+export const getPostImagesRepository = async (postId: string) => {
+    const result = await db.select().from(postImages).where(eq(postImages.postId, postId)).orderBy(asc(postImages.displayOrder))
 
     return result
 }
@@ -69,10 +74,4 @@ export const createPostRepository = async (data: CreatePostData): Promise<Post> 
     }
 
     return result[0]
-}
-
-export const getPostByIdRepository = async (id: string): Promise<Post | undefined> => {
-    return db.query.posts.findFirst({
-        where: (p, { eq }) => eq(p.id, id),
-    })
 }

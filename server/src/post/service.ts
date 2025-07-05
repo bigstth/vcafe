@@ -1,12 +1,12 @@
 import { createPostFailed, getPostFailed, noPostFoundError } from './errors'
-import { getAllPostsRepository, getPostImagesRepository, type GetPostsOptions, type GetPostsResult } from './repository'
+import { getAllPostsRepository, getPostRepository, getPostImagesRepository, type GetPostsOptions, type GetPostsResult } from './repository'
 import { AppError } from '@server/lib/error'
+import { CustomLogger } from '@server/lib/custom-logger'
 import { db } from '@server/db/db-instance'
 import { posts, postImages } from '@server/db/feed-schema'
 import { createClient } from '@supabase/supabase-js'
 import { v4 as uuidv4 } from 'uuid'
 import type { Post } from '@server/types/schema'
-
 interface PostWithImages extends Post {
     images?: string[]
 }
@@ -22,10 +22,11 @@ const supabaseAdmin = createClient(process.env.SUPABASE_URL!, process.env.SUPABA
     },
 })
 
-export interface CreatePostData {
+interface CreatePostWithImagesData {
     userId: string
     content: string
     visibility?: 'public' | 'follower_only' | 'membership_only'
+    images?: File[] | Buffer[]
 }
 
 export const getAllPostsService = async (options: GetPostsOptions): Promise<GetPostsResponse> => {
@@ -45,7 +46,7 @@ export const getAllPostsService = async (options: GetPostsOptions): Promise<GetP
                         images: images.map((img: any) => `${process.env.SUPABASE_URL}/storage/v1/object/public/vcafe-feed/${img.url}`),
                     }
                 } catch (error) {
-                    console.log(`Error getting images for post ${post.id}:`, error)
+                    CustomLogger.error(`Error getting images for post ${post.id}`, error)
                     return {
                         ...post,
                         images: [],
@@ -60,16 +61,23 @@ export const getAllPostsService = async (options: GetPostsOptions): Promise<GetP
             hasMore: posts.hasMore,
         }
     } catch (error) {
-        console.log('Error in getAllPostsService:', error)
+        CustomLogger.error('Error in getAllPostsService', error)
         throw error
     }
 }
 
-export interface CreatePostWithImagesData {
-    userId: string
-    content: string
-    visibility?: 'public' | 'follower_only' | 'membership_only'
-    images?: File[] | Buffer[]
+export const getPostService = async (id: string): Promise<PostWithImages> => {
+    const post = await getPostRepository(id)
+    if (!post) {
+        throw new AppError(noPostFoundError)
+    }
+
+    const images = await getPostImages(post.id)
+
+    return {
+        ...post,
+        images: images.map((img: any) => `${process.env.SUPABASE_URL}/storage/v1/object/public/vcafe-feed/${img.url}`) || [],
+    }
 }
 
 export const createPostWithImagesService = async (data: CreatePostWithImagesData) => {
@@ -101,6 +109,7 @@ export const createPostWithImagesService = async (data: CreatePostWithImagesData
             return newPost
         })
     } catch (error) {
+        CustomLogger.error('Error creating post with images', error)
         throw new AppError(createPostFailed)
     }
 }
@@ -156,7 +165,7 @@ const uploadPostImages = async (images: CreatePostWithImagesData['images'], post
                 try {
                     await supabaseAdmin.storage.from('vcafe-feedtest').remove([imagePath])
                 } catch (deleteError) {
-                    console.error('Failed to delete uploaded image:', imagePath, deleteError)
+                    CustomLogger.error('Failed to delete uploaded image', { imagePath, error: deleteError })
                 }
             }
         }
@@ -165,11 +174,16 @@ const uploadPostImages = async (images: CreatePostWithImagesData['images'], post
 }
 
 const getPostImages = async (postId: string) => {
-    const result = await getPostImagesRepository(postId)
+    try {
+        const result = await getPostImagesRepository(postId)
 
-    if (!result[0]) {
-        throw new AppError(getPostFailed)
+        if (!result[0]) {
+            return []
+        }
+
+        return result
+    } catch (error) {
+        CustomLogger.error(`Error fetching images for post ${postId}`, error)
+        return []
     }
-
-    return result
 }

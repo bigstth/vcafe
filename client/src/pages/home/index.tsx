@@ -46,6 +46,25 @@ function Home() {
         }
     }
 
+    async function getPostById(id: string) {
+        console.log(id, 'id')
+        try {
+            const res = await api.posts[':id'].$get({
+                param: { id },
+            })
+
+            if (!res.ok) {
+                console.log('Error fetching data')
+                return
+            }
+            const data = await res.json()
+
+            console.log(data, 'data')
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     async function createPost() {
         try {
             const formData = new FormData()
@@ -104,12 +123,23 @@ function Home() {
                     </div>
                 )}
 
-                {posts && (
-                    <div className="mb-4">
-                        <h2>Posts:</h2>
-                        <pre className="whitespace-pre-wrap break-words">{JSON.stringify(posts, null, 2)}</pre>
-                    </div>
-                )}
+                {posts &&
+                    'posts' in posts &&
+                    Array.isArray(posts.posts) &&
+                    posts.posts.map((post) => (
+                        <div key={post.id}>
+                            <Button
+                                onClick={() => {
+                                    getPostById(post.id)
+                                }}
+                            >
+                                Get post by id
+                            </Button>
+                            <h3>{post.content}</h3>
+                            <p>Visibility: {post.visibility}</p>
+                            <p>Created At: {post.createdAt}</p>
+                        </div>
+                    ))}
             </div>
             <input
                 type="file"

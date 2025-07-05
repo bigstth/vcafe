@@ -11,6 +11,12 @@ export const getPostFailed: ErrorResponseType = {
     statusName: 'get_post_failed',
     status: 500,
 }
+export const getImageFailed: ErrorResponseType = {
+    en: 'Failed to get image',
+    th: 'ไม่สามารถดึงภาพได้',
+    statusName: 'get_image_failed',
+    status: 500,
+}
 
 export const createPostFailed: ErrorResponseType = {
     en: 'Failed to create post',
