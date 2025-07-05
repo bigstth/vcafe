@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { api } from '@/lib/api'
 import { authClient } from '@/lib/auth-client'
+import axios from 'axios'
 
 type MeResponseType = Awaited<ReturnType<typeof api.user.me.$get>>
 type PostsResponseType = Awaited<ReturnType<typeof api.posts.$get>>
@@ -9,6 +10,7 @@ type PostsResponseType = Awaited<ReturnType<typeof api.posts.$get>>
 function Home() {
     const [me, setMe] = useState<Awaited<ReturnType<MeResponseType['json']>> | undefined>()
     const [posts, setPosts] = useState<Awaited<ReturnType<PostsResponseType['json']>> | undefined>()
+    const [file, setFile] = useState<FileList | null>(null)
 
     async function getMe() {
         try {
@@ -46,23 +48,28 @@ function Home() {
 
     async function createPost() {
         try {
-            const res = await api.posts.$post({
-                json: {
-                    content: 'Hello, this is a new post!',
-                    visibility: 'public',
-                },
-            })
+            const formData = new FormData()
+            formData.append('content', 'Hello, this is a new postasd!')
+            formData.append('visibility', 'public')
 
-            if (!res.ok) {
-                console.log('Error fetching data')
-                return
+            // Handle array of files
+            if (file && file.length > 0) {
+                for (let i = 0; i < file.length; i++) {
+                    formData.append('images', file[i])
+                }
             }
 
-            const data = await res.json()
-            console.log(data, 'data')
+            const response = await axios.post('/api/posts', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+                withCredentials: true,
+            })
+
+            console.log(response.data, 'data')
             getPosts()
         } catch (error) {
-            console.log(error)
+            console.log('Error creating post:', error)
         }
     }
 
@@ -104,6 +111,16 @@ function Home() {
                     </div>
                 )}
             </div>
+            <input
+                type="file"
+                multiple
+                onChange={(e) => {
+                    const files = e.target.files
+                    console.log(files, 'files')
+                    setFile(files)
+                }}
+                className="border border-gray-300 rounded p-2 mb-4"
+            />
         </div>
     )
 }

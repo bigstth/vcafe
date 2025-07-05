@@ -9,12 +9,14 @@
   },
   "dependencies": {
     "@hono/zod-validator": "^0.7.0",
+    "@supabase/supabase-js": "^2.50.3",
     "@types/pg": "^8.15.4",
     "better-auth": "^1.2.12",
     "dotenv": "^17.0.0",
     "drizzle-orm": "^0.44.2",
     "hono": "^4.7.11",
-    "shared": "workspace:*"
+    "shared": "workspace:*",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@types/bun": "latest",
