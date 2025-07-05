@@ -11,8 +11,12 @@ interface PostWithImages extends Post {
     images?: string[]
 }
 
-interface GetPostsResponse extends GetPostsResult {
-    posts: PostWithImages[]
+interface ImageWithUrl {
+    id: string
+    postId: string
+    url: string
+    displayOrder: number
+    altText: string | null
 }
 
 const supabaseAdmin = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, {
@@ -39,7 +43,7 @@ export const getPostsService = async (options: GetPostsOptions) => {
 
         const postsWithImageUrls = result.posts.map((post) => ({
             ...post,
-            images: post.images ? post.images.map((img: any) => `${process.env.SUPABASE_URL}/storage/v1/object/public/vcafe-feed/${img.url}`) : [],
+            images: mapImageUrls(post.images),
         }))
 
         return {
@@ -59,10 +63,7 @@ export const getPostService = async (id: string) => {
         throw new AppError(noPostFoundError)
     }
 
-    const formattedImgUrls = post.images.map((img) => ({
-        ...img,
-        url: `${process.env.SUPABASE_URL}/storage/v1/object/public/vcafe-feed/${img.url}`,
-    }))
+    const formattedImgUrls = mapImageUrls(post.images)
 
     return { ...post, images: formattedImgUrls }
 }
@@ -158,4 +159,13 @@ const uploadPostImages = async (images: CreatePostWithImagesData['images'], post
         }
         throw error
     }
+}
+
+const mapImageUrls = (images: ImageWithUrl[]) => {
+    if (!images || images.length === 0) return []
+
+    return images.map((img: ImageWithUrl) => ({
+        alt: img.altText || 'VCAFE post image',
+        url: `${process.env.SUPABASE_URL}/storage/v1/object/public/vcafe-feed/${img.url}`,
+    }))
 }
