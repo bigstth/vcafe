@@ -1,12 +1,19 @@
-import { createPostFailed, noPostFoundError } from './errors'
-import { createPostRepository, getAllPostsRepository, type GetPostsOptions, type GetPostsResult } from './repository'
+import { createPostFailed, getPostFailed, noPostFoundError } from './errors'
+import { getAllPostsRepository, getPostImagesRepository, type GetPostsOptions, type GetPostsResult } from './repository'
 import { AppError } from '@server/lib/error'
 import { db } from '@server/db/db-instance'
 import { posts, postImages } from '@server/db/feed-schema'
 import { createClient } from '@supabase/supabase-js'
 import { v4 as uuidv4 } from 'uuid'
+import type { Post } from '@server/types/schema'
 
-type Post = typeof posts.$inferSelect
+interface PostWithImages extends Post {
+    images?: string[]
+}
+
+interface GetPostsResponse extends GetPostsResult {
+    posts: PostWithImages[]
+}
 
 const supabaseAdmin = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, {
     auth: {
@@ -21,33 +28,43 @@ export interface CreatePostData {
     visibility?: 'public' | 'follower_only' | 'membership_only'
 }
 
-export const getAllPostsService = async (options: GetPostsOptions): Promise<GetPostsResult> => {
-    const posts = await getAllPostsRepository(options)
+export const getAllPostsService = async (options: GetPostsOptions): Promise<GetPostsResponse> => {
+    try {
+        const posts = await getAllPostsRepository(options)
 
-    if (!posts) {
-        throw new AppError(noPostFoundError)
+        if (!posts) {
+            throw new AppError(noPostFoundError)
+        }
+
+        const postWithImages = await Promise.all(
+            posts.posts.map(async (post: Post) => {
+                try {
+                    const images = await getPostImages(post.id)
+                    return {
+                        ...post,
+                        images: images.map((img: any) => `${process.env.SUPABASE_URL}/storage/v1/object/public/vcafe-feed/${img.url}`),
+                    }
+                } catch (error) {
+                    console.log(`Error getting images for post ${post.id}:`, error)
+                    return {
+                        ...post,
+                        images: [],
+                    }
+                }
+            }),
+        )
+
+        return {
+            posts: postWithImages,
+            total: posts.total,
+            hasMore: posts.hasMore,
+        }
+    } catch (error) {
+        console.log('Error in getAllPostsService:', error)
+        throw error
     }
-
-    return posts
 }
 
-export const createPostService = async (data: CreatePostData): Promise<Post> => {
-    const { userId, content, visibility } = data
-
-    const newPost = await createPostRepository({
-        userId,
-        content,
-        visibility,
-    })
-
-    if (!newPost) {
-        throw new AppError(noPostFoundError)
-    }
-
-    return newPost
-}
-
-// Implemented createPostWithImagesService
 export interface CreatePostWithImagesData {
     userId: string
     content: string
@@ -57,7 +74,6 @@ export interface CreatePostWithImagesData {
 
 export const createPostWithImagesService = async (data: CreatePostWithImagesData) => {
     const postId = uuidv4()
-    const uploadedImagePaths: string[] = []
 
     try {
         return await db.transaction(async (tx) => {
@@ -72,72 +88,88 @@ export const createPostWithImagesService = async (data: CreatePostWithImagesData
                 .returning()
 
             if (data.images && data.images.length > 0) {
-                const imageRecords = []
+                const imageRecords = await uploadPostImages(data?.images, postId, data?.userId)
 
-                for (let i = 0; i < data.images.length; i++) {
-                    const image = data.images[i]
-                    if (!image) {
-                        throw new Error(`Image at index ${i} is undefined`)
-                    }
-                    const imageId = uuidv4()
-                    const imagePath = `posts/${postId}/${imageId}`
-
-                    let uploadBody: File | Uint8Array
-                    if (typeof Buffer !== 'undefined' && image instanceof Buffer) {
-                        uploadBody = new Uint8Array(image)
-                    } else {
-                        uploadBody = image as File
-                    }
-
-                    // อัปโหลดรูปไป Supabase Storage ด้วย Service Role Key
-                    const { data: uploadData, error: uploadError } = await supabaseAdmin.storage.from('vcafe-feed').upload(imagePath, uploadBody, {
-                        cacheControl: '3600',
-                        upsert: false,
-                        metadata: {
-                            uploadedBy: data.userId,
-                            postId: postId,
-                        },
-                    })
-
-                    if (uploadError) {
-                        throw new Error(`Failed to upload image ${i + 1}: ${uploadError.message}`)
-                    }
-
-                    uploadedImagePaths.push(uploadData.path)
-
-                    imageRecords.push({
-                        id: imageId,
-                        postId,
-                        url: uploadData.path,
-                        displayOrder: i,
-                        altText: `Image ${i + 1}`,
-                    })
-                }
-
-                const createdImages = await tx.insert(postImages).values(imageRecords).returning()
+                const createdImages = imageRecords && imageRecords.length > 0 ? await tx.insert(postImages).values(imageRecords).returning() : []
 
                 return {
-                    post: newPost,
+                    ...newPost,
                     images: createdImages,
                 }
             }
 
-            return {
-                post: newPost,
-                images: [],
-            }
+            return newPost
         })
+    } catch (error) {
+        throw new AppError(createPostFailed)
+    }
+}
+
+const uploadPostImages = async (images: CreatePostWithImagesData['images'], postId: string, userId: string) => {
+    if (!images?.length) return
+    const uploadedImagePaths: string[] = []
+    const imageRecords = []
+
+    try {
+        for (let i = 0; i < images.length; i++) {
+            const image = images[i]
+            if (!image) {
+                throw new Error(`Image at index ${i} is undefined`)
+            }
+            const imageId = uuidv4()
+            const imagePath = `posts/${postId}/${imageId}`
+
+            let uploadBody: File | Uint8Array
+            if (typeof Buffer !== 'undefined' && image instanceof Buffer) {
+                uploadBody = new Uint8Array(image)
+            } else {
+                uploadBody = image as File
+            }
+
+            const { data: uploadData, error: uploadError } = await supabaseAdmin.storage.from('vcafe-feedtest').upload(imagePath, uploadBody, {
+                cacheControl: '3600',
+                upsert: false,
+                metadata: {
+                    uploadedBy: userId,
+                    postId: postId,
+                },
+            })
+
+            if (uploadError) {
+                throw new Error(`Failed to upload image ${i + 1}: ${uploadError.message}`)
+            }
+
+            uploadedImagePaths.push(uploadData.path)
+
+            imageRecords.push({
+                id: imageId,
+                postId,
+                url: uploadData.path,
+                displayOrder: i,
+                altText: `Image ${i + 1}`,
+            })
+        }
+        return imageRecords
     } catch (error) {
         if (uploadedImagePaths.length > 0) {
             for (const imagePath of uploadedImagePaths) {
                 try {
-                    await supabaseAdmin.storage.from('vcafe-feed').remove([imagePath])
+                    await supabaseAdmin.storage.from('vcafe-feedtest').remove([imagePath])
                 } catch (deleteError) {
                     console.error('Failed to delete uploaded image:', imagePath, deleteError)
                 }
             }
         }
-
-        throw new AppError(createPostFailed)
+        throw error
     }
+}
+
+const getPostImages = async (postId: string) => {
+    const result = await getPostImagesRepository(postId)
+
+    if (!result[0]) {
+        throw new AppError(getPostFailed)
+    }
+
+    return result
 }

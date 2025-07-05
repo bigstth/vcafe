@@ -1,7 +1,7 @@
 import { db } from '@server/db/db-instance'
-import { posts } from '@server/db/feed-schema'
+import { postImages, posts } from '@server/db/feed-schema'
 import type { NewPost, Post } from '@server/types/schema'
-import { desc, asc, count } from 'drizzle-orm'
+import { desc, asc, count, eq } from 'drizzle-orm'
 
 export interface GetPostsOptions {
     limit: number
@@ -41,6 +41,16 @@ export const getAllPostsRepository = async (options: GetPostsOptions): Promise<G
         total,
         hasMore,
     }
+}
+
+export const getPostImagesRepository = async (postId: string) => {
+    const result = (await db.select().from(postImages).where(eq(postImages.postId, postId))).sort((a, b) => a.displayOrder - b.displayOrder)
+
+    if (!result[0]) {
+        throw new Error('Failed to get post images')
+    }
+
+    return result
 }
 
 export const createPostRepository = async (data: CreatePostData): Promise<Post> => {

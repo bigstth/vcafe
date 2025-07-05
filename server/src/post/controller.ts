@@ -1,5 +1,5 @@
 import { errorResponseFormat } from '@server/lib/error'
-import { createPostService, getAllPostsService, createPostWithImagesService } from './service'
+import { getAllPostsService, createPostWithImagesService } from './service'
 import type { Context } from 'hono'
 
 export const getAllPostsController = async (c: Context) => {
@@ -13,19 +13,6 @@ export const getAllPostsController = async (c: Context) => {
         })
 
         return c.json(posts)
-    } catch (e: unknown) {
-        return errorResponseFormat(c, e)
-    }
-}
-
-export const createPostController = async (c: Context) => {
-    try {
-        const data = c.get('validatedJson')
-        const user = c.get('user')
-
-        const newPost = await createPostService({ userId: user.id, ...data })
-
-        return c.json(newPost, 201)
     } catch (e: unknown) {
         return errorResponseFormat(c, e)
     }
