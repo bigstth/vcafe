@@ -1,5 +1,5 @@
-import { createPostFailed, getPostFailed, noPostFoundError } from './errors'
-import { getAllPostsRepository, getPostRepository, getPostImagesRepository, type GetPostsOptions, type GetPostsResult } from './repository'
+import { createPostFailed, noPostFoundError } from './errors'
+import { getPostRepository, getPostImagesRepository, type GetPostsOptions, type GetPostsResult, getPostsWithImagesRepository } from './repository'
 import { AppError } from '@server/lib/error'
 import { CustomLogger } from '@server/lib/custom-logger'
 import { db } from '@server/db/db-instance'
@@ -29,36 +29,22 @@ interface CreatePostWithImagesData {
     images?: File[] | Buffer[]
 }
 
-export const getAllPostsService = async (options: GetPostsOptions): Promise<GetPostsResponse> => {
+export const getPostsService = async (options: GetPostsOptions) => {
     try {
-        const posts = await getAllPostsRepository(options)
+        const result = await getPostsWithImagesRepository(options)
 
-        if (!posts) {
+        if (!result) {
             throw new AppError(noPostFoundError)
         }
 
-        const postWithImages = await Promise.all(
-            posts.posts.map(async (post: Post) => {
-                try {
-                    const images = await getPostImages(post.id)
-                    return {
-                        ...post,
-                        images: images.map((img: any) => `${process.env.SUPABASE_URL}/storage/v1/object/public/vcafe-feed/${img.url}`),
-                    }
-                } catch (error) {
-                    CustomLogger.error(`Error getting images for post ${post.id}`, error)
-                    return {
-                        ...post,
-                        images: [],
-                    }
-                }
-            }),
-        )
+        const postsWithImageUrls = result.posts.map((post) => ({
+            ...post,
+            images: post.images ? post.images.map((img: any) => `${process.env.SUPABASE_URL}/storage/v1/object/public/vcafe-feed/${img.url}`) : [],
+        }))
 
         return {
-            posts: postWithImages,
-            total: posts.total,
-            hasMore: posts.hasMore,
+            ...result,
+            posts: postsWithImageUrls,
         }
     } catch (error) {
         CustomLogger.error('Error in getAllPostsService', error)
@@ -66,18 +52,19 @@ export const getAllPostsService = async (options: GetPostsOptions): Promise<GetP
     }
 }
 
-export const getPostService = async (id: string): Promise<PostWithImages> => {
+export const getPostService = async (id: string) => {
     const post = await getPostRepository(id)
+
     if (!post) {
         throw new AppError(noPostFoundError)
     }
 
-    const images = await getPostImages(post.id)
+    const formattedImgUrls = post.images.map((img) => ({
+        ...img,
+        url: `${process.env.SUPABASE_URL}/storage/v1/object/public/vcafe-feed/${img.url}`,
+    }))
 
-    return {
-        ...post,
-        images: images.map((img: any) => `${process.env.SUPABASE_URL}/storage/v1/object/public/vcafe-feed/${img.url}`) || [],
-    }
+    return { ...post, images: formattedImgUrls }
 }
 
 export const createPostWithImagesService = async (data: CreatePostWithImagesData) => {
@@ -170,20 +157,5 @@ const uploadPostImages = async (images: CreatePostWithImagesData['images'], post
             }
         }
         throw error
-    }
-}
-
-const getPostImages = async (postId: string) => {
-    try {
-        const result = await getPostImagesRepository(postId)
-
-        if (!result[0]) {
-            return []
-        }
-
-        return result
-    } catch (error) {
-        CustomLogger.error(`Error fetching images for post ${postId}`, error)
-        return []
     }
 }

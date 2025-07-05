@@ -1,13 +1,13 @@
 import { errorResponseFormat } from '@server/lib/error'
-import { getAllPostsService, createPostWithImagesService, getPostService } from './service'
+import { getPostsService, createPostWithImagesService, getPostService } from './service'
 import type { Context } from 'hono'
 import { CustomLogger } from '@server/lib/custom-logger'
 
-export const getAllPostsController = async (c: Context) => {
+export const getPostsController = async (c: Context) => {
     try {
         const { limit, offset, orderBy } = c.get('validatedQuery')
 
-        const posts = await getAllPostsService({
+        const posts = await getPostsService({
             limit,
             offset,
             orderBy,

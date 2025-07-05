@@ -11,7 +11,6 @@ export interface GetPostsOptions {
 
 export interface GetPostsResult {
     posts: Post[]
-    total: number
     hasMore: boolean
 }
 
@@ -21,35 +20,55 @@ export interface CreatePostData {
     visibility?: 'public' | 'follower_only' | 'membership_only'
 }
 
-export const getAllPostsRepository = async (options: GetPostsOptions): Promise<GetPostsResult> => {
+export const getPostsWithImagesRepository = async (options: GetPostsOptions) => {
     const { limit, offset, orderBy = 'desc' } = options
 
-    const result = await db
-        .select()
-        .from(posts)
-        .orderBy(orderBy === 'desc' ? desc(posts.createdAt) : asc(posts.createdAt))
-        .limit(limit)
-        .offset(offset)
+    const result = await db.query.posts.findMany({
+        limit,
+        offset,
+        orderBy: orderBy === 'desc' ? desc(posts.createdAt) : asc(posts.createdAt),
+        with: {
+            images: {
+                orderBy: asc(postImages.displayOrder),
+            },
+            author: {
+                columns: {
+                    id: true,
+                    name: true,
+                    username: true,
+                    image: true,
+                },
+            },
+        },
+    })
 
     const totalQuery = await db.select({ count: count() }).from(posts)
-
     const total = totalQuery[0]?.count || 0
     const hasMore = offset + limit < total
 
     return {
         posts: result,
-        total,
         hasMore,
     }
 }
 
-export const getPostRepository = async (id: string): Promise<Post | undefined> => {
-    return db
-        .select()
-        .from(posts)
-        .where(eq(posts.id, id))
-        .limit(1)
-        .then((result) => result[0])
+export const getPostRepository = async (id: string) => {
+    return db.query.posts.findFirst({
+        where: eq(posts.id, id),
+        with: {
+            images: {
+                orderBy: asc(postImages.displayOrder),
+            },
+            author: {
+                columns: {
+                    id: true,
+                    name: true,
+                    username: true,
+                    image: true,
+                },
+            },
+        },
+    })
 }
 
 export const getPostImagesRepository = async (postId: string) => {
