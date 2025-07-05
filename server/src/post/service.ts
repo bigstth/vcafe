@@ -135,7 +135,7 @@ const uploadPostImages = async (images: CreatePostWithImagesData['images'], post
                 uploadBody = image as File
             }
 
-            const { data: uploadData, error: uploadError } = await supabaseAdmin.storage.from('vcafe-feedtest').upload(imagePath, uploadBody, {
+            const { data: uploadData, error: uploadError } = await supabaseAdmin.storage.from('vcafe-feed').upload(imagePath, uploadBody, {
                 cacheControl: '3600',
                 upsert: false,
                 metadata: {
