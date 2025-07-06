@@ -151,7 +151,7 @@ const uploadPostImages = async (images: CreatePostWithImagesData['images'], post
         if (uploadedImagePaths.length > 0) {
             for (const imagePath of uploadedImagePaths) {
                 try {
-                    await supabaseAdmin.storage.from('vcafe-feedtest').remove([imagePath])
+                    await supabaseAdmin.storage.from('vcafe-feed').remove([imagePath])
                 } catch (deleteError) {
                     CustomLogger.error('Failed to delete uploaded image', { imagePath, error: deleteError })
                 }
