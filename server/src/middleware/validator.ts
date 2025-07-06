@@ -14,10 +14,13 @@ export const validateQuery = <T extends ZodSchema>(schema: T) => {
                     details: result.error.errors.map((err) => ({
                         field: err.path.join('.'),
                         message: err.message,
-                        received: err.path.reduce((obj: any, key) => obj?.[key], queryData),
+                        received: err.path.reduce(
+                            (obj: any, key) => obj?.[key],
+                            queryData
+                        ),
                     })),
                 },
-                400,
+                400
             )
         }
 
@@ -39,10 +42,13 @@ export const validateJson = <T extends ZodSchema>(schema: T) => {
                     details: result.error.errors.map((err) => ({
                         field: err.path.join('.'),
                         message: err.message,
-                        received: err.path.reduce((obj: any, key) => obj?.[key], jsonData),
+                        received: err.path.reduce(
+                            (obj: any, key) => obj?.[key],
+                            jsonData
+                        ),
                     })),
                 },
-                400,
+                400
             )
         }
 
@@ -64,10 +70,13 @@ export const validateParam = <T extends ZodSchema>(schema: T) => {
                     details: result.error.errors.map((err) => ({
                         field: err.path.join('.'),
                         message: err.message,
-                        received: err.path.reduce((obj: any, key) => obj?.[key], paramData),
+                        received: err.path.reduce(
+                            (obj: any, key) => obj?.[key],
+                            paramData
+                        ),
                     })),
                 },
-                400,
+                400
             )
         }
 
@@ -84,7 +93,12 @@ export const validateFormData = <T extends ZodSchema>(schema: T) => {
             const imageFiles: File[] = []
 
             for (const [key, value] of formData.entries()) {
-                if (value && typeof value === 'object' && 'name' in value && 'size' in value) {
+                if (
+                    value &&
+                    typeof value === 'object' &&
+                    'name' in value &&
+                    'size' in value
+                ) {
                     const file = value as File
                     if (key.startsWith('images')) {
                         imageFiles.push(file)
@@ -118,10 +132,13 @@ export const validateFormData = <T extends ZodSchema>(schema: T) => {
                         details: result.error.errors.map((err) => ({
                             field: err.path.join('.'),
                             message: err.message,
-                            received: err.path.reduce((obj: any, key) => obj?.[key], formObject),
+                            received: err.path.reduce(
+                                (obj: any, key) => obj?.[key],
+                                formObject
+                            ),
                         })),
                     },
-                    400,
+                    400
                 )
             }
             c.set('validatedFormData', result.data)
@@ -132,7 +149,7 @@ export const validateFormData = <T extends ZodSchema>(schema: T) => {
                     status: 'parse_error',
                     message: 'Failed to parse form data',
                 },
-                400,
+                400
             )
         }
     }

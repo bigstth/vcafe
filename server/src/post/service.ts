@@ -6,10 +6,6 @@ import { db } from '@server/db/db-instance'
 import { posts, postImages } from '@server/db/feed-schema'
 import { createClient } from '@supabase/supabase-js'
 import { v4 as uuidv4 } from 'uuid'
-import type { Post } from '@server/types/schema'
-interface PostWithImages extends Post {
-    images?: string[]
-}
 
 interface ImageWithUrl {
     id: string

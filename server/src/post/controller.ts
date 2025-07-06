@@ -15,6 +15,7 @@ export const getPostsController = async (c: Context) => {
 
         return c.json(posts)
     } catch (e: unknown) {
+        CustomLogger.error(`Error in getPostsController`, e)
         return errorResponseFormat(c, e)
     }
 }
@@ -43,6 +44,7 @@ export const createPostWithImagesController = async (c: Context) => {
 
         return c.json(result, 201)
     } catch (e: unknown) {
+        CustomLogger.error(`Error in createPostWithImagesController`, e)
         return errorResponseFormat(c, e)
     }
 }

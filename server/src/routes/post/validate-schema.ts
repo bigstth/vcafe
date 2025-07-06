@@ -11,7 +11,12 @@ export const getPostSchema = z.object({
 })
 
 export const createPostSchema = z.object({
-    content: z.string().min(1, 'Content is required').max(1000, 'Content too long'),
-    visibility: z.enum(['public', 'follower_only', 'membership_only']).default('public'),
+    content: z
+        .string()
+        .min(1, 'Content is required')
+        .max(1000, 'Content too long'),
+    visibility: z
+        .enum(['public', 'follower_only', 'membership_only'])
+        .default('public'),
     images: z.array(z.instanceof(File)).optional(),
 })

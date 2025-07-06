@@ -20,13 +20,16 @@ export interface CreatePostData {
     visibility?: 'public' | 'follower_only' | 'membership_only'
 }
 
-export const getPostsWithImagesRepository = async (options: GetPostsOptions) => {
+export const getPostsWithImagesRepository = async (
+    options: GetPostsOptions
+) => {
     const { limit, offset, orderBy = 'desc' } = options
 
     const result = await db.query.posts.findMany({
         limit,
         offset,
-        orderBy: orderBy === 'desc' ? desc(posts.createdAt) : asc(posts.createdAt),
+        orderBy:
+            orderBy === 'desc' ? desc(posts.createdAt) : asc(posts.createdAt),
         with: {
             images: {
                 orderBy: asc(postImages.displayOrder),
@@ -37,6 +40,19 @@ export const getPostsWithImagesRepository = async (options: GetPostsOptions) => 
                     name: true,
                     username: true,
                     image: true,
+                },
+            },
+            comments: {
+                orderBy: desc(posts.createdAt),
+                with: {
+                    author: {
+                        columns: {
+                            id: true,
+                            name: true,
+                            username: true,
+                            image: true,
+                        },
+                    },
                 },
             },
         },
@@ -67,17 +83,36 @@ export const getPostRepository = async (id: string) => {
                     image: true,
                 },
             },
+            comments: {
+                orderBy: desc(posts.createdAt),
+                with: {
+                    author: {
+                        columns: {
+                            id: true,
+                            name: true,
+                            username: true,
+                            image: true,
+                        },
+                    },
+                },
+            },
         },
     })
 }
 
 export const getPostImagesRepository = async (postId: string) => {
-    const result = await db.select().from(postImages).where(eq(postImages.postId, postId)).orderBy(asc(postImages.displayOrder))
+    const result = await db
+        .select()
+        .from(postImages)
+        .where(eq(postImages.postId, postId))
+        .orderBy(asc(postImages.displayOrder))
 
     return result
 }
 
-export const createPostRepository = async (data: CreatePostData): Promise<Post> => {
+export const createPostRepository = async (
+    data: CreatePostData
+): Promise<Post> => {
     const newPost: NewPost = {
         userId: data.userId,
         content: data.content,

@@ -8,8 +8,12 @@ type MeResponseType = Awaited<ReturnType<typeof api.user.me.$get>>
 type PostsResponseType = Awaited<ReturnType<typeof api.posts.$get>>
 
 function Home() {
-    const [me, setMe] = useState<Awaited<ReturnType<MeResponseType['json']>> | undefined>()
-    const [posts, setPosts] = useState<Awaited<ReturnType<PostsResponseType['json']>> | undefined>()
+    const [me, setMe] = useState<
+        Awaited<ReturnType<MeResponseType['json']>> | undefined
+    >()
+    const [posts, setPosts] = useState<
+        Awaited<ReturnType<PostsResponseType['json']>> | undefined
+    >()
     const [file, setFile] = useState<FileList | null>(null)
 
     async function getMe() {
@@ -21,6 +25,20 @@ function Home() {
             }
             const data = await res.json()
             setMe(data)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async function getAccount() {
+        try {
+            const res = await api.user.me.$get()
+            if (!res.ok) {
+                console.log('Error fetching data')
+                return
+            }
+            const data = await res.json()
+            console.log(data, 'data')
         } catch (error) {
             console.log(error)
         }
@@ -65,6 +83,24 @@ function Home() {
         }
     }
 
+    async function comment(id: string) {
+        try {
+            const response = await axios.post(
+                `/api/comments/${id}`,
+                { content: 'zaaa' },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    withCredentials: true,
+                }
+            )
+            console.log(response.data, 'data')
+        } catch (error) {
+            console.log('Error creating comment:', error)
+        }
+    }
+
     async function createPost() {
         try {
             const formData = new FormData()
@@ -98,6 +134,18 @@ function Home() {
         })
     }
 
+    const signInTwitch = async () => {
+        await authClient.signIn.social({
+            provider: 'twitch',
+        })
+    }
+
+    const signInTwitter = async () => {
+        await authClient.signIn.social({
+            provider: 'twitter',
+        })
+    }
+
     const signOut = async () => {
         await authClient.signOut()
     }
@@ -108,10 +156,17 @@ function Home() {
                 <Button onClick={signIn} className="mb-4">
                     Sign In with Google
                 </Button>
+                <Button onClick={signInTwitch} className="mb-4">
+                    Sign In with Twitch
+                </Button>
+                <Button onClick={signInTwitter} className="mb-4">
+                    Sign In with Twitter
+                </Button>
                 <Button onClick={signOut} className="mb-4">
                     Sign Out
                 </Button>
                 <Button onClick={() => getMe()}>Get Me</Button>
+                <Button onClick={() => getAccount()}>Get Acc</Button>
                 <Button onClick={() => getPosts()}>Get Posts</Button>
                 <Button onClick={() => createPost()}>Create Posts</Button>
             </div>
@@ -119,7 +174,9 @@ function Home() {
                 {me && (
                     <div className="mb-4">
                         <h2>Me:</h2>
-                        <pre className="whitespace-pre-wrap break-words">{JSON.stringify(me, null, 2) ?? ''}</pre>
+                        <pre className="whitespace-pre-wrap break-words">
+                            {JSON.stringify(me, null, 2) ?? ''}
+                        </pre>
                     </div>
                 )}
 
@@ -134,6 +191,13 @@ function Home() {
                                 }}
                             >
                                 Get post by id
+                            </Button>
+                            <Button
+                                onClick={() => {
+                                    comment(post.id)
+                                }}
+                            >
+                                Comment
                             </Button>
                             <h3>{post.content}</h3>
                             <p>Visibility: {post.visibility}</p>

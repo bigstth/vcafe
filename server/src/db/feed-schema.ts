@@ -28,8 +28,11 @@ export const comments = pgTable('comments', {
     postId: uuid('post_id')
         .notNull()
         .references(() => posts.id, { onDelete: 'cascade' }),
-    createdAt: timestamp('created_at').defaultNow().notNull(),
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+    updatedAt: timestamp('updated_at')
+        .notNull()
+        .defaultNow()
+        .$onUpdate(() => new Date()),
 })
 
 export const followers = pgTable(
