@@ -11,6 +11,9 @@ export type CreateComment = {
 export const getCommentsService = async (postId: string) => {
     const result = await getCommentsRepository(postId)
     if (!result) {
+        if (getCommentsFailed.status === undefined) {
+            throw new AppError(getCommentsFailed)
+        }
         throw new AppError(getCommentsFailed)
     }
     return result

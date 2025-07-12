@@ -1,5 +1,12 @@
 import type { ContentfulStatusCode } from 'hono/utils/http-status'
-import type { Context, Next } from 'hono'
+import type { Context } from 'hono'
+
+export interface ErrorResponseType {
+    en: string
+    th: string
+    statusName: string
+    status: ContentfulStatusCode | undefined
+}
 
 export class AppError extends Error {
     en: string
@@ -7,7 +14,7 @@ export class AppError extends Error {
     statusName: string
     status: ContentfulStatusCode
 
-    constructor({ en, th, statusName, status = 400 }: { en: string; th: string; statusName: string; status?: ContentfulStatusCode }) {
+    constructor({ en, th, statusName, status = 400 }: ErrorResponseType) {
         super(en)
         this.en = en
         this.th = th
@@ -25,7 +32,7 @@ export const somethingWentWrong = (c: Context) => {
                 status: 'internal_error',
             },
         },
-        500,
+        500
     )
 }
 
@@ -39,7 +46,7 @@ export const errorResponseFormat = (c: Context, e: unknown) => {
                     status: e.statusName,
                 },
             },
-            e.status,
+            e.status
         )
     }
 

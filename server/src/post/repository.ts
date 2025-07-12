@@ -37,7 +37,7 @@ export const getPostsWithImagesRepository = async (
             author: {
                 columns: {
                     id: true,
-                    name: true,
+                    displayName: true,
                     username: true,
                     image: true,
                 },
@@ -48,7 +48,7 @@ export const getPostsWithImagesRepository = async (
                     author: {
                         columns: {
                             id: true,
-                            name: true,
+                            displayName: true,
                             username: true,
                             image: true,
                         },
@@ -78,7 +78,7 @@ export const getPostRepository = async (id: string) => {
             author: {
                 columns: {
                     id: true,
-                    name: true,
+                    displayName: true,
                     username: true,
                     image: true,
                 },
@@ -89,7 +89,7 @@ export const getPostRepository = async (id: string) => {
                     author: {
                         columns: {
                             id: true,
-                            name: true,
+                            displayName: true,
                             username: true,
                             image: true,
                         },
