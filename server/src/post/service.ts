@@ -1,11 +1,33 @@
-import { createPostFailed, noPostFoundError } from './errors'
-import { getPostRepository, getPostImagesRepository, type GetPostsOptions, type GetPostsResult, getPostsWithImagesRepository } from './repository'
+import {
+    cannotUnarchiveDeletedPost,
+    createPostFailed,
+    failedToArchive,
+    failedToDelete,
+    failedToUnarchive,
+    insufficientPermissionToUnarchive,
+    insufficientPermissionToDelete,
+    noPostFoundError,
+    postAlreadyArchived,
+    postAlreadyDeleted,
+    postNotArchived,
+    insufficientPermissionToArchive,
+    getPostFailed,
+} from './errors'
+import {
+    archivePostRepository,
+    canModifyPostRepository,
+    getPostRepository,
+    type GetPostsOptions,
+    getPostsWithImagesRepository,
+    softDeletePostRepository,
+    unarchivePostRepository,
+} from './repository'
 import { AppError } from '@server/lib/error'
 import { CustomLogger } from '@server/lib/custom-logger'
 import { db } from '@server/db/db-instance'
 import { posts, postImages } from '@server/db/feed-schema'
-import { createClient } from '@supabase/supabase-js'
 import { v4 as uuidv4 } from 'uuid'
+import supabaseAdmin from '@server/db/supabase-instance'
 
 interface ImageWithUrl {
     id: string
@@ -14,13 +36,6 @@ interface ImageWithUrl {
     displayOrder: number
     altText: string | null
 }
-
-const supabaseAdmin = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, {
-    auth: {
-        autoRefreshToken: false,
-        persistSession: false,
-    },
-})
 
 interface CreatePostWithImagesData {
     userId: string
@@ -48,23 +63,30 @@ export const getPostsService = async (options: GetPostsOptions) => {
         }
     } catch (error) {
         CustomLogger.error('Error in getAllPostsService', error)
-        throw error
+        throw new AppError(getPostFailed)
     }
 }
 
 export const getPostService = async (id: string) => {
-    const post = await getPostRepository(id)
+    try {
+        const post = await getPostRepository(id)
 
-    if (!post) {
-        throw new AppError(noPostFoundError)
+        if (!post) {
+            throw new AppError(noPostFoundError)
+        }
+
+        const formattedImgUrls = mapImageUrls(post.images)
+
+        return { ...post, images: formattedImgUrls }
+    } catch (error) {
+        CustomLogger.error('Error in getPostService', error)
+        throw new AppError(getPostFailed)
     }
-
-    const formattedImgUrls = mapImageUrls(post.images)
-
-    return { ...post, images: formattedImgUrls }
 }
 
-export const createPostWithImagesService = async (data: CreatePostWithImagesData) => {
+export const createPostWithImagesService = async (
+    data: CreatePostWithImagesData
+) => {
     const postId = uuidv4()
 
     try {
@@ -80,9 +102,19 @@ export const createPostWithImagesService = async (data: CreatePostWithImagesData
                 .returning()
 
             if (data.images && data.images.length > 0) {
-                const imageRecords = await uploadPostImages(data?.images, postId, data?.userId)
+                const imageRecords = await uploadPostImages(
+                    data?.images,
+                    postId,
+                    data?.userId
+                )
 
-                const createdImages = imageRecords && imageRecords.length > 0 ? await tx.insert(postImages).values(imageRecords).returning() : []
+                const createdImages =
+                    imageRecords && imageRecords.length > 0
+                        ? await tx
+                              .insert(postImages)
+                              .values(imageRecords)
+                              .returning()
+                        : []
 
                 return {
                     ...newPost,
@@ -98,10 +130,149 @@ export const createPostWithImagesService = async (data: CreatePostWithImagesData
     }
 }
 
-const uploadPostImages = async (images: CreatePostWithImagesData['images'], postId: string, userId: string) => {
+export const softDeletePostService = async (postId: string, userId: string) => {
+    try {
+        const { exists, isDeleted } = await canModifyPostRepository(
+            postId,
+            userId
+        )
+
+        if (!exists) {
+            throw new AppError(insufficientPermissionToDelete)
+        }
+
+        if (isDeleted) {
+            throw new AppError(postAlreadyDeleted)
+        }
+
+        const deletedPost = await softDeletePostRepository(postId, userId)
+
+        if (!deletedPost) {
+            throw new AppError(failedToDelete)
+        }
+
+        CustomLogger.info('Post soft deleted successfully', {
+            postId,
+            userId,
+            deletedAt: deletedPost.deletedAt,
+        })
+
+        return {
+            success: true,
+            message: 'Post deleted successfully',
+            data: deletedPost,
+        }
+    } catch (error) {
+        CustomLogger.error('Error in softDeletePostService', {
+            postId,
+            userId,
+            error,
+        })
+        throw error
+    }
+}
+
+export const archivePostService = async (postId: string, userId: string) => {
+    try {
+        // Check if user can archive this post
+        const { canArchive, exists, isDeleted, isArchived } =
+            await canModifyPostRepository(postId, userId)
+
+        if (!exists) {
+            throw new AppError(insufficientPermissionToArchive)
+        }
+
+        if (!canArchive) {
+            if (isDeleted) {
+                throw new AppError(postAlreadyArchived)
+            } else if (isArchived) {
+                throw new AppError(postAlreadyDeleted)
+            } else {
+                throw new AppError(insufficientPermissionToArchive)
+            }
+        }
+
+        const archivedPost = await archivePostRepository(postId, userId)
+
+        if (!archivedPost) {
+            throw new AppError(failedToArchive)
+        }
+
+        CustomLogger.info('Post archived successfully', {
+            postId,
+            userId,
+            archivedAt: archivedPost.archivedAt,
+        })
+
+        return {
+            success: true,
+            message: 'Post archived successfully',
+            data: archivedPost,
+        }
+    } catch (error) {
+        CustomLogger.error('Error in archivePostService', {
+            postId,
+            userId,
+            error,
+        })
+        throw error
+    }
+}
+
+export const unarchivePostService = async (postId: string, userId: string) => {
+    try {
+        const { exists, canUnarchive, isArchived, isDeleted } =
+            await canModifyPostRepository(postId, userId)
+
+        if (!exists) {
+            throw new AppError(noPostFoundError)
+        }
+
+        if (!canUnarchive) {
+            if (isDeleted) {
+                throw new AppError(cannotUnarchiveDeletedPost)
+            } else if (!isArchived) {
+                throw new AppError(postNotArchived)
+            } else {
+                throw new AppError(insufficientPermissionToUnarchive)
+            }
+        }
+
+        const unArchivedPost = await unarchivePostRepository(postId, userId)
+
+        if (!unArchivedPost) {
+            throw new AppError(failedToUnarchive)
+        }
+
+        CustomLogger.info('Post unarchived successfully', {
+            postId,
+            userId,
+        })
+
+        return {
+            success: true,
+            message: 'Post unarchived successfully',
+            data: unArchivedPost,
+        }
+    } catch (error) {
+        CustomLogger.error('Error in unarchivePostService', {
+            postId,
+            userId,
+            error,
+        })
+        throw error
+    }
+}
+
+const uploadPostImages = async (
+    images: CreatePostWithImagesData['images'],
+    postId: string,
+    userId: string
+) => {
     if (!images?.length) return
     const uploadedImagePaths: string[] = []
     const imageRecords = []
+    const MAX_FILE_SIZE = 10 * 1024 * 1024
 
     try {
         for (let i = 0; i < images.length; i++) {
@@ -109,6 +280,22 @@ const uploadPostImages = async (images: CreatePostWithImagesData['images'], post
             if (!image) {
                 throw new Error(`Image at index ${i} is undefined`)
             }
+
+            let fileSize: number
+            if (typeof Buffer !== 'undefined' && image instanceof Buffer) {
+                fileSize = image.length
+            } else if (image instanceof File) {
+                fileSize = image.size
+            } else {
+                throw new Error(`Invalid image format at index ${i}`)
+            }
+
+            if (fileSize > MAX_FILE_SIZE) {
+                throw new Error(
+                    `Image ${i + 1} exceeds maximum file size of 10MB (current size: ${(fileSize / 1024 / 1024).toFixed(2)}MB)`
+                )
+            }
+
             const imageId = uuidv4()
             const imagePath = `posts/${postId}/${imageId}`
 
@@ -119,17 +306,22 @@ const uploadPostImages = async (images: CreatePostWithImagesData['images'], post
                 uploadBody = image as File
             }
 
-            const { data: uploadData, error: uploadError } = await supabaseAdmin.storage.from('vcafe-feed').upload(imagePath, uploadBody, {
-                cacheControl: '3600',
-                upsert: false,
-                metadata: {
-                    uploadedBy: userId,
-                    postId: postId,
-                },
-            })
+            const { data: uploadData, error: uploadError } =
+                await supabaseAdmin.storage
+                    .from('vcafe-feed')
+                    .upload(imagePath, uploadBody, {
+                        cacheControl: '3600',
+                        upsert: false,
+                        metadata: {
+                            uploadedBy: userId,
+                            postId: postId,
+                        },
+                    })
 
             if (uploadError) {
-                throw new Error(`Failed to upload image ${i + 1}: ${uploadError.message}`)
+                throw new Error(
+                    `Failed to upload image ${i + 1}: ${uploadError.message}`
+                )
             }
 
             uploadedImagePaths.push(uploadData.path)
@@ -144,12 +336,18 @@ const uploadPostImages = async (images: CreatePostWithImagesData['images'], post
         }
         return imageRecords
     } catch (error) {
+        // Cleanup uploaded images if there was an error
         if (uploadedImagePaths.length > 0) {
             for (const imagePath of uploadedImagePaths) {
                 try {
-                    await supabaseAdmin.storage.from('vcafe-feed').remove([imagePath])
+                    await supabaseAdmin.storage
+                        .from('vcafe-feed')
+                        .remove([imagePath])
                 } catch (deleteError) {
-                    CustomLogger.error('Failed to delete uploaded image', { imagePath, error: deleteError })
+                    CustomLogger.error('Failed to delete uploaded image', {
+                        imagePath,
+                        error: deleteError,
+                    })
                 }
             }
         }
