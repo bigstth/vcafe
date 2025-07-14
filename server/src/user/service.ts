@@ -1,8 +1,8 @@
-import { AppError } from '@server/lib/error'
 import { getMeRepository } from './repository'
 import { userNotFoundError } from './errors'
 import { auth } from '@server/lib/auth'
 import type { Context } from 'hono'
+import { AppError } from '@server/lib/error'
 
 export const getMeService = async (c: Context) => {
     const user = c.get('user')

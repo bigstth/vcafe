@@ -3,6 +3,7 @@ import { posts, postImages, comments } from '@server/db/feed-schema'
 import { eq, desc, asc, and, count, sql } from 'drizzle-orm'
 import { activePostsCondition } from '@server/lib/soft-delete'
 import type { NewPost, Post } from '@server/types/schema'
+import { CustomLogger } from '@server/lib/custom-logger'
 
 export interface GetPostsOptions {
     limit: number
@@ -224,7 +225,7 @@ export const getUserArchivedPostsRepository = async (
     const hasMore = offset + limit < total
 
     return {
-        posts: result,
+        posts: result || [],
         total,
         hasMore,
     }
@@ -308,7 +309,7 @@ export const getDeletedPostsRepository = async (
         limit,
     })
 
-    return result
+    return result || null
 }
 
 export const getPostRepository = async (id: string) => {
@@ -370,7 +371,7 @@ export const createPostRepository = async (
         throw new Error('Failed to create post')
     }
 
-    return result[0]
+    return result[0] || null
 }
 
 export const softDeletePostRepository = async (
@@ -392,7 +393,7 @@ export const softDeletePostRepository = async (
         )
         .returning()
 
-    return result[0]
+    return result[0] || null
 }
 
 export const archivePostRepository = async (postId: string, userId: string) => {
@@ -412,7 +413,7 @@ export const archivePostRepository = async (postId: string, userId: string) => {
         )
         .returning()
 
-    return result[0]
+    return result[0] || null
 }
 
 export const unarchivePostRepository = async (
@@ -435,28 +436,37 @@ export const unarchivePostRepository = async (
         )
         .returning()
 
-    return result[0]
+    return result[0] || null
 }
 
 export const canModifyPostRepository = async (
     postId: string,
     userId: string
 ) => {
-    const post = await db.query.posts.findFirst({
-        where: and(eq(posts.id, postId), eq(posts.userId, userId)),
-        columns: {
-            id: true,
-            isDeleted: true,
-            isArchived: true,
-        },
-    })
+    try {
+        const post = await db.query.posts.findFirst({
+            where: and(eq(posts.id, postId), eq(posts.userId, userId)),
+            columns: {
+                id: true,
+                isDeleted: true,
+                isArchived: true,
+            },
+        })
 
-    return {
-        exists: !!post,
-        isDeleted: post?.isDeleted || false,
-        isArchived: post?.isArchived || false,
-        canDelete: post && !post.isDeleted,
-        canArchive: post && !post.isDeleted && !post.isArchived,
-        canUnarchive: post && !post.isDeleted && post.isArchived,
+        return {
+            exists: !!post,
+            isDeleted: post?.isDeleted || false,
+            isArchived: post?.isArchived || false,
+            canDelete: post && !post.isDeleted,
+            canArchive: post && !post.isDeleted && !post.isArchived,
+            canUnarchive: post && !post.isDeleted && post.isArchived,
+        }
+    } catch (error) {
+        CustomLogger.error('Database error in canModifyPostRepository', {
+            postId,
+            userId,
+            error,
+        })
+        throw error
     }
 }

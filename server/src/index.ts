@@ -13,7 +13,10 @@ const app = new Hono()
     .use('*', serveStatic({ root: '../client/dist' }))
 
 app.notFound(async (c) => {
-    const html = await readFile(join(__dirname, '../../client/dist/index.html'), 'utf-8')
+    const html = await readFile(
+        join(__dirname, '../../client/dist/index.html'),
+        'utf-8'
+    )
     return c.html(html)
 })
 

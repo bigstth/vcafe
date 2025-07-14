@@ -1,5 +1,3 @@
-import type { ErrorResponseType } from '@server/lib/error'
-
 export const invalidFollowError: ErrorResponseType = {
     en: 'Cannot follow yourself',
     th: 'ไม่สามารถติดตามตัวเองได้',

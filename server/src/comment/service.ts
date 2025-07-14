@@ -1,7 +1,7 @@
-import { AppError } from '@server/lib/error'
 import { createCommentRepository, getCommentsRepository } from './repository'
 import { createCommentError, getCommentsFailed } from './errors'
 import { CustomLogger } from '@server/lib/custom-logger'
+import { AppError } from '@server/lib/error'
 
 export type CreateComment = {
     postId: string

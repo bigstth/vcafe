@@ -11,7 +11,6 @@ import {
     postAlreadyDeleted,
     postNotArchived,
     insufficientPermissionToArchive,
-    getPostFailed,
 } from './errors'
 import {
     archivePostRepository,
@@ -22,12 +21,12 @@ import {
     softDeletePostRepository,
     unarchivePostRepository,
 } from './repository'
-import { AppError } from '@server/lib/error'
 import { CustomLogger } from '@server/lib/custom-logger'
 import { db } from '@server/db/db-instance'
 import { posts, postImages } from '@server/db/feed-schema'
 import { v4 as uuidv4 } from 'uuid'
 import supabaseAdmin from '@server/db/supabase-instance'
+import { AppError } from '@server/lib/error'
 
 interface ImageWithUrl {
     id: string
@@ -45,43 +44,33 @@ interface CreatePostWithImagesData {
 }
 
 export const getPostsService = async (options: GetPostsOptions) => {
-    try {
-        const result = await getPostsWithImagesRepository(options)
+    const result = await getPostsWithImagesRepository(options)
 
-        if (!result) {
-            throw new AppError(noPostFoundError)
-        }
+    if (!result) {
+        throw new AppError(noPostFoundError)
+    }
 
-        const postsWithImageUrls = result.posts.map((post) => ({
-            ...post,
-            images: mapImageUrls(post.images),
-        }))
+    const postsWithImageUrls = result.posts.map((post) => ({
+        ...post,
+        images: mapImageUrls(post.images),
+    }))
 
-        return {
-            ...result,
-            posts: postsWithImageUrls,
-        }
-    } catch (error) {
-        CustomLogger.error('Error in getAllPostsService', error)
-        throw new AppError(getPostFailed)
+    return {
+        ...result,
+        posts: postsWithImageUrls,
     }
 }
 
 export const getPostService = async (id: string) => {
-    try {
-        const post = await getPostRepository(id)
+    const post = await getPostRepository(id)
 
-        if (!post) {
-            throw new AppError(noPostFoundError)
-        }
-
-        const formattedImgUrls = mapImageUrls(post.images)
-
-        return { ...post, images: formattedImgUrls }
-    } catch (error) {
-        CustomLogger.error('Error in getPostService', error)
-        throw new AppError(getPostFailed)
+    if (!post) {
+        throw new AppError(noPostFoundError)
     }
+
+    const formattedImgUrls = mapImageUrls(post.images)
+
+    return { ...post, images: formattedImgUrls }
 }
 
 export const createPostWithImagesService = async (
@@ -131,136 +120,105 @@ export const createPostWithImagesService = async (
 }
 
 export const softDeletePostService = async (postId: string, userId: string) => {
-    try {
-        const { exists, isDeleted } = await canModifyPostRepository(
-            postId,
-            userId
-        )
+    // Check permissions first
+    const permissions = await canModifyPostRepository(postId, userId)
 
-        if (!exists) {
-            throw new AppError(insufficientPermissionToDelete)
-        }
+    if (!permissions.exists) {
+        throw new AppError(insufficientPermissionToDelete)
+    }
 
-        if (isDeleted) {
-            throw new AppError(postAlreadyDeleted)
-        }
+    if (permissions.isDeleted) {
+        throw new AppError(postAlreadyDeleted)
+    }
 
-        const deletedPost = await softDeletePostRepository(postId, userId)
+    // Call repository
+    const deletedPost = await softDeletePostRepository(postId, userId)
 
-        if (!deletedPost) {
-            throw new AppError(failedToDelete)
-        }
+    if (!deletedPost) {
+        throw new AppError(failedToDelete)
+    }
 
-        CustomLogger.info('Post soft deleted successfully', {
-            postId,
-            userId,
-            deletedAt: deletedPost.deletedAt,
-        })
+    CustomLogger.info('Post soft deleted successfully', {
+        postId,
+        userId,
+        deletedAt: deletedPost.deletedAt,
+    })
 
-        return {
-            success: true,
-            message: 'Post deleted successfully',
-            data: deletedPost,
-        }
-    } catch (error) {
-        CustomLogger.error('Error in softDeletePostService', {
-            postId,
-            userId,
-            error,
-        })
-        throw error
+    return {
+        success: true,
+        message: 'Post deleted successfully',
     }
 }
 
 export const archivePostService = async (postId: string, userId: string) => {
-    try {
-        // Check if user can archive this post
-        const { canArchive, exists, isDeleted, isArchived } =
-            await canModifyPostRepository(postId, userId)
+    // Check if user can archive this post
+    const { canArchive, exists, isDeleted, isArchived } =
+        await canModifyPostRepository(postId, userId)
 
-        if (!exists) {
+    if (!exists) {
+        throw new AppError(insufficientPermissionToArchive)
+    }
+
+    if (!canArchive) {
+        if (isDeleted) {
+            throw new AppError(postAlreadyDeleted)
+        } else if (isArchived) {
+            throw new AppError(postAlreadyArchived)
+        } else {
             throw new AppError(insufficientPermissionToArchive)
         }
+    }
 
-        if (!canArchive) {
-            if (isDeleted) {
-                throw new AppError(postAlreadyArchived)
-            } else if (isArchived) {
-                throw new AppError(postAlreadyDeleted)
-            } else {
-                throw new AppError(insufficientPermissionToArchive)
-            }
-        }
+    const archivedPost = await archivePostRepository(postId, userId)
 
-        const archivedPost = await archivePostRepository(postId, userId)
+    if (!archivedPost) {
+        throw new AppError(failedToArchive)
+    }
 
-        if (!archivedPost) {
-            throw new AppError(failedToArchive)
-        }
+    CustomLogger.info('Post archived successfully', {
+        postId,
+        userId,
+        archivedAt: archivedPost.archivedAt,
+    })
 
-        CustomLogger.info('Post archived successfully', {
-            postId,
-            userId,
-            archivedAt: archivedPost.archivedAt,
-        })
-
-        return {
-            success: true,
-            message: 'Post archived successfully',
-            data: archivedPost,
-        }
-    } catch (error) {
-        CustomLogger.error('Error in archivePostService', {
-            postId,
-            userId,
-            error,
-        })
-        throw error
+    return {
+        success: true,
+        message: 'Post archived successfully',
     }
 }
 
 export const unarchivePostService = async (postId: string, userId: string) => {
-    try {
-        const { exists, canUnarchive, isArchived, isDeleted } =
-            await canModifyPostRepository(postId, userId)
+    const { exists, canUnarchive, isArchived, isDeleted } =
+        await canModifyPostRepository(postId, userId)
 
-        if (!exists) {
-            throw new AppError(noPostFoundError)
+    if (!exists) {
+        throw new AppError(noPostFoundError)
+    }
+
+    if (!canUnarchive) {
+        if (isDeleted) {
+            throw new AppError(cannotUnarchiveDeletedPost)
+        } else if (!isArchived) {
+            throw new AppError(postNotArchived)
+        } else {
+            throw new AppError(insufficientPermissionToUnarchive)
         }
+    }
 
-        if (!canUnarchive) {
-            if (isDeleted) {
-                throw new AppError(cannotUnarchiveDeletedPost)
-            } else if (!isArchived) {
-                throw new AppError(postNotArchived)
-            } else {
-                throw new AppError(insufficientPermissionToUnarchive)
-            }
-        }
+    const unArchivedPost = await unarchivePostRepository(postId, userId)
 
-        const unArchivedPost = await unarchivePostRepository(postId, userId)
+    if (!unArchivedPost) {
+        throw new AppError(failedToUnarchive)
+    }
 
-        if (!unArchivedPost) {
-            throw new AppError(failedToUnarchive)
-        }
+    CustomLogger.info('Post unarchived successfully', {
+        postId,
+        userId,
+    })
 
-        CustomLogger.info('Post unarchived successfully', {
-            postId,
-            userId,
-        })
-
-        return {
-            success: true,
-            message: 'Post unarchived successfully',
-            data: unArchivedPost,
-        }
-    } catch (error) {
-        CustomLogger.error('Error in unarchivePostService', {
-            postId,
-            userId,
-            error,
-        })
-        throw error
+    return {
+        success: true,
+        message: 'Post unarchived successfully',
     }
 }
 

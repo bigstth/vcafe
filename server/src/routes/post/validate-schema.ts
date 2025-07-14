@@ -6,7 +6,7 @@ export const getAllPostsSchema = z.object({
     orderBy: z.enum(['asc', 'desc']).default('desc'),
 })
 
-export const getPostSchema = z.object({
+export const idParamSchema = z.object({
     id: z.string().uuid('Invalid post ID format'),
 })
 
