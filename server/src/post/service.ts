@@ -27,14 +27,7 @@ import { posts, postImages } from '@server/db/feed-schema'
 import { v4 as uuidv4 } from 'uuid'
 import supabaseAdmin from '@server/db/supabase-instance'
 import { AppError } from '@server/lib/error'
-
-interface ImageWithUrl {
-    id: string
-    postId: string
-    url: string
-    displayOrder: number
-    altText: string | null
-}
+import { mapImageUrls } from '@server/lib/map-image-urls'
 
 interface CreatePostWithImagesData {
     userId: string
@@ -311,13 +304,4 @@ const uploadPostImages = async (
         }
         throw error
     }
-}
-
-const mapImageUrls = (images: ImageWithUrl[]) => {
-    if (!images || images.length === 0) return []
-
-    return images.map((img: ImageWithUrl) => ({
-        alt: img.altText || 'VCAFE post image',
-        url: `${process.env.SUPABASE_URL}/storage/v1/object/public/vcafe-feed/${img.url}`,
-    }))
 }

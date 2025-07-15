@@ -1,8 +1,10 @@
-import { getMeRepository } from './repository'
+import { getMeRepository, getUserPostsRepository } from './repository'
 import { userNotFoundError } from './errors'
 import { auth } from '@server/lib/auth'
 import type { Context } from 'hono'
 import { AppError } from '@server/lib/error'
+import { noPostFoundError } from '@server/post/errors'
+import { mapImageUrls } from '@server/lib/map-image-urls'
 
 export const getMeService = async (c: Context) => {
     const user = c.get('user')
@@ -22,4 +24,36 @@ export const getMeService = async (c: Context) => {
     }))
 
     return { ...userInfo, linkedProviders }
+}
+
+export const getUserPostsService = async (c: Context) => {
+    const userId = c.get('validatedParam').id
+    const {
+        offset,
+        limit,
+        orderBy,
+        includeArchived = false,
+    } = c.get('validatedQuery')
+
+    const posts = await getUserPostsRepository({
+        userId,
+        offset,
+        limit,
+        orderBy,
+        includeArchived,
+        currentUserId: c.get('user').id,
+    })
+
+    if (!posts) {
+        throw new AppError(noPostFoundError)
+    }
+    const postsWithImageUrls = posts.posts.map((post) => ({
+        ...post,
+        images: mapImageUrls(post.images),
+    }))
+
+    return {
+        ...posts,
+        posts: postsWithImageUrls,
+    }
 }
