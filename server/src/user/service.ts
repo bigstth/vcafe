@@ -1,4 +1,8 @@
-import { getMeRepository, getUserPostsRepository } from './repository'
+import {
+    getMeRepository,
+    getUserPostsRepository,
+    getUserRepository,
+} from './repository'
 import { userNotFoundError } from './errors'
 import { auth } from '@server/lib/auth'
 import type { Context } from 'hono'
@@ -24,6 +28,16 @@ export const getMeService = async (c: Context) => {
     }))
 
     return { ...userInfo, linkedProviders }
+}
+
+export const getUserService = async (id: string) => {
+    const user = await getUserRepository(id)
+
+    if (!user) {
+        throw new AppError(userNotFoundError)
+    }
+
+    return user
 }
 
 export const getUserPostsService = async (c: Context) => {

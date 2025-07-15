@@ -16,6 +16,10 @@ export const getMeRepository = async (id: string) => {
     return db.query.user.findFirst({ where: (u, { eq }) => eq(u.id, id) })
 }
 
+export const getUserRepository = async (id: string) => {
+    return db.query.user.findFirst({ where: (u, { eq }) => eq(u.id, id) })
+}
+
 export const getUserPostsRepository = async (options: GetUserPostsOptions) => {
     const {
         userId,
