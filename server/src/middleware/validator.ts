@@ -1,7 +1,7 @@
 import type { Context, Next } from 'hono'
-import type { ZodSchema } from 'zod'
+import type { ZodType } from 'zod'
 
-export const validateQuery = <T extends ZodSchema>(schema: T) => {
+export const validateQuery = <T extends ZodType>(schema: T) => {
     return async (c: Context, next: Next) => {
         const queryData = c.req.query()
         const result = schema.safeParse(queryData)
@@ -11,11 +11,11 @@ export const validateQuery = <T extends ZodSchema>(schema: T) => {
                 {
                     status: 'validation_error',
                     message: 'Query parameters validation failed',
-                    details: result.error.errors.map((err) => ({
+                    details: result.error.issues.map((err) => ({
                         field: err.path.join('.'),
                         message: err.message,
                         received: err.path.reduce(
-                            (obj: any, key) => obj?.[key],
+                            (obj: any, key: any) => obj?.[key],
                             queryData
                         ),
                     })),
@@ -29,7 +29,7 @@ export const validateQuery = <T extends ZodSchema>(schema: T) => {
     }
 }
 
-export const validateJson = <T extends ZodSchema>(schema: T) => {
+export const validateJson = <T extends ZodType>(schema: T) => {
     return async (c: Context, next: Next) => {
         const jsonData = await c.req.json()
         const result = schema.safeParse(jsonData)
@@ -39,11 +39,11 @@ export const validateJson = <T extends ZodSchema>(schema: T) => {
                 {
                     status: 'validation_error',
                     message: 'JSON body validation failed',
-                    details: result.error.errors.map((err) => ({
+                    details: result.error.issues.map((err) => ({
                         field: err.path.join('.'),
                         message: err.message,
                         received: err.path.reduce(
-                            (obj: any, key) => obj?.[key],
+                            (obj: any, key: any) => obj?.[key],
                             jsonData
                         ),
                     })),
@@ -57,7 +57,7 @@ export const validateJson = <T extends ZodSchema>(schema: T) => {
     }
 }
 
-export const validateParam = <T extends ZodSchema>(schema: T) => {
+export const validateParam = <T extends ZodType>(schema: T) => {
     return async (c: Context, next: Next) => {
         const paramData = c.req.param()
         const result = schema.safeParse(paramData)
@@ -67,11 +67,11 @@ export const validateParam = <T extends ZodSchema>(schema: T) => {
                 {
                     status: 'validation_error',
                     message: 'Path parameters validation failed',
-                    details: result.error.errors.map((err) => ({
+                    details: result.error.issues.map((err) => ({
                         field: err.path.join('.'),
                         message: err.message,
                         received: err.path.reduce(
-                            (obj: any, key) => obj?.[key],
+                            (obj: any, key: any) => obj?.[key],
                             paramData
                         ),
                     })),
@@ -85,7 +85,7 @@ export const validateParam = <T extends ZodSchema>(schema: T) => {
     }
 }
 
-export const validateFormData = <T extends ZodSchema>(schema: T) => {
+export const validateFormData = <T extends ZodType>(schema: T) => {
     return async (c: Context, next: Next) => {
         try {
             const formData = await c.req.formData()
@@ -129,11 +129,11 @@ export const validateFormData = <T extends ZodSchema>(schema: T) => {
                     {
                         status: 'validation_error',
                         message: 'Form data validation failed',
-                        details: result.error.errors.map((err) => ({
+                        details: result.error.issues.map((err) => ({
                             field: err.path.join('.'),
                             message: err.message,
                             received: err.path.reduce(
-                                (obj: any, key) => obj?.[key],
+                                (obj: any, key: any) => obj?.[key],
                                 formObject
                             ),
                         })),

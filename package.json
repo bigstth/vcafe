@@ -21,7 +21,7 @@
         "build": "bun run build:shared && bun run build:server && bun run build:client",
         "start": "cd server && bun run dist/index.js",
         "migrate:dev": "cd server && drizzle-kit push",
-        "postinstall": "bun run build:shared && bun run build:server"
+        "postinstallxx": "bun run build:shared && bun run build:server"
     },
     "keywords": [
         "bun",
@@ -32,7 +32,8 @@
     ],
     "devDependencies": {
         "bun-types": "latest",
-        "concurrently": "^9.1.2"
+        "concurrently": "^9.1.2",
+        "zod": "^4.0.5"
     },
     "peerDependencies": {
         "typescript": "^5.7.3"

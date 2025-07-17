@@ -2,7 +2,10 @@ import { z } from 'zod'
 
 export const userIdSchema = z.object({
     id: z.string({
-        required_error: 'User ID is required',
+        error: (issue) =>
+            issue.input === undefined
+                ? 'User ID is required'
+                : 'Invalid User ID format',
     }),
 })
 
