@@ -5,9 +5,9 @@ import { Button } from '../ui/button'
 import { UserIcon } from '../ui'
 import { useIconAnimation } from '@/hooks/use-icon-animation'
 import { LogIn } from 'lucide-react'
+import { authClient } from '@/lib/auth-client'
 
 import './styles.css'
-import { authClient } from '@/lib/auth-client'
 
 const LoginFormPopover = () => {
     const t = useTranslations('navbar')
