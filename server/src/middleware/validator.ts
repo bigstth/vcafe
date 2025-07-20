@@ -129,14 +129,25 @@ export const validateFormData = <T extends ZodType>(schema: T) => {
                     {
                         status: 'validation_error',
                         message: 'Form data validation failed',
-                        details: result.error.issues.map((err) => ({
-                            field: err.path.join('.'),
-                            message: err.message,
-                            received: err.path.reduce(
-                                (obj: any, key: any) => obj?.[key],
-                                formObject
-                            ),
-                        })),
+                        details: result.error.issues.map((err) => {
+                            const fieldPath = err.path.join('.')
+                            const isPasswordField =
+                                fieldPath.includes('password')
+
+                            return {
+                                field: fieldPath,
+                                message: err.message,
+                                ...(isPasswordField
+                                    ? {}
+                                    : {
+                                          received: err.path.reduce(
+                                              (obj: any, key: any) =>
+                                                  obj?.[key],
+                                              formObject
+                                          ),
+                                      }),
+                            }
+                        }),
                     },
                     400
                 )

@@ -4,6 +4,7 @@
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "scripts": {
+        "install:full": "bun install --backend=copyfile",
         "build": "tsc",
         "dev": "bun --watch run src/index.ts && tsc --watch -p 3000"
     },
@@ -15,13 +16,14 @@
         "dotenv": "^17.0.0",
         "drizzle-orm": "^0.44.2",
         "hono": "^4.7.11",
-        "shared": "workspace:*",
-        "uuid": "^11.1.0"
+        "uuid": "^11.1.0",
+        "zod": "^3"
     },
     "devDependencies": {
         "@types/bun": "latest",
         "drizzle-kit": "^0.31.4",
         "pg": "^8.16.3",
-        "tsx": "^4.20.3"
+        "tsx": "^4.20.3",
+        "typescript": "^5.8.3"
     }
 }

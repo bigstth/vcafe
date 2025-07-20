@@ -232,7 +232,7 @@ export const getPostRepository = async (id: string) => {
             author: {
                 columns: {
                     id: true,
-                    displayName: true,
+                    displayUsername: true,
                     username: true,
                     image: true,
                 },
@@ -243,7 +243,7 @@ export const getPostRepository = async (id: string) => {
                     author: {
                         columns: {
                             id: true,
-                            displayName: true,
+                            displayUsername: true,
                             username: true,
                             image: true,
                         },

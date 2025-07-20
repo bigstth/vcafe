@@ -1,5 +1,10 @@
 import type { Context } from 'hono'
-import { getMeService, getUserPostsService, getUserService } from './service'
+import {
+    getMeService,
+    getUserPostsService,
+    getUserService,
+    registerService,
+} from './service'
 import { errorResponseFormat } from '@server/lib/error'
 import { CustomLogger } from '@server/lib/custom-logger'
 
@@ -30,6 +35,17 @@ export const getUserPostsController = async (c: Context) => {
         return c.json(posts)
     } catch (e: unknown) {
         CustomLogger.error(`Error in getUserPostsController`, e)
+        return errorResponseFormat(c, e)
+    }
+}
+
+export const registerController = async (c: Context) => {
+    try {
+        const result = await registerService(c)
+
+        return c.json(result)
+    } catch (e: unknown) {
+        CustomLogger.error(`Error in registerController`, e)
         return errorResponseFormat(c, e)
     }
 }

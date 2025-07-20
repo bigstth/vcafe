@@ -1,4 +1,4 @@
-import { postImages, posts, comments } from '@server/db'
+import { postImages, posts, comments, user } from '@server/db'
 import { db } from '@server/db/db-instance'
 import { activePostsCondition } from '@server/lib/soft-delete'
 import { and, asc, desc, count, eq } from 'drizzle-orm'
@@ -18,6 +18,12 @@ export const getMeRepository = async (id: string) => {
 
 export const getUserRepository = async (id: string) => {
     return db.query.user.findFirst({ where: (u, { eq }) => eq(u.id, id) })
+}
+
+export const getUserByUsernameRepository = async (username: string) => {
+    return db.query.user.findFirst({
+        where: (u, { eq }) => eq(u.username, username),
+    })
 }
 
 export const getUserPostsRepository = async (options: GetUserPostsOptions) => {
@@ -99,4 +105,18 @@ export const getUserPostsRepository = async (options: GetUserPostsOptions) => {
         hasMore,
         isOwner,
     }
+}
+
+export const updateUserRepository = async (id: string, data: Partial<any>) => {
+    const result = await db
+        .update(user)
+        .set(data)
+        .where(eq(user.id, id))
+        .returning()
+
+    if (result.length === 0) {
+        throw new Error('User not found or no changes made')
+    }
+
+    return result[0]
 }

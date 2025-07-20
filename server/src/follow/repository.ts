@@ -60,7 +60,7 @@ export const getFollowersRepository = async (
                 columns: {
                     id: true,
                     username: true,
-                    displayName: true,
+                    displayUsername: true,
                     image: true,
                 },
             },
@@ -97,7 +97,7 @@ export const getFollowingRepository = async (
                 columns: {
                     id: true,
                     username: true,
-                    displayName: true,
+                    displayUsername: true,
                     image: true,
                 },
             },

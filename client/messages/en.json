@@ -1,0 +1,22 @@
+{
+    "meta": {
+        "title": "=^._.^= ~ VCafe",
+        "description": "We know what you want, trust and grow with us."
+    },
+    "navbar": {
+        "home": "Home",
+        "marketplace": "Marketplace",
+        "actions": {
+            "sign_in": "Sign In",
+            "sign_in_with": "Sign In with"
+        }
+    },
+    "home": {
+        "title": "Full-loop digital solutions for your business",
+        "service": "Be the top 1% by choosing our services",
+        "recommended_services": "Recommended Services"
+    },
+    "re_use": {
+        "coming_soon": "Coming Soon"
+    }
+}

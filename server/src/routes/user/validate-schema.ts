@@ -1,12 +1,7 @@
 import { z } from 'zod'
 
 export const userIdSchema = z.object({
-    id: z.string({
-        error: (issue) =>
-            issue.input === undefined
-                ? 'User ID is required'
-                : 'Invalid User ID format',
-    }),
+    id: z.string().min(1, 'User ID is required'),
 })
 
 export const getUserPostsSchema = z.object({
@@ -14,4 +9,20 @@ export const getUserPostsSchema = z.object({
     limit: z.coerce.number().int().min(1).max(100).default(10),
     orderBy: z.enum(['asc', 'desc']).default('desc'),
     includeArchived: z.coerce.boolean().default(false),
+})
+
+export const registerSchema = z.object({
+    image: z.any().optional(),
+    username: z.string().min(3, 'Username must be at least 3 characters long'),
+    displayUsername: z.string().min(1, 'Display name is required'),
+    birthDate: z.coerce.date().optional(),
+    password: z
+        .string()
+        .min(6, 'Password must be at least 6 characters long')
+        .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
+        .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
+        .regex(
+            /[@$!%*#?&]/,
+            'Password must contain at least one special character (@$!%*#?&)'
+        ),
 })

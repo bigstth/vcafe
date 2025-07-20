@@ -1,0 +1,7 @@
+.login-popover-trigger[data-state='open'] {
+    background-color: var(--color-accent) !important;
+}
+
+.login-popover-trigger[data-state='open'] svg {
+    color: var(--color-primary) !important;
+}

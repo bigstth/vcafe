@@ -1,0 +1,22 @@
+{
+    "meta": {
+        "title": "=^._.^= ~ VCafe",
+        "description": "我们知道您想要什么，请信任我们，与我们共同成长。"
+    },
+    "navbar": {
+        "home": "首页",
+        "marketplace": "市场",
+        "actions": {
+            "sign_in": "登录",
+            "sign_in_with": "使用登录"
+        }
+    },
+    "home": {
+        "title": "为您的企业提供全方位数字化解决方案",
+        "service": "选择我们的服务, 成为顶尖1%",
+        "recommended_services": "推荐服务"
+    },
+    "re_use": {
+        "coming_soon": "敬请期待"
+    }
+}
