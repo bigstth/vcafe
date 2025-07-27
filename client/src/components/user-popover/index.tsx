@@ -10,7 +10,7 @@ import './styles.css'
 import { useAuth } from '@/contexts/auth-provider'
 
 const UserPopOver = () => {
-    const t = useTranslations('navbar')
+    const t = useTranslations()
 
     const { user, signOut, isLoading } = useAuth()
 
@@ -30,7 +30,10 @@ const UserPopOver = () => {
                 </Button>
             </PopoverTrigger>
             <PopoverContent className="mt-1 mr-2 flex flex-col gap-2">
-                <Button onClick={() => signOut()}>Sign out</Button>
+                <Button>{t('re_use.my_profile')}</Button>
+                <Button onClick={() => signOut()} variant="outline">
+                    {t('re_use.actions.sign_out')}
+                </Button>
             </PopoverContent>
         </Popover>
     )

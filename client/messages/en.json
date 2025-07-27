@@ -17,6 +17,7 @@
         "display_name": "Display Name",
         "birthday": "Birthday",
         "avatar_image": "Avatar Image",
+        "my_profile": "My Profile",
         "actions": {
             "sign_in": "Sign In",
             "sign_out": "Sign Out",

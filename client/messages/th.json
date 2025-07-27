@@ -16,6 +16,7 @@
         "password": "รหัสผ่าน",
         "display_name": "ชื่อที่แสดง",
         "avatar_image": "รูปโปรไฟล์",
+        "my_profile": "โปรไฟล์ของฉัน",
         "actions": {
             "sign_in": "เข้าสู่ระบบ",
             "sign_out": "ออกจากระบบ",
@@ -25,7 +26,8 @@
     },
     "features": {
         "update_user": {
-            "title": "กรุณาอัปเดตโปรไฟล์ของคุณ"
+            "title": "กรุณาอัปเดตโปรไฟล์ของคุณ",
+            "welcome": "ยินดีต้อนรับสู่ VCafe!"
         }
     },
     "home": {

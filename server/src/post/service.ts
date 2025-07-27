@@ -243,7 +243,13 @@ const uploadPostImages = async (
 
             if (fileSize > MAX_FILE_SIZE) {
                 throw new Error(
-                    `Image ${i + 1} exceeds maximum file size of 10MB (current size: ${(fileSize / 1024 / 1024).toFixed(2)}MB)`
+                    `Image ${
+                        i + 1
+                    } exceeds maximum file size of 10MB (current size: ${(
+                        fileSize /
+                        1024 /
+                        1024
+                    ).toFixed(2)}MB)`
                 )
             }
 

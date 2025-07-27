@@ -5,13 +5,21 @@ import {
     getUserRepository,
     updateUserRepository,
 } from './repository'
-import { userNotFoundError } from './errors'
+import {
+    setPasswordError,
+    updateUserError,
+    uploadAvatarError,
+    userAlreadyExistsError,
+    userNotFoundError,
+} from './errors'
 import { auth } from '@server/lib/auth'
 import type { Context } from 'hono'
 import { AppError } from '@server/lib/error'
 import { noPostFoundError } from '@server/post/errors'
 import { mapImageUrls } from '@server/lib/map-image-urls'
 import { CustomLogger } from '@server/lib/custom-logger'
+import supabaseAdmin from '@server/db/supabase-instance'
+import { mapImageUrl } from '@server/lib/format-image-url'
 
 export const getMeService = async (c: Context) => {
     const user = c.get('user')
@@ -30,7 +38,11 @@ export const getMeService = async (c: Context) => {
         providerAccountId: account.id,
     }))
 
-    return { ...userInfo, linkedProviders }
+    return {
+        ...userInfo,
+        image: mapImageUrl(userInfo?.image as string, 'user'),
+        linkedProviders,
+    }
 }
 
 export const getUserService = async (id: string) => {
@@ -76,6 +88,7 @@ export const getUserPostsService = async (c: Context) => {
 }
 
 export const registerService = async (c: Context) => {
+    let uploadResult
     const formData = c.get('validatedFormData')
 
     const user = c.get('user')
@@ -93,26 +106,24 @@ export const registerService = async (c: Context) => {
         })
     } catch (error) {
         CustomLogger.error(`Error setting password for user ${user.id}`, error)
-        throw new AppError({
-            statusName: 'validation_error',
-            en: 'Failed to set password',
-            th: 'ไม่สามารถตั้งรหัสผ่านได้',
-            status: 400,
-        })
+        throw new AppError(setPasswordError)
+    }
+
+    if (formData.image) {
+        uploadResult = await uploadAvatarImage(formData.image, user.id)
+        if (!uploadResult) {
+            throw new AppError(uploadAvatarError)
+        }
     }
 
     const result = await updateUserRepository(user.id, {
         username: formData.username,
         displayUsername: formData.displayUsername,
+        image: uploadResult?.path || null,
     })
 
     if (!result) {
-        throw new AppError({
-            statusName: 'internal_error',
-            en: 'Failed to update user information',
-            th: 'ไม่สามารถอัปเดตข้อมูลผู้ใช้ได้',
-            status: 500,
-        })
+        throw new AppError(updateUserError)
     }
 
     return result
@@ -121,11 +132,60 @@ export const registerService = async (c: Context) => {
 const checkDuplicateUsername = async (username: string, userId: string) => {
     const existingUser = await getUserByUsernameRepository(username)
     if (existingUser?.id && existingUser.id !== userId) {
-        throw new AppError({
-            statusName: 'validation_error',
-            en: 'Username already exists',
-            th: 'ชื่อผู้ใช้มีอยู่แล้ว',
-            status: 400,
-        })
+        throw new AppError(userAlreadyExistsError)
+    }
+}
+
+const uploadAvatarImage = async (image: File, userId: string) => {
+    const MAX_FILE_SIZE = 5 * 1024 * 1024
+    try {
+        if (!image) {
+            throw new Error(`Image is undefined`)
+        }
+
+        let fileSize: number
+        if (typeof Buffer !== 'undefined' && image instanceof Buffer) {
+            fileSize = image.length
+        } else if (image instanceof File) {
+            fileSize = image.size
+        } else {
+            throw new Error(`Invalid image format`)
+        }
+
+        if (fileSize > MAX_FILE_SIZE) {
+            throw new Error(
+                `Image exceeds maximum file size of 5MB (current size: ${(
+                    fileSize /
+                    1024 /
+                    1024
+                ).toFixed(2)}MB)`
+            )
+        }
+
+        const imagePath = userId
+        let uploadBody: File | Uint8Array
+        if (typeof Buffer !== 'undefined' && image instanceof Buffer) {
+            uploadBody = new Uint8Array(image)
+        } else {
+            uploadBody = image as File
+        }
+
+        const { data: uploadData } = await supabaseAdmin.storage
+            .from('vcafe-user')
+            .upload(imagePath, uploadBody, {
+                cacheControl: '3600',
+                upsert: true,
+                metadata: {
+                    uploadedBy: userId,
+                },
+            })
+        console.log(uploadData, 'uploadDatauploadData')
+        return uploadData
+    } catch (error) {
+        CustomLogger.error(
+            `Error uploading avatar image for user ${userId}`,
+            error
+        )
+        return undefined
     }
 }

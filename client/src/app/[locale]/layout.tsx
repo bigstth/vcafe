@@ -41,7 +41,21 @@ export default async function RootLayout({
                         <QueryProvider>
                             <AuthProvider>
                                 {children}
-                                <Toaster position="top-center" richColors />
+                                <Toaster
+                                    position="top-center"
+                                    toastOptions={{
+                                        unstyled: true,
+                                        classNames: {
+                                            default:
+                                                'bg-background/90 border !text-foreground rounded-lg py-2 px-4 shadow-lg text-white w-96 flex gap-4 items-center',
+                                            success:
+                                                'bg-primary/90 border !text-foreground rounded-lg py-2 px-4 shadow-lg text-white w-96 flex gap-4 items-center',
+                                            warning:
+                                                'bg-secondary/90 border !text-foreground rounded-lg py-2 px-4 shadow-lg text-white w-96 flex gap-4 items-center',
+                                            error: 'bg-destructive/90 border !text-foreground rounded-lg py-2 px-4 shadow-lg text-white w-96 flex gap-4 items-center',
+                                        },
+                                    }}
+                                />
                                 <UpdateUserInfoDialog />
                             </AuthProvider>
                         </QueryProvider>

@@ -17,6 +17,7 @@
         "display_name": "显示名称",
         "birthday": "生日",
         "avatar_image": "头像图片",
+        "my_profile": "我的个人资料",
         "actions": {
             "sign_in": "登录",
             "sign_out": "登出",
@@ -26,7 +27,8 @@
     },
     "features": {
         "update_user": {
-            "title": "请更新您的个人资料"
+            "title": "请更新您的个人资料",
+            "welcome": "欢迎来到 VCafe！"
         }
     },
     "home": {
