@@ -44,3 +44,5 @@ export const userInfoFormSchema = z.object({
             'Password must contain at least one special character (@$!%*#?&)'
         ),
 })
+
+export type UserInfoFormValues = z.infer<typeof userInfoFormSchema>

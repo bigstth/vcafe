@@ -13,7 +13,7 @@ const UserPopOver = () => {
     const t = useTranslations('navbar')
 
     const { user, signOut, isLoading } = useAuth()
-    console.log(user?.image, 'user?.image')
+
     return (
         <Popover>
             <PopoverTrigger asChild className="login-popover-trigger">

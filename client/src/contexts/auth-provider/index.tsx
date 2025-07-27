@@ -1,9 +1,9 @@
 'use client'
 
-import { api } from '@/lib/api-instance'
 import { authClient } from '@/lib/auth-client'
 import type { UserProfile } from '@/types/user.type'
 import React, { createContext, useContext, useEffect } from 'react'
+import { useGetMe } from './use-get-me'
 
 interface AuthContextType {
     user: UserProfile | null
@@ -15,6 +15,7 @@ interface AuthContextType {
             callbackURL?: string
         }) => Promise<void>
     }
+    refreshUserData: () => void
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -22,25 +23,21 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [user, setUser] = React.useState<UserProfile | null>(null)
     const [isLoading, setIsLoading] = React.useState(false)
-    const { data: session, isPending, error } = authClient.useSession()
+    const { data: session, isPending } = authClient.useSession()
 
-    const getMe = async () => {
-        setIsLoading(true)
-        try {
-            const response = await api.user.me.$get()
-            if (response.ok) {
-                const user = await response.json()
-                setUser(user as any)
-            } else {
-                throw new Error('Failed to fetch user')
-            }
-        } catch (error) {
-            console.error('Failed to fetch user:', error)
-            setUser(null)
-        } finally {
-            setIsLoading(false)
+    const {
+        data: userData,
+        isFetching,
+        refetch: refreshUserData,
+    } = useGetMe({
+        enabled: !!session,
+    })
+
+    React.useEffect(() => {
+        if (userData) {
+            setUser(userData)
         }
-    }
+    }, [userData])
 
     const signOut = async () => {
         setIsLoading(true)
@@ -78,16 +75,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Better Auth automatically handles the session state
     const contextValue: AuthContextType = {
         user: user || null,
-        isLoading: isLoading || isPending,
+        isLoading: isLoading || isPending || isFetching,
         signOut,
         signIn,
+        refreshUserData,
     }
-
-    useEffect(() => {
-        if (session) {
-            getMe()
-        }
-    }, [session])
 
     return (
         <AuthContext.Provider value={contextValue}>

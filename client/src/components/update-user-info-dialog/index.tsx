@@ -24,12 +24,20 @@ import {
     FormLabel,
     FormMessage,
 } from '../ui/form'
+import { useUpdateUser } from './use-update-user'
+import { toast } from 'sonner'
 
 const UpdateUserInfoDialog = () => {
     const t = useTranslations()
-    const { user } = useAuth()
+    const { user, refreshUserData, signOut } = useAuth()
     const [showDialog, setShowDialog] = React.useState(false)
-
+    const { mutate: updateUserInfo, isPending: updating } = useUpdateUser({
+        onSuccess: () => {
+            refreshUserData()
+            setShowDialog(false)
+            toast.success(t('features.update_user.welcome'))
+        },
+    })
     const form = useForm<z.infer<typeof userInfoFormSchema>>({
         resolver: zodResolver(userInfoFormSchema),
         defaultValues: {
@@ -38,13 +46,13 @@ const UpdateUserInfoDialog = () => {
     })
 
     useEffect(() => {
-        if (!user?.username) {
+        if (user && !user?.username) {
             setShowDialog(true)
         }
     }, [user])
 
     const onSubmit = async (data: z.infer<typeof userInfoFormSchema>) => {
-        console.log(data, 'Form Data')
+        updateUserInfo(data)
     }
 
     return (
@@ -137,10 +145,18 @@ const UpdateUserInfoDialog = () => {
                                 )}
                             />
                             <DialogFooter className="flex !flex-row !justify-between">
-                                <Button variant="outline">
+                                <Button
+                                    variant="outline"
+                                    disabled={updating}
+                                    onClick={(e) => {
+                                        e.preventDefault()
+                                        setShowDialog(false)
+                                        signOut()
+                                    }}
+                                >
                                     {t('re_use.actions.sign_out')}
                                 </Button>
-                                <Button type="submit">
+                                <Button type="submit" disabled={updating}>
                                     {t('re_use.actions.confirm')}
                                 </Button>
                             </DialogFooter>

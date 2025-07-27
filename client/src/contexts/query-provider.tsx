@@ -1,0 +1,20 @@
+'use client'
+import React from 'react'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { useGlobalError } from '@/hooks/use-global-error'
+
+const QueryProvider = ({ children }: { children: React.ReactNode }) => {
+    const queryClient = new QueryClient()
+
+    useGlobalError()
+
+    return (
+        <QueryClientProvider client={queryClient}>
+            {children}
+            <ReactQueryDevtools initialIsOpen={false} />
+        </QueryClientProvider>
+    )
+}
+
+export default QueryProvider

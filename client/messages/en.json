@@ -26,7 +26,8 @@
     },
     "features": {
         "update_user": {
-            "title": "Please update your profile."
+            "title": "Please update your profile.",
+            "welcome": "Welcome to VCafe!"
         }
     },
     "home": {
