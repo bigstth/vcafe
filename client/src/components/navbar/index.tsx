@@ -23,6 +23,8 @@ import { cn } from '@/lib/utils'
 import type { HomeIconHandle } from '@/components/ui/home'
 import LoginFormPopover from '../login-form-popover'
 import { useIconAnimation } from '@/hooks/use-icon-animation'
+import { useAuth } from '@/contexts/auth-provider'
+import UserPopOver from '../user-popover'
 
 const Navbar = () => {
     const router = useRouter()
@@ -30,8 +32,12 @@ const Navbar = () => {
     const locale = useLocale()
     const t = useTranslations('navbar')
     const { theme, toggleTheme } = useTheme()
+    const { user, isLoading } = useAuth()
+
     const [open, setOpen] = useState(false)
+
     const menuRef = useRef<HTMLDivElement>(null)
+
     const { iconRefs, handleIconHover, handleIconLeave } = useIconAnimation()
 
     const isActive = (href: string) => {
@@ -111,7 +117,7 @@ const Navbar = () => {
                         <NavigationMenuLink
                             key={item.href}
                             asChild
-                            className="w-full h-full"
+                            className="w-full h-full min-h-[60px] -translate-y-[10px] hover:translate-y-[-8px]"
                         >
                             <Link
                                 href={item.href}
@@ -132,13 +138,17 @@ const Navbar = () => {
                                         iconRefs.current[item.href] = ref
                                     },
                                     size: 20,
-                                    className: `[&>svg]:size-5! ${isActive(item.href) ? ' [&>svg]:text-primary!' : ' [&>svg]:text-primary-foreground!'}`,
+                                    className: `[&>svg]:size-5! ${
+                                        isActive(item.href)
+                                            ? ' [&>svg]:text-primary!'
+                                            : ' [&>svg]:text-primary-foreground!'
+                                    }`,
                                 })}
                             </Link>
                         </NavigationMenuLink>
                     ))}
                 </div>
-                <LoginFormPopover />
+                {!user && !isLoading ? <LoginFormPopover /> : <UserPopOver />}
                 {/* <div className="flex gap-2 items-center">
                     <Button
                         variant="ghost"
@@ -175,10 +185,18 @@ const Navbar = () => {
                                 <NavigationMenuLink key={item.href} asChild>
                                     <Link
                                         href={item.href}
-                                        className={`flex gap-2 items-center flex-row px-4 py-2 text-sm font-medium border-1 mb-2 hover:bg-accent/50 transition-all duration-200 ${isActive(item.href) ? 'border-primary text-primary' : ''}`}
+                                        className={`flex gap-2 items-center flex-row px-4 py-2 text-sm font-medium border-1 mb-2 hover:bg-accent/50 transition-all duration-200 ${
+                                            isActive(item.href)
+                                                ? 'border-primary text-primary'
+                                                : ''
+                                        }`}
                                     >
                                         {React.cloneElement(item.icon, {
-                                            className: `[&>svg]:size-5! ${isActive(item.href) ? ' [&>svg]:text-primary!' : ' [&>svg]:text-primary-foreground!'}`,
+                                            className: `[&>svg]:size-5! ${
+                                                isActive(item.href)
+                                                    ? ' [&>svg]:text-primary!'
+                                                    : ' [&>svg]:text-primary-foreground!'
+                                            }`,
                                         })}
                                         {t(item.key)}
                                     </Link>

@@ -2,8 +2,10 @@ import '../globals.css'
 import { NextIntlClientProvider, hasLocale } from 'next-intl'
 import { routing } from '@/i18n/routing'
 import { notFound } from 'next/navigation'
-import { ThemeProvider } from '@/components/ThemeProvider'
 import { getTranslations } from 'next-intl/server'
+import { AuthProvider } from '@/contexts/auth-provider'
+import { ThemeProvider } from '@/contexts/theme-provider'
+import UpdateUserInfoDialog from '@/components/update-user-info-dialog'
 
 export const metadata = async ({ params }: { params: { locale: string } }) => {
     const t = await getTranslations({
@@ -31,9 +33,14 @@ export default async function RootLayout({
         <html lang={locale}>
             <head></head>
             <body className="antialiased">
-                <ThemeProvider>
-                    <NextIntlClientProvider>{children}</NextIntlClientProvider>
-                </ThemeProvider>
+                <NextIntlClientProvider>
+                    <ThemeProvider>
+                        <AuthProvider>
+                            {children}
+                            <UpdateUserInfoDialog />
+                        </AuthProvider>
+                    </ThemeProvider>
+                </NextIntlClientProvider>
             </body>
         </html>
     )

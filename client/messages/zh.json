@@ -7,16 +7,31 @@
         "home": "首页",
         "marketplace": "市场",
         "actions": {
-            "sign_in": "登录",
             "sign_in_with": "使用登录"
+        }
+    },
+    "re_use": {
+        "coming_soon": "敬请期待",
+        "username": "用户名",
+        "password": "密码",
+        "display_name": "显示名称",
+        "birthday": "生日",
+        "avatar_image": "头像图片",
+        "actions": {
+            "sign_in": "登录",
+            "sign_out": "登出",
+            "confirm": "确认",
+            "cancel": "取消"
+        }
+    },
+    "features": {
+        "update_user": {
+            "title": "请更新您的个人资料"
         }
     },
     "home": {
         "title": "为您的企业提供全方位数字化解决方案",
         "service": "选择我们的服务, 成为顶尖1%",
         "recommended_services": "推荐服务"
-    },
-    "re_use": {
-        "coming_soon": "敬请期待"
     }
 }

@@ -7,16 +7,30 @@
         "home": "หน้าหลัก",
         "marketplace": "มาร์เก็ตเพลส",
         "actions": {
-            "sign_in": "เข้าสู่ระบบ",
             "sign_in_with": "เข้าสู่ระบบด้วย"
+        }
+    },
+    "re_use": {
+        "coming_soon": "พบกันเร็วๆ นี้",
+        "username": "ชื่อผู้ใช้",
+        "password": "รหัสผ่าน",
+        "display_name": "ชื่อที่แสดง",
+        "avatar_image": "รูปโปรไฟล์",
+        "actions": {
+            "sign_in": "เข้าสู่ระบบ",
+            "sign_out": "ออกจากระบบ",
+            "confirm": "ยืนยัน",
+            "cancel": "ยกเลิก"
+        }
+    },
+    "features": {
+        "update_user": {
+            "title": "กรุณาอัปเดตโปรไฟล์ของคุณ"
         }
     },
     "home": {
         "title": "ระบบครบวงจร เพื่อธุรกิจออนไลน์ของคุณ",
         "service": "มุ่งสู่การเป็นหัวแถว ท็อป 1% ด้วยบริการของเรา",
         "recommended_services": "บริการแนะนำ"
-    },
-    "re_use": {
-        "coming_soon": "พบกันเร็วๆ นี้"
     }
 }

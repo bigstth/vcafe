@@ -7,16 +7,31 @@
         "home": "Home",
         "marketplace": "Marketplace",
         "actions": {
-            "sign_in": "Sign In",
             "sign_in_with": "Sign In with"
+        }
+    },
+    "re_use": {
+        "coming_soon": "Coming Soon",
+        "username": "Username",
+        "password": "Password",
+        "display_name": "Display Name",
+        "birthday": "Birthday",
+        "avatar_image": "Avatar Image",
+        "actions": {
+            "sign_in": "Sign In",
+            "sign_out": "Sign Out",
+            "confirm": "Confirm",
+            "cancel": "Cancel"
+        }
+    },
+    "features": {
+        "update_user": {
+            "title": "Please update your profile."
         }
     },
     "home": {
         "title": "Full-loop digital solutions for your business",
         "service": "Be the top 1% by choosing our services",
         "recommended_services": "Recommended Services"
-    },
-    "re_use": {
-        "coming_soon": "Coming Soon"
     }
 }
