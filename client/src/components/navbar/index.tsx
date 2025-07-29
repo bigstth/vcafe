@@ -4,7 +4,7 @@ import {
     NavigationMenuLink,
 } from '@/components/ui/navigation-menu'
 import { Button } from '../ui/button'
-import { Menu, MoonStar, Sun } from 'lucide-react'
+import { Globe, Menu, MoonStar, Sun } from 'lucide-react'
 import { usePathname, useRouter } from 'next/navigation'
 import { useLocale, useTranslations } from 'next-intl'
 import { NAVBAR_CONFIG } from '@/lib/config'
@@ -25,6 +25,7 @@ import LoginFormPopover from '../login-form-popover'
 import { useIconAnimation } from '@/hooks/use-icon-animation'
 import { useAuth } from '@/contexts/auth-provider'
 import UserPopOver from '../user-popover'
+import { useChangeLocale } from '@/lib/change-locale'
 
 const Navbar = () => {
     const router = useRouter()
@@ -49,16 +50,7 @@ const Navbar = () => {
         )
     }
 
-    const handleChangeLocale = (newLocale: string) => {
-        const segments = pathname.split('/')
-        if (segments[1] && segments[1].length === 2) {
-            segments[1] = newLocale
-        } else {
-            segments.splice(1, 0, newLocale)
-        }
-        const newPath = segments.join('/') || '/'
-        router.push(newPath)
-    }
+    const { changeLocale } = useChangeLocale()
 
     useEffect(() => {
         setOpen(false)
@@ -148,28 +140,24 @@ const Navbar = () => {
                         </NavigationMenuLink>
                     ))}
                 </div>
+                <Button
+                    variant="ghost"
+                    className={cn(
+                        'group min-h-[60px] -translate-y-[4px] hover:translate-y-[-2px] px-3 py-1 flex items-center text-xs justify-center rounded-b-2xl rounded-t-none transition-all duration-200 border-1 border-t-0'
+                    )}
+                    onClick={() => changeLocale(locale === 'th' ? 'en' : 'th')}
+                >
+                    <div className="relative w-6 h-6 flex items-center justify-center overflow-hidden">
+                        <Globe
+                            size={20}
+                            className="absolute transition-all duration-300 ease-in-out group-hover:opacity-0 group-hover:scale-75 group-hover:rotate-12 mt-1"
+                        />
+                        <span className="absolute text-xs font-semibold transition-all duration-300 ease-in-out opacity-0 scale-75 -rotate-12 group-hover:opacity-100 group-hover:scale-100 group-hover:rotate-0">
+                            {locale === 'th' ? 'TH' : 'EN'}
+                        </span>
+                    </div>
+                </Button>
                 {!user && !isLoading ? <LoginFormPopover /> : <UserPopOver />}
-                {/* <div className="flex gap-2 items-center">
-                    <Button
-                        variant="ghost"
-                        className="cursor-pointer"
-                        onClick={toggleTheme}
-                    >
-                        {theme === 'dark' ? <MoonStar /> : <Sun />}
-                    </Button>
-                    <Select value={locale} onValueChange={handleChangeLocale}>
-                        <SelectTrigger className="w-[70px]" size="sm">
-                            <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {['en', 'th', 'zh'].map((l) => (
-                                <SelectItem key={l} value={l}>
-                                    {l.toUpperCase()}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                </div> */}
             </NavigationMenu>
             {open && (
                 <div
@@ -211,21 +199,13 @@ const Navbar = () => {
                             >
                                 {theme === 'dark' ? <MoonStar /> : <Sun />}
                             </Button>
-                            <Select
-                                value={locale}
-                                onValueChange={handleChangeLocale}
+                            <Button
+                                onClick={() =>
+                                    changeLocale(locale === 'th' ? 'en' : 'th')
+                                }
                             >
-                                <SelectTrigger className="w-[70px]" size="sm">
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {['en', 'th', 'zh'].map((l) => (
-                                        <SelectItem key={l} value={l}>
-                                            {l.toUpperCase()}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                                {locale === 'th' ? 'TH' : 'EN'}
+                            </Button>
                         </div>
                     </NavigationMenu>
                 </div>

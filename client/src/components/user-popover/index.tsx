@@ -3,17 +3,15 @@ import React from 'react'
 import { Popover, PopoverTrigger, PopoverContent } from '../ui/popover'
 import { useTranslations } from 'next-intl'
 import { Button } from '../ui/button'
+import { useAuth } from '@/contexts/auth-provider'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
 import './styles.css'
-import { useAuth } from '@/contexts/auth-provider'
 
 const UserPopOver = () => {
     const t = useTranslations()
-
     const { user, signOut, isLoading } = useAuth()
-
     return (
         <Popover>
             <PopoverTrigger asChild className="login-popover-trigger">
