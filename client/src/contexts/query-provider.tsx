@@ -5,7 +5,18 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useGlobalError } from '@/hooks/use-global-error'
 
 const QueryProvider = ({ children }: { children: React.ReactNode }) => {
-    const queryClient = new QueryClient()
+    const [queryClient] = React.useState(
+        () =>
+            new QueryClient({
+                defaultOptions: {
+                    queries: {
+                        staleTime: 0,
+                        refetchOnWindowFocus: false,
+                        retry: false,
+                    },
+                },
+            })
+    )
 
     useGlobalError()
 

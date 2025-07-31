@@ -29,6 +29,23 @@
         "update_user": {
             "title": "Please update your profile.",
             "welcome": "Welcome to VCafe!"
+        },
+        "feed": {
+            "post_placeholder": "What's on your mind?",
+            "post_button": "Post",
+            "loading_posts": "Loading posts...",
+            "no_posts": "No posts available.",
+            "creating_post": "Creating post...",
+            "post_created": "Post created :)",
+            "post_create_error": "Error creating post :(",
+            "action": {
+                "public": "Public",
+                "follower_only": "Followers Only",
+                "membership_only": "Members Only"
+            },
+            "errors": {
+                "max_images": "Maximum {max} images allowed"
+            }
         }
     },
     "home": {

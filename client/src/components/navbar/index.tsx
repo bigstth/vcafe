@@ -12,13 +12,6 @@ import { useTheme } from '@/hooks/use-theme'
 import React, { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import { Link } from '@/i18n/navigation'
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '../ui/select'
 import { cn } from '@/lib/utils'
 import type { HomeIconHandle } from '@/components/ui/home'
 import LoginFormPopover from '../login-form-popover'
