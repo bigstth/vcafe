@@ -10,15 +10,15 @@ const PostCard = ({ post }: { post: PostItem }) => {
     return (
         <Card>
             <CardContent>
-                <div className="flex items-start gap-4">
+                <div className="flex items-start gap-4 w-full">
                     <Avatar className="[&>svg]:size-5! w-10 h-10">
                         <AvatarImage src={post?.author?.image || undefined} />
                         <AvatarFallback>
                             {post?.author?.username?.[0] || 'Hi'}
                         </AvatarFallback>
                     </Avatar>
-                    <div className="flex flex-col gap-4">
-                        <div className='className="flex flex-col"'>
+                    <div className="flex-1 flex flex-col gap-4 min-w-0">
+                        <div>
                             <Link href={`/profile/${post.author.username}`}>
                                 <span className="font-semibold">
                                     {post.author.displayUsername ||
@@ -38,9 +38,9 @@ const PostCard = ({ post }: { post: PostItem }) => {
                                 </span>
                             </Link>
                         </div>
-                        <p className="text-sm text-muted-foreground">
+                        <pre className="whitespace-pre-wrap break-words">
                             {post.content}
-                        </p>
+                        </pre>
                         {renderImages(post)}
                     </div>
                 </div>
