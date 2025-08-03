@@ -18,23 +18,26 @@ const PostCard = ({ post }: { post: PostItem }) => {
                         </AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col gap-4">
-                        <Link
-                            href={`/profile/${post.author.username}`}
-                            className="flex flex-col"
-                        >
-                            <h2 className="font-semibold">
-                                {post.author.displayUsername ||
-                                    post.author.username}
+                        <div className='className="flex flex-col"'>
+                            <Link href={`/profile/${post.author.username}`}>
+                                <span className="font-semibold">
+                                    {post.author.displayUsername ||
+                                        post.author.username}
+                                </span>
                                 <span className="text-foreground/50 font-medium">
                                     {` @${post.author.username}`}
                                 </span>
+                            </Link>
 
+                            <Link
+                                href={`${post.author.username}/posts/${post.id}`}
+                            >
                                 <span className="text-foreground/50 font-medium">
                                     {` `}·{' '}
                                     {getTimeAgo(new Date(post.createdAt))}
                                 </span>
-                            </h2>
-                        </Link>
+                            </Link>
+                        </div>
                         <p className="text-sm text-muted-foreground">
                             {post.content}
                         </p>
