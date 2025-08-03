@@ -40,6 +40,7 @@ export const getPostsWithImagesRepository = async (
                     id: true,
                     name: true,
                     username: true,
+                    displayUsername: true,
                     image: true,
                 },
             },

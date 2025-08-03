@@ -1,38 +1,29 @@
 'use client'
-import React from 'react'
+import React, { useState } from 'react'
 import { useGetPosts } from './use-get-post'
 import CreatePostComponent from './components/create-post'
+import PostCard from './components/post-card'
+import PostSkeleton from './components/post-card/post-skeleton'
 
 const Feed = () => {
-    const { data: posts, isFetching } = useGetPosts({ offset: 0 })
-    console.log(posts, 'posts')
+    const [pagination, setPagination] = useState({ offset: 0, limit: 10 })
+    const { data: posts, isFetching } = useGetPosts(pagination)
+
     return (
         <div className="w-full max-w-[600px]">
             <CreatePostComponent />
 
-            <div className="mt-4">
-                {posts?.posts.map((post: any) => (
-                    <div key={post.id} className="p-4 border-1 rounded-lg mb-4">
-                        <h2 className="text-lg font-semibold">
-                            {post.author.name}
-                        </h2>
-                        <p className="text-sm text-muted-foreground">
-                            {post.content}
-                        </p>
-                        {post.images && post.images.length > 0 && (
-                            <div className="mt-2">
-                                {post.images.map((image: any) => (
-                                    <img
-                                        key={image.url}
-                                        src={image.url}
-                                        alt={image.alt}
-                                        className="w-20 h-auto rounded-md"
-                                    />
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                ))}
+            <div className="mt-8 flex flex-col gap-4">
+                {isFetching ? (
+                    <>
+                        <PostSkeleton />
+                        <PostSkeleton />
+                    </>
+                ) : (
+                    posts?.posts.map((post) => (
+                        <PostCard key={post.id} post={post} />
+                    ))
+                )}
             </div>
         </div>
     )

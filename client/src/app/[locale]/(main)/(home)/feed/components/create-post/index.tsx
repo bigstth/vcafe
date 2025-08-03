@@ -5,10 +5,10 @@ import { useAuth } from '@/contexts/auth-provider'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Avatar, AvatarImage, AvatarFallback } from '@radix-ui/react-avatar'
 import { Check, ImagePlus, X } from 'lucide-react'
-import { useTranslations } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import React, { useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { postSchema, type PostSchemaType } from '../types'
+import { postSchema, type PostSchemaType } from './types'
 import { FormField, FormItem, FormControl, Form } from '@/components/ui/form'
 import Image from 'next/image'
 import { useGlobalErrorStore } from '@/store/global-error'
@@ -22,12 +22,17 @@ import { MAX_IMAGES, VISIBILITY_OPTIONS } from './constants'
 import { cn } from '@/lib/utils'
 import { useCreatePost } from './use-create-post'
 import { toast } from 'sonner'
+import { useFormatError, type ErrorResponse } from '@/hooks/use-format-error'
 
 const CreatePostComponent = () => {
     const t = useTranslations('features.feed')
+    const locale = useLocale()
     const { user } = useAuth()
     const { setError } = useGlobalErrorStore()
+    const { formatErrorMessage } = useFormatError()
+
     const fileInputRef = useRef<HTMLInputElement>(null)
+
     const [isVisibilityOpen, setIsVisibilityOpen] = useState(false)
 
     const form = useForm({
@@ -45,16 +50,16 @@ const CreatePostComponent = () => {
             form.reset()
             setIsVisibilityOpen(false)
         },
+        onError: async (error: ErrorResponse) => {
+            const errorObj = await error
+            setError(formatErrorMessage(errorObj))
+        },
     })
 
     const onSubmit = (data: PostSchemaType) => {
         toast.promise(createPost(data), {
             loading: t('creating_post'),
             success: t('post_created'),
-            error: (error) => {
-                setError(error.message)
-                return t('post_create_error')
-            },
         })
     }
 

@@ -27,7 +27,7 @@ import { posts, postImages } from '@server/db/feed-schema'
 import { v4 as uuidv4 } from 'uuid'
 import supabaseAdmin from '@server/db/supabase-instance'
 import { AppError } from '@server/lib/error'
-import { mapImageUrls } from '@server/lib/map-image-urls'
+import { formatAvatarImageUrl, mapImageUrls } from '@server/lib/map-image-urls'
 
 interface CreatePostWithImagesData {
     userId: string
@@ -45,6 +45,10 @@ export const getPostsService = async (options: GetPostsOptions) => {
 
     const postsWithImageUrls = result.posts.map((post) => ({
         ...post,
+        author: {
+            ...post.author,
+            image: formatAvatarImageUrl(post.author.id),
+        },
         images: mapImageUrls(post.images),
     }))
 

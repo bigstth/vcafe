@@ -17,17 +17,41 @@
         "display_name": "ชื่อที่แสดง",
         "avatar_image": "รูปโปรไฟล์",
         "my_profile": "โปรไฟล์ของฉัน",
+        "just_now": "เมื่อสักครู่",
+        "m": "{count} นาทีที่แล้ว",
+        "h": "{count} ชั่วโมงที่แล้ว",
+        "d": "{count} วันที่แล้ว",
         "actions": {
             "sign_in": "เข้าสู่ระบบ",
             "sign_out": "ออกจากระบบ",
             "confirm": "ยืนยัน",
             "cancel": "ยกเลิก"
+        },
+        "errors": {
+            "something_went_wrong": "เกิดข้อผิดพลาดบางอย่าง กรุณาลองอีกครั้ง"
         }
     },
     "features": {
         "update_user": {
             "title": "กรุณาอัปเดตโปรไฟล์ของคุณ",
             "welcome": "ยินดีต้อนรับสู่ VCafe!"
+        },
+        "feed": {
+            "post_placeholder": "เล่าอะไรให้ฟังหน่อย?",
+            "post_button": "โพสต์",
+            "loading_posts": "กำลังโหลดโพสต์...",
+            "no_posts": "ไม่มีโพสต์",
+            "creating_post": "กำลังสร้างโพสต์...",
+            "post_created": "โพสต์ถูกสร้างแล้ว :)",
+            "post_create_error": "เกิดข้อผิดพลาดในการสร้างโพสต์ :(",
+            "action": {
+                "public": "สาธารณะ",
+                "follower_only": "เฉพาะผู้ติดตาม",
+                "membership_only": "เฉพาะสมาชิก"
+            },
+            "errors": {
+                "max_images": "ขออภัย คุณสามารถอัปโหลดได้สูงสุด {max} รูป"
+            }
         }
     },
     "home": {

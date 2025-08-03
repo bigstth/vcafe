@@ -18,11 +18,18 @@
         "birthday": "Birthday",
         "avatar_image": "Avatar Image",
         "my_profile": "My Profile",
+        "just_now": "Just now",
+        "m": "{count}m",
+        "h": "{count}h",
+        "d": "{count}d",
         "actions": {
             "sign_in": "Sign In",
             "sign_out": "Sign Out",
             "confirm": "Confirm",
             "cancel": "Cancel"
+        },
+        "errors": {
+            "something_went_wrong": "Something went wrong, please try again."
         }
     },
     "features": {
