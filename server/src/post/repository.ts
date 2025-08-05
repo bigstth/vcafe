@@ -38,7 +38,6 @@ export const getPostsWithImagesRepository = async (
             author: {
                 columns: {
                     id: true,
-                    name: true,
                     username: true,
                     displayUsername: true,
                     image: true,
@@ -53,7 +52,6 @@ export const getPostsWithImagesRepository = async (
                     author: {
                         columns: {
                             id: true,
-                            name: true,
                             username: true,
                             image: true,
                         },
@@ -113,7 +111,6 @@ export const getUserArchivedPostsRepository = async (
             author: {
                 columns: {
                     id: true,
-                    name: true,
                     username: true,
                     image: true,
                 },
@@ -169,7 +166,6 @@ export const getUserDeletedPostsRepository = async (
             author: {
                 columns: {
                     id: true,
-                    name: true,
                     username: true,
                     image: true,
                 },
@@ -209,7 +205,7 @@ export const getDeletedPostsRepository = async (
             author: {
                 columns: {
                     id: true,
-                    name: true,
+                    displayUsername: true,
                     username: true,
                     image: true,
                 },
@@ -251,6 +247,7 @@ export const getPostRepository = async (id: string) => {
                     },
                 },
             },
+            likes: true,
         },
     })
 }

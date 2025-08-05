@@ -3,10 +3,11 @@ import type { PostItem } from '../../types'
 import { Card, CardContent } from '@/components/ui/card'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import Link from 'next/link'
-import { getTimeAgo } from '@/lib/get-time-ago'
 import { renderImages } from './image-render'
+import { useTimeAgo } from '@/hooks/use-get-time-ago'
 
 const PostCard = ({ post }: { post: PostItem }) => {
+    const getTimeAgo = useTimeAgo()
     return (
         <Card>
             <CardContent>
@@ -19,27 +20,27 @@ const PostCard = ({ post }: { post: PostItem }) => {
                     </Avatar>
                     <div className="flex-1 flex flex-col gap-4 min-w-0">
                         <div>
-                            <Link href={`/profile/${post.author.username}`}>
+                            <Link href={`/${post?.author.username}`}>
                                 <span className="font-semibold">
-                                    {post.author.displayUsername ||
-                                        post.author.username}
+                                    {post?.author.displayUsername ||
+                                        post?.author.username}
                                 </span>
                                 <span className="text-foreground/50 font-medium">
-                                    {` @${post.author.username}`}
+                                    {` @${post?.author.username}`}
                                 </span>
                             </Link>
 
                             <Link
-                                href={`${post.author.username}/posts/${post.id}`}
+                                href={`${post?.author.username}/posts/${post?.id}`}
                             >
                                 <span className="text-foreground/50 font-medium">
                                     {` `}·{' '}
-                                    {getTimeAgo(new Date(post.createdAt))}
+                                    {getTimeAgo(new Date(post?.createdAt))}
                                 </span>
                             </Link>
                         </div>
                         <pre className="whitespace-pre-wrap break-words">
-                            {post.content}
+                            {post?.content}
                         </pre>
                         {renderImages(post)}
                     </div>

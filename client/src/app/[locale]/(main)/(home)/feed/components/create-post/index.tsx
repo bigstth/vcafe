@@ -5,7 +5,7 @@ import { useAuth } from '@/contexts/auth-provider'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Avatar, AvatarImage, AvatarFallback } from '@radix-ui/react-avatar'
 import { Check, ImagePlus, X } from 'lucide-react'
-import { useLocale, useTranslations } from 'next-intl'
+import { useTranslations } from 'next-intl'
 import React, { useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { postSchema, type PostSchemaType } from './types'
@@ -26,7 +26,6 @@ import { useFormatError, type ErrorResponse } from '@/hooks/use-format-error'
 
 const CreatePostComponent = () => {
     const t = useTranslations('features.feed')
-    const locale = useLocale()
     const { user } = useAuth()
     const { setError } = useGlobalErrorStore()
     const { formatErrorMessage } = useFormatError()

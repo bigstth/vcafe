@@ -67,7 +67,14 @@ export const getPostService = async (id: string) => {
 
     const formattedImgUrls = mapImageUrls(post.images)
 
-    return { ...post, images: formattedImgUrls }
+    return {
+        ...post,
+        author: {
+            ...post.author,
+            image: formatAvatarImageUrl(post.author.id),
+        },
+        images: formattedImgUrls,
+    }
 }
 
 export const createPostWithImagesService = async (

@@ -9,7 +9,7 @@ export default function MainLayout({
     return (
         <>
             <Navbar />
-            <main>{children}</main>
+            <main className="px-5 py-4">{children}</main>
         </>
     )
 }

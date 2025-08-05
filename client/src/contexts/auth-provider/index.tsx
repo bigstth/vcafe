@@ -2,7 +2,7 @@
 
 import { authClient } from '@/lib/auth-client'
 import type { UserProfile } from '@/types/user.type'
-import React, { createContext, useContext, useEffect } from 'react'
+import React, { createContext, useContext } from 'react'
 import { useGetMe } from './use-get-me'
 
 interface AuthContextType {

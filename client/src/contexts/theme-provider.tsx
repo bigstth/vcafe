@@ -1,6 +1,4 @@
 'use client'
-import { api } from '@/lib/api-instance'
-import { authClient } from '@/lib/auth-client'
 import {
     createContext,
     useContext,
@@ -22,7 +20,6 @@ const ThemeProviderContext = createContext<
 export function ThemeProvider({ children }: { children: ReactNode }) {
     const [theme, setTheme] = useState<Theme>('light')
     const [mounted, setMounted] = useState(false)
-    
 
     useEffect(() => {
         setMounted(true)

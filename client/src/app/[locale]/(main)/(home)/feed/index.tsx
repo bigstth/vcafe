@@ -1,12 +1,12 @@
 'use client'
 import React, { useState } from 'react'
-import { useGetPosts } from './use-get-post'
+import { useGetPosts } from './use-get-posts'
 import CreatePostComponent from './components/create-post'
 import PostCard from './components/post-card'
 import PostSkeleton from './components/post-card/post-skeleton'
 
 const Feed = () => {
-    const [pagination, setPagination] = useState({ offset: 0, limit: 10 })
+    const [pagination] = useState({ offset: 0, limit: 10 })
     const { data: posts, isFetching } = useGetPosts(pagination)
 
     return (

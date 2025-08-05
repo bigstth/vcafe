@@ -19,7 +19,7 @@ export const useCreatePost = (
             formData.append('visibility', data.visibility)
 
             if (data.images && data.images.length > 0) {
-                data.images.forEach((file: File, index: number) => {
+                data.images.forEach((file: File) => {
                     formData.append(`images`, file)
                 })
             }
