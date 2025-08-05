@@ -15,7 +15,7 @@ export const user = pgTable('user', {
     role: text('role')
         .notNull()
         .references(() => role.name, { onDelete: 'cascade' })
-        .default('user'),
+        .default('gold'),
     createdAt: timestamp('created_at')
         .$defaultFn(() => /* @__PURE__ */ new Date())
         .notNull(),
