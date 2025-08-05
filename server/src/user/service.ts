@@ -179,7 +179,6 @@ const uploadAvatarImage = async (image: File, userId: string) => {
                     uploadedBy: userId,
                 },
             })
-        console.log(uploadData, 'uploadDatauploadData')
         return uploadData
     } catch (error) {
         CustomLogger.error(

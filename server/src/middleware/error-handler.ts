@@ -4,9 +4,7 @@ import type { Context, Next } from 'hono'
 import type { ContentfulStatusCode } from 'hono/utils/http-status'
 
 export const errorHandler = async (c: Context, next: Next) => {
-    console.log('🔥 Error handler middleware called')
     try {
-        console.log('✅ No error occurred')
         await next()
     } catch (e: unknown) {
         const requestContext: {
@@ -34,7 +32,6 @@ export const errorHandler = async (c: Context, next: Next) => {
         }
 
         if (e instanceof AppError) {
-            console.log('heeeeee')
             // Log only critical AppErrors (5xx status)
             if (e.status >= 500) {
                 CustomLogger.error('Critical business logic error', {

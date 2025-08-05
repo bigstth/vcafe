@@ -40,7 +40,6 @@ export const useCreatePost = (
             queryClient.invalidateQueries({
                 queryKey: ['get-post'],
             })
-            console.log('Queries invalidated')
             options?.onSuccess?.(data, variables, context)
         },
     })
