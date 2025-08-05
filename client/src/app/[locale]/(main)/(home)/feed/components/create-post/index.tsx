@@ -90,7 +90,7 @@ const CreatePostComponent = () => {
                 <Avatar>
                     <AvatarImage
                         src={user?.image}
-                        className="w-10 rounded-full"
+                        className="w-10 h-10 rounded-full"
                     />
                     <AvatarFallback>
                         {user?.username?.[0] || 'Hi'}
