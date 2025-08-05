@@ -4,6 +4,16 @@ import createNextIntlPlugin from 'next-intl/plugin'
 const nextConfig: NextConfig = {
     devIndicators: false,
     reactStrictMode: false,
+    images: {
+        remotePatterns: [
+            {
+                protocol: 'https',
+                hostname: 'zxfsynefrmyhoqkzjwge.supabase.co',
+                port: '',
+                pathname: '/storage/v1/object/public/**',
+            },
+        ],
+    },
     async rewrites() {
         return [
             {

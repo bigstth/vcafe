@@ -1,19 +1,32 @@
 import '../globals.css'
 import { NextIntlClientProvider, hasLocale } from 'next-intl'
 import { routing } from '@/i18n/routing'
-import { notFound } from 'next/navigation'
-import { getTranslations } from 'next-intl/server'
+import { getTranslations, getMessages } from 'next-intl/server'
 import { ThemeProvider } from '@/contexts/theme-provider'
 import UpdateUserInfoDialog from '@/components/update-user-info-dialog'
 import { AuthProvider } from '@/contexts/auth-provider'
 import QueryProvider from '@/contexts/query-provider'
 import { Toaster } from '@/components/ui/sonner'
+import { headers } from 'next/headers'
 
-export const metadata = async ({ params }: { params: { locale: string } }) => {
+export const generateMetadata = async ({
+    params,
+}: {
+    params: Promise<{ locale: string }>
+}) => {
+    const { locale } = await params
+    const headersList = await headers()
+    const detectedLocale = locale || headersList.get('x-locale') || 'en'
+
+    const validLocale = hasLocale(routing.locales, detectedLocale)
+        ? detectedLocale
+        : 'en'
+
     const t = await getTranslations({
-        locale: params?.locale,
+        locale: validLocale,
         namespace: 'meta',
     })
+
     return {
         title: t('title'),
         description: t('description'),
@@ -29,14 +42,22 @@ export default async function RootLayout({
 }) {
     const { locale } = await params
 
-    if (!hasLocale(routing.locales, locale)) {
-        notFound()
-    }
+    const headersList = await headers()
+    const detectedLocale = locale || headersList.get('x-locale') || 'en'
+
+    const validLocale = hasLocale(routing.locales, detectedLocale)
+        ? detectedLocale
+        : 'en'
+
+    const messages = await getMessages({ locale: validLocale })
+
     return (
-        <html lang={locale}>
-            <head></head>
+        <html lang={validLocale}>
             <body className="antialiased">
-                <NextIntlClientProvider>
+                <NextIntlClientProvider
+                    messages={messages}
+                    locale={validLocale}
+                >
                     <ThemeProvider>
                         <QueryProvider>
                             <AuthProvider>

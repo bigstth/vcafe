@@ -12,7 +12,9 @@ export const renderImages = (post: PostItem) => {
                 <Image
                     src={images[0].url}
                     alt={images[0].alt}
-                    className="w-full h-auto max-h-96 object-cover rounded-md"
+                    width={384}
+                    height={384}
+                    className="w-full h-auto max-h-96! object-cover rounded-md"
                 />
             </div>
         )
@@ -26,7 +28,9 @@ export const renderImages = (post: PostItem) => {
                         key={image.url}
                         src={image.url}
                         alt={image.alt}
-                        className="w-full h-48 object-cover rounded-md"
+                        width={192}
+                        height={192}
+                        className="w-full h-48! object-cover rounded-md"
                     />
                 ))}
             </div>
@@ -39,17 +43,23 @@ export const renderImages = (post: PostItem) => {
                 <Image
                     src={images[0].url}
                     alt={images[0].alt}
+                    width={192}
+                    height={192}
                     className="w-full h-full object-cover rounded-md"
                 />
                 <div className="grid grid-rows-2 gap-2">
                     <Image
                         src={images[1].url}
                         alt={images[1].alt}
+                        width={192}
+                        height={192}
                         className="w-full h-full object-cover rounded-md"
                     />
                     <Image
                         src={images[2].url}
                         alt={images[2].alt}
+                        width={192}
+                        height={192}
                         className="w-full h-full object-cover rounded-md"
                     />
                 </div>
@@ -65,6 +75,8 @@ export const renderImages = (post: PostItem) => {
                         <Image
                             src={image.url}
                             alt={image.alt}
+                            width={192}
+                            height={192}
                             className="w-full h-48 object-cover rounded-md"
                         />
                     </div>

@@ -1,22 +1,24 @@
 'use client'
-import { usePathname, useRouter } from 'next/navigation'
+import { useLocale } from 'next-intl'
 
 export const useChangeLocale = () => {
-    const router = useRouter()
-    const pathname = usePathname()
+    const currentLocale = useLocale()
 
     const changeLocale = (newLocale: string) => {
-        const segments = pathname.split('/')
+        if (newLocale === currentLocale) return
 
-        if (segments[1] && segments[1].length === 2) {
-            segments[1] = newLocale
-        } else {
-            segments.splice(1, 0, newLocale)
-        }
+        // Set locale cookie
+        document.cookie = `locale=${newLocale}; path=/; max-age=${
+            60 * 60 * 24 * 365
+        }; SameSite=Lax`
 
-        const newPath = segments.join('/') || '/'
-        router.push(newPath)
+        // Force refresh to apply new locale
+        window.location.reload()
     }
 
-    return { changeLocale }
+    return {
+        changeLocale,
+        currentLocale,
+        availableLocales: ['en', 'th'] as const,
+    }
 }

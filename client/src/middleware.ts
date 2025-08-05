@@ -1,24 +1,88 @@
-import createMiddleware from 'next-intl/middleware'
-import { routing } from './i18n/routing'
 import { NextRequest, NextResponse } from 'next/server'
+import { match } from '@formatjs/intl-localematcher'
+
+const locales = ['en', 'th']
+const defaultLocale = 'en'
+
+function getLocale(request: NextRequest): string {
+    const localeCookie = request.cookies.get('locale')?.value
+    if (localeCookie && locales.includes(localeCookie)) {
+        return localeCookie
+    }
+
+    const acceptLanguage = request.headers.get('accept-language')
+    if (acceptLanguage) {
+        try {
+            const languages = acceptLanguage
+                .split(',')
+                .map((lang) => {
+                    const [language, quality] = lang.split(';q=')
+                    return language.trim()
+                })
+                .filter(Boolean)
+
+            return match(languages, locales, defaultLocale)
+        } catch (error) {
+            console.warn('Error parsing Accept-Language header:', error)
+            return defaultLocale
+        }
+    }
+
+    return defaultLocale
+}
 
 export default function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl
-    // If already has locale, continue
-    if (/^\/(en|th)(\/|$)/.test(pathname)) {
-        return createMiddleware({ ...routing, localePrefix: 'never' })(request)
+
+    if (
+        pathname.startsWith('/api') ||
+        pathname.startsWith('/_next') ||
+        pathname.includes('.')
+    ) {
+        return NextResponse.next()
     }
-    // Only redirect on root path
-    if (pathname === '/' || pathname === '') {
-        const acceptLang = request.headers.get('accept-language') || ''
-        const isThai = acceptLang.toLowerCase().startsWith('th')
-        const locale = isThai ? 'th' : 'en'
-        return NextResponse.redirect(new URL(`/${locale}`, request.url))
+
+    const pathnameHasLocale = locales.some(
+        (locale) =>
+            pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
+    )
+
+    if (pathnameHasLocale) {
+        const locale = pathname.split('/')[1]
+        const newPathname = pathname.slice(`/${locale}`.length) || '/'
+
+        const response = NextResponse.redirect(
+            new URL(newPathname, request.url)
+        )
+        response.cookies.set('locale', locale, {
+            httpOnly: false,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            maxAge: 60 * 60 * 24 * 365,
+        })
+        return response
     }
-    // Fallback to default middleware
-    return createMiddleware({ ...routing, localePrefix: 'never' })(request)
+
+    const locale = getLocale(request)
+
+    const response = NextResponse.rewrite(
+        new URL(`/${locale}${pathname}`, request.url)
+    )
+
+    response.headers.set('x-locale', locale)
+
+    if (!request.cookies.get('locale')) {
+        response.cookies.set('locale', locale, {
+            httpOnly: false,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            maxAge: 60 * 60 * 24 * 365,
+        })
+    }
+
+    return response
 }
 
 export const config = {
-    matcher: '/((?!api|trpc|_next|_vercel|.*\\..*).*)',
+    matcher: ['/((?!api|trpc|_next|_vercel|.*\\..*).*)'],
 }
