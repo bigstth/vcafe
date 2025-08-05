@@ -9,18 +9,22 @@ const ACCEPTED_IMAGE_TYPES = [
 ]
 
 export const userInfoFormSchema = z.object({
-    username: z.string({
-        error: (issue) =>
-            issue.input === undefined
-                ? 'This field is required'
-                : 'Please input a valid username',
-    }),
-    displayUsername: z.string({
-        error: (issue) =>
-            issue.input === undefined
-                ? 'This field is required'
-                : 'Please input a valid display name',
-    }),
+    username: z
+        .string({
+            error: (issue) =>
+                issue.input === undefined
+                    ? 'This field is required'
+                    : 'Please input a valid username',
+        })
+        .max(30, 'Username must be at most 30 characters long'),
+    displayUsername: z
+        .string({
+            error: (issue) =>
+                issue.input === undefined
+                    ? 'This field is required'
+                    : 'Please input a valid display name',
+        })
+        .max(30, 'Display name must be at most 30 characters long'),
     birthDate: z.date().optional(),
     image: z
         .file({
@@ -37,6 +41,7 @@ export const userInfoFormSchema = z.object({
     password: z
         .string()
         .min(6, 'Password must be at least 6 characters long')
+        .max(100, 'Password must be at most 100 characters long')
         .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
         .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
         .regex(

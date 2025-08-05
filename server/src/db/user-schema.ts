@@ -5,12 +5,17 @@ export const user = pgTable('user', {
     name: text('name').notNull(),
     username: text('username'),
     displayUsername: text('display_username'),
+    bio: text('bio'),
     birthDate: text('birth_date'),
     email: text('email').notNull().unique(),
     emailVerified: boolean('email_verified')
         .$defaultFn(() => false)
         .notNull(),
     image: text('image'),
+    role: text('role')
+        .notNull()
+        .references(() => role.name, { onDelete: 'cascade' })
+        .default('user'),
     createdAt: timestamp('created_at')
         .$defaultFn(() => /* @__PURE__ */ new Date())
         .notNull(),
@@ -61,4 +66,9 @@ export const verification = pgTable('verification', {
     updatedAt: timestamp('updated_at').$defaultFn(
         () => /* @__PURE__ */ new Date()
     ),
+})
+
+export const role = pgTable('role', {
+    id: text('id').primaryKey(),
+    name: text('name').notNull().unique(),
 })
