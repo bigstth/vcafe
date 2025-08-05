@@ -40,6 +40,8 @@ export const getPostsWithImagesRepository = async (
                     id: true,
                     username: true,
                     displayUsername: true,
+                    bio: true,
+                    role: true,
                     image: true,
                 },
             },
@@ -53,6 +55,9 @@ export const getPostsWithImagesRepository = async (
                         columns: {
                             id: true,
                             username: true,
+                            displayUsername: true,
+                            bio: true,
+                            role: true,
                             image: true,
                         },
                     },
@@ -112,6 +117,9 @@ export const getUserArchivedPostsRepository = async (
                 columns: {
                     id: true,
                     username: true,
+                    displayUsername: true,
+                    bio: true,
+                    role: true,
                     image: true,
                 },
             },
@@ -167,6 +175,9 @@ export const getUserDeletedPostsRepository = async (
                 columns: {
                     id: true,
                     username: true,
+                    displayUsername: true,
+                    bio: true,
+                    role: true,
                     image: true,
                 },
             },
@@ -205,8 +216,10 @@ export const getDeletedPostsRepository = async (
             author: {
                 columns: {
                     id: true,
-                    displayUsername: true,
                     username: true,
+                    displayUsername: true,
+                    bio: true,
+                    role: true,
                     image: true,
                 },
             },
@@ -229,8 +242,10 @@ export const getPostRepository = async (id: string) => {
             author: {
                 columns: {
                     id: true,
-                    displayUsername: true,
                     username: true,
+                    displayUsername: true,
+                    bio: true,
+                    role: true,
                     image: true,
                 },
             },
@@ -240,8 +255,10 @@ export const getPostRepository = async (id: string) => {
                     author: {
                         columns: {
                             id: true,
-                            displayUsername: true,
                             username: true,
+                            displayUsername: true,
+                            bio: true,
+                            role: true,
                             image: true,
                         },
                     },

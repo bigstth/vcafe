@@ -14,8 +14,8 @@ export const user = pgTable('user', {
     image: text('image'),
     role: text('role')
         .notNull()
-        .references(() => role.name, { onDelete: 'cascade' })
-        .default('gold'),
+        .references(() => role.name, { onDelete: 'set default' })
+        .default('silver'),
     createdAt: timestamp('created_at')
         .$defaultFn(() => /* @__PURE__ */ new Date())
         .notNull(),
@@ -71,4 +71,7 @@ export const verification = pgTable('verification', {
 export const role = pgTable('role', {
     id: text('id').primaryKey(),
     name: text('name').notNull().unique(),
+    createdAt: timestamp('created_at')
+        .$defaultFn(() => new Date())
+        .notNull(),
 })

@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import Link from 'next/link'
 import { renderImages } from './image-render'
 import { useTimeAgo } from '@/hooks/use-get-time-ago'
+import AvatarRole from '@/components/avatar-with-role-border'
 
 const PostCard = ({ post }: { post: PostItem }) => {
     const getTimeAgo = useTimeAgo()
@@ -12,12 +13,11 @@ const PostCard = ({ post }: { post: PostItem }) => {
         <Card>
             <CardContent>
                 <div className="flex items-start gap-4 w-full">
-                    <Avatar className="[&>svg]:size-5! w-10 h-10">
-                        <AvatarImage src={post?.author?.image || undefined} />
-                        <AvatarFallback>
-                            {post?.author?.username?.[0] || 'Hi'}
-                        </AvatarFallback>
-                    </Avatar>
+                    <AvatarRole
+                        image={post?.author?.image}
+                        username={post?.author?.username}
+                        role={post?.author?.role}
+                    />
                     <div className="flex-1 flex flex-col gap-4 min-w-0">
                         <div>
                             <Link href={`/${post?.author.username}`}>

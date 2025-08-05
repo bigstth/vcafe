@@ -55,6 +55,11 @@
     --shadow-2xl: 2.5px 2.5px 0px 0px hsl(0 0% 16.0784% / 0);
     --tracking-normal: 0em;
     --spacing: 0.25rem;
+    --silver: oklch(90.365% 0.0001 271.152);
+    --gold: oklch(93.576% 0.10622 95.793);
+    --ruby: oklch(65.186% 0.23537 32.043);
+    --emerald: oklch(88.509% 0.19113 162.179);
+    --sapphire: oklch(54.483% 0.25215 262.753);
 }
 
 .dark {
@@ -107,6 +112,11 @@
     --shadow-xl: 2.5px 2.5px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0),
         2.5px 8px 10px -1px hsl(202.8169 89.1213% 53.1373% / 0);
     --shadow-2xl: 2.5px 2.5px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0);
+    --silver: oklch(90.365% 0.0001 271.152);
+    --gold: oklch(93.576% 0.10622 95.793);
+    --ruby: oklch(65.186% 0.23537 32.043);
+    --emerald: oklch(88.509% 0.19113 162.179);
+    --sapphire: oklch(54.483% 0.25215 262.753);
 }
 
 @theme inline {
@@ -127,6 +137,11 @@
     --color-destructive: var(--destructive);
     --color-destructive-foreground: var(--destructive-foreground);
     --color-border: var(--border);
+    --color-border-silver: var(--silver);
+    --color-border-gold: var(--gold);
+    --color-border-ruby: var(--ruby);
+    --color-border-emerald: var(--emerald);
+    --color-border-sapphire: var(--sapphire);
     --color-input: var(--input);
     --color-ring: var(--ring);
     --color-chart-1: var(--chart-1);
@@ -142,7 +157,11 @@
     --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-ring: var(--sidebar-ring);
-
+    --color-silver: var(--silver);
+    --color-gold: var(--gold);
+    --color-ruby: var(--ruby);
+    --color-emerald: var(--emerald);
+    --color-sapphire: var(--sapphire);
     --font-sans: var(--font-sans);
     --font-mono: var(--font-mono);
     --font-serif: var(--font-serif);

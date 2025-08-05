@@ -8,6 +8,7 @@ import { useAuth } from '@/contexts/auth-provider'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
 import './styles.css'
+import AvatarRole from '../avatar-with-role-border'
 
 const UserPopOver = () => {
     const t = useTranslations()
@@ -17,14 +18,14 @@ const UserPopOver = () => {
             <PopoverTrigger asChild className="login-popover-trigger">
                 <Button
                     disabled={isLoading}
-                    className="relative px-3 border-1 border-t-0 h-full rounded-2xl rounded-t-none bg-background border-border text-foreground hover:bg-accent font-medium flex flex-col gap-1 overflow-hidden  min-h-[60px] translate-y-[-4px] hover:translate-y-[-2px]"
+                    className="relative px-2 border-1 border-t-0 h-full rounded-2xl rounded-t-none bg-background border-border text-foreground hover:bg-accent font-medium flex flex-col gap-1 overflow-hidden  min-h-[60px] translate-y-[-4px] hover:translate-y-[-2px]"
                 >
-                    <Avatar className="[&>svg]:size-5! mt-3">
-                        <AvatarImage src={user?.image} />
-                        <AvatarFallback>
-                            {user?.username?.[0] || 'Hi'}
-                        </AvatarFallback>
-                    </Avatar>
+                    <AvatarRole
+                        image={user?.image}
+                        username={user?.username}
+                        role={user?.role}
+                        classNames="w-9 h-9 mt-3"
+                    />
                 </Button>
             </PopoverTrigger>
             <PopoverContent className="mt-1 mr-2 flex flex-col gap-2">

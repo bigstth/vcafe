@@ -7,6 +7,8 @@ export type UserProfile = {
     id: string
     name: string
     username: string
+    bio: string
+    role?: ['silver' | 'gold' | 'ruby' | 'emerald' | 'sapphire'] | string
     displayUsername: string | null
     birthDate: string | null
     email: string

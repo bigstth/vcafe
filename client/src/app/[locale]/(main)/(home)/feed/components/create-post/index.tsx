@@ -24,6 +24,7 @@ import { useCreatePost } from './use-create-post'
 import { toast } from 'sonner'
 import { useFormatError, type ErrorResponse } from '@/hooks/use-format-error'
 import { Card, CardContent } from '@/components/ui/card'
+import AvatarRole from '@/components/avatar-with-role-border'
 
 const CreatePostComponent = () => {
     const t = useTranslations('features.feed')
@@ -87,15 +88,11 @@ const CreatePostComponent = () => {
     return (
         <Card>
             <CardContent className="flex gap-4">
-                <Avatar>
-                    <AvatarImage
-                        src={user?.image}
-                        className="w-10 h-10 rounded-full"
-                    />
-                    <AvatarFallback>
-                        {user?.username?.[0] || 'Hi'}
-                    </AvatarFallback>
-                </Avatar>
+                <AvatarRole
+                    image={user?.image}
+                    username={user?.username}
+                    role={user?.role}
+                />
                 <Form {...form}>
                     <form
                         onSubmit={form.handleSubmit(onSubmit)}
