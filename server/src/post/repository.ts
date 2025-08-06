@@ -396,11 +396,55 @@ export const canModifyPostRepository = async (
     }
 }
 
-export const getLikeCountRepository = async (postId: string) => {
-    const result = await db
+export const getPostLikeRepository = async (postId: string, userId: string) => {
+    const likeCount = await db
         .select({ count: count() })
         .from(postLikes)
         .where(eq(postLikes.postId, postId))
 
-    return result[0]?.count || 0
+    const hasLiked = await db
+        .select()
+        .from(postLikes)
+        .where(and(eq(postLikes.postId, postId), eq(postLikes.userId, userId)))
+
+    return {
+        likeCount: likeCount[0]?.count || 0,
+        hasLiked: hasLiked.length > 0,
+    }
+}
+
+const likePostRepository = async (postId: string, userId: string) => {
+    const result = await db
+        .insert(postLikes)
+        .values({ postId, userId })
+        .returning()
+
+    return result[0] || null
+}
+
+const unlikePostRepository = async (postId: string, userId: string) => {
+    const result = await db
+        .delete(postLikes)
+        .where(
+            and(eq(postLikes.postId, postId), eq(postLikes.userId, userId))
+        )
+        .returning()
+
+    return result[0] || null
+}
+
+export const toggleLikePostRepository = async (
+    postId: string,
+    userId: string
+) => {
+    const like = await db
+        .select()
+        .from(postLikes)
+        .where(and(eq(postLikes.postId, postId), eq(postLikes.userId, userId)))
+
+    if (like.length > 0) {
+        return await unlikePostRepository(postId, userId)
+    } else {
+        return await likePostRepository(postId, userId)
+    }
 }

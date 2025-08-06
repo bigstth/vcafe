@@ -11,3 +11,9 @@ export type GetPostsData = Awaited<ReturnType<GetPostsResponse['json']>>
 export type PostsSuccessData = Exclude<GetPostsData, { error: any }>
 export type Posts = PostsSuccessData['posts']
 export type PostItem = Posts[number]
+
+export type GetCommentsData = any
+export type CommentsSuccessData = Exclude<GetCommentsData, { error: any }>
+
+export type GetLikesData = any
+export type LikesSuccessData = Exclude<GetLikesData, { error: any }>
