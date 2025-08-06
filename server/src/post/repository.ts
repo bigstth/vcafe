@@ -4,6 +4,7 @@ import { eq, desc, asc, and, count, sql } from 'drizzle-orm'
 import { activePostsCondition } from '@server/lib/soft-delete'
 import type { NewPost, Post } from '@server/types/schema'
 import { CustomLogger } from '@server/lib/custom-logger'
+import { noPostFoundError } from '@server/post/errors'
 
 export interface GetPostsOptions {
     limit: number
@@ -441,6 +442,14 @@ export const toggleLikePostRepository = async (
         .select()
         .from(postLikes)
         .where(and(eq(postLikes.postId, postId), eq(postLikes.userId, userId)))
+
+    const post = await db.query.posts.findFirst({
+        where: eq(posts.id, postId),
+    })
+
+    if (!post) {
+        throw noPostFoundError
+    }
 
     if (like.length > 0) {
         return await unlikePostRepository(postId, userId)
