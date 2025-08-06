@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import Link from 'next/link'
 import { getTimeAgo } from '@/lib/get-time-ago'
 import { renderImages } from './image-render'
+import { InteractionBar } from './interaction-bar'
 
 const PostCard = ({ post }: { post: PostItem }) => {
     return (
@@ -42,6 +43,7 @@ const PostCard = ({ post }: { post: PostItem }) => {
                             {post.content}
                         </pre>
                         {renderImages(post)}
+                        {InteractionBar(post)}
                     </div>
                 </div>
             </CardContent>

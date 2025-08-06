@@ -20,6 +20,8 @@ import {
     getPostsWithImagesRepository,
     softDeletePostRepository,
     unarchivePostRepository,
+    getPostLikeRepository,
+    toggleLikePostRepository,
 } from './repository'
 import { CustomLogger } from '@server/lib/custom-logger'
 import { db } from '@server/db/db-instance'
@@ -314,4 +316,28 @@ const uploadPostImages = async (
         }
         throw error
     }
+}
+
+export const getPostLikeService = async (postId: string, userId: string) => {
+    const result = await getPostLikeRepository(postId, userId)
+    if (!result) {
+        throw new AppError(noPostFoundError)
+    }
+    return result
+}
+
+export const likePostService = async (postId: string, userId: string) => {
+    const result = await toggleLikePostRepository(postId, userId)
+    if (!result) {
+        throw new AppError(noPostFoundError)
+    }
+    return result
+}
+
+export const unlikePostService = async (postId: string, userId: string) => {
+    const result = await toggleLikePostRepository(postId, userId)
+    if (!result) {
+        throw new AppError(noPostFoundError)
+    }
+    return result
 }
