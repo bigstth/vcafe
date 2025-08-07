@@ -7,8 +7,7 @@ import {
     archivePostService,
     unarchivePostService,
     getPostLikeService,
-    likePostService,
-    unlikePostService,
+    toggleLikePostService,
 } from './service'
 import type { Context } from 'hono'
 import { errorResponseFormat } from '@server/lib/error'
@@ -120,30 +119,12 @@ export const getPostLikeController = async (c: Context) => {
     }
 }
 
-export const likePostController = async (c: Context) => {
+export const toggleLikePostController = async (c: Context) => {
     const { id } = c.get('validatedParam')
     const user = c.get('user')
 
     try {
-        await likePostService(id, user.id)
-        const result = { success: true, message: 'Post liked' }
-        return c.json(result)
-    } catch (error) {
-        CustomLogger.error('Error liking post', {
-            postId: id,
-            userId: user.id,
-            error,
-        })
-        return errorResponseFormat(c, error)
-    }
-}
-
-export const unlikePostController = async (c: Context) => {
-    const { id } = c.get('validatedParam')
-    const user = c.get('user')
-
-    try {
-        await unlikePostService(id, user.id)
+        await toggleLikePostService(id, user.id)
         const result = { success: true, message: 'Post unliked' }
         return c.json(result)
     } catch (error) {

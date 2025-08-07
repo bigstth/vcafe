@@ -12,8 +12,7 @@ import {
     unArchivePostController,
     deletePostController,
     getPostLikeController,
-    likePostController,
-    unlikePostController,
+    toggleLikePostController,
 } from '@server/post/controller'
 import { Hono } from 'hono'
 import {
@@ -45,10 +44,7 @@ const postRoutes = new Hono()
         getPostLikeController(c)
     )
     .post('/:id/like', protect, validateParam(idParamSchema), (c) =>
-        likePostController(c)
-    )
-    .delete('/:id/like', protect, validateParam(idParamSchema), (c) =>
-        unlikePostController(c)
+        toggleLikePostController(c)
     )
 
 export default postRoutes

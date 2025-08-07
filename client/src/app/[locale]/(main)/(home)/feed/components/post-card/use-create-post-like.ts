@@ -4,7 +4,8 @@ import {
     type UseMutationOptions,
 } from '@tanstack/react-query'
 import { api } from '@/lib/api-instance'
-import type { LikesSuccessData, ErrorResponse, PostLikeSchemaType } from './type'
+import type { LikesSuccessData, PostLikeSchemaType } from './type'
+import { ErrorResponse } from '@/hooks/use-format-error'
 
 export const useCreatePostLike = (
     options?: UseMutationOptions<LikesSuccessData, ErrorResponse, PostLikeSchemaType>

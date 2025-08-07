@@ -3,10 +3,8 @@ import { Heart, MessageCircle, Repeat2, Share2, Bookmark } from 'lucide-react'
 import { useGetPostComments } from '../../use-get-post-comment'
 import { useGetPostLike } from '../../use-get-post-like'
 import { useCreatePostLike } from './use-create-post-like'
-import { useDeletePostLike } from './use-delete-post-like'
-import type { ErrorResponse } from './type'
 import { useGlobalErrorStore } from '@/store/global-error'
-import { useFormatError,} from '@/hooks/use-format-error'
+import { ErrorResponse, useFormatError,} from '@/hooks/use-format-error'
 import React, { useState, useEffect } from 'react'
 
 export const InteractionBar = (
@@ -26,11 +24,7 @@ export const InteractionBar = (
         setLocalHasLiked(newState);
 
         try {
-            if (newState) {
-                await likePost({ postId: post.id });
-            } else {
-                await unlikePost({ postId: post.id });
-            }
+            await likePost({ postId: post.id });    
         } catch (error) {
             setLocalHasLiked(previousState);
         }
@@ -45,18 +39,8 @@ export const InteractionBar = (
             console.log('Post liked successfully')
         },
         onError: async (error: ErrorResponse) => {
-            // const errorObj = await error
-            // setError(formatErrorMessage(errorObj))
-        },
-    })
-
-    const { mutateAsync: unlikePost } = useDeletePostLike({
-        onSuccess: () => {
-            console.log('Post unliked successfully')
-        },
-        onError: async (error: ErrorResponse) => {
-            // const errorObj = await error
-            // setError(formatErrorMessage(errorObj))
+            const errorObj = await error
+            setError(formatErrorMessage(errorObj))
         },
     })
 

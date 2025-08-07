@@ -333,15 +333,7 @@ export const getPostLikeService = async (postId: string, userId: string) => {
     return result
 }
 
-export const likePostService = async (postId: string, userId: string) => {
-    const result = await toggleLikePostRepository(postId, userId)
-    if (!result) {
-        throw new AppError(noPostFoundError)
-    }
-    return result
-}
-
-export const unlikePostService = async (postId: string, userId: string) => {
+export const toggleLikePostService = async (postId: string, userId: string) => {
     const result = await toggleLikePostRepository(postId, userId)
     if (!result) {
         throw new AppError(noPostFoundError)
