@@ -10,8 +10,8 @@ import InteractionBar from './interaction-bar'
 
 type PostCardProps = {
     post: PostItem;
-    setShowCreateComment: React.Dispatch<React.SetStateAction<boolean>>;
-    setPost: React.Dispatch<React.SetStateAction<string | null>>;
+    setShowCreateComment?: React.Dispatch<React.SetStateAction<boolean>>;
+    setPost?: React.Dispatch<React.SetStateAction<PostItem | null>>;
 };
 
 const PostCard: React.FC<PostCardProps> = ({

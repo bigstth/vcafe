@@ -16,11 +16,10 @@ import debounce from 'lodash/debounce'
 import { redirect } from 'next/dist/server/api-utils'
 
 type CreateCommentComponentProps = {
-    post: PostItem;
-    setShowCreateComment: React.Dispatch<React.SetStateAction<boolean>>;
-    setPost: React.Dispatch<React.SetStateAction<string | null>>;
+    post: PostItem | null;
+    setShowCreateComment?: React.Dispatch<React.SetStateAction<boolean>>;
+    setPost?: React.Dispatch<React.SetStateAction<PostItem | null>>;
 };
-
 const CreateCommentComponent: React.FC<CreateCommentComponentProps> = ({
     post,
     setShowCreateComment,
@@ -34,8 +33,8 @@ const CreateCommentComponent: React.FC<CreateCommentComponentProps> = ({
         onSuccess: () => {
             console.log('Comment created successfully')
             form.reset()
-            setShowCreateComment(false)
-            setPost(null)
+            setShowCreateComment?.(false)
+            setPost?.(null)
         },
         onError: (error) => {
             toast.error(`Error creating comment: ${error.message}`)
@@ -43,13 +42,17 @@ const CreateCommentComponent: React.FC<CreateCommentComponentProps> = ({
     })
 
     const onSubmit = debounce((data: { content: string }) => {
+        if (!post?.id) {
+            toast.error('Post not found');
+            return;
+        }
         const payload: commentSchemaType = {
             postId: post.id,
             content: data.content,
         };
         toast.promise(createComment(payload), {
-            loading: 'Creating comment...',
-            success: 'Comment created successfully!',
+            loading: 'Commenting...',
+            success: 'Commented successfully!',
         });
     }, 500)
 
@@ -78,14 +81,14 @@ const CreateCommentComponent: React.FC<CreateCommentComponentProps> = ({
                         >
                             <span className="text-foreground/50 font-medium">
                                 {` `}·{' '}
-                                {getTimeAgo(new Date(post?.createdAt))}
+                                {post?.createdAt ? getTimeAgo(new Date(post.createdAt)) : ''}
                             </span>
                         </Link>
                     </div>
                     <pre className="whitespace-pre-wrap break-words">
                         {post?.content}
                     </pre>
-                    {renderImages(post)}
+                    {post && renderImages(post)}
                 </div>
             </div>
 

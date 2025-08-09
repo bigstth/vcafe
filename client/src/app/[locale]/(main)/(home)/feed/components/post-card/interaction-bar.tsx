@@ -11,8 +11,8 @@ import { debounce } from 'lodash'
 
 type InteractionBarProps = {
     post: PostItem;
-    setShowCreateComment: React.Dispatch<React.SetStateAction<boolean>>;
-    setPost: React.Dispatch<React.SetStateAction<string | null>>;
+    setShowCreateComment?: React.Dispatch<React.SetStateAction<boolean>>;
+    setPost?: React.Dispatch<React.SetStateAction<PostItem | null>>;
 };
 
 const InteractionBar: React.FC<InteractionBarProps> = ({
@@ -53,8 +53,8 @@ const InteractionBar: React.FC<InteractionBarProps> = ({
 
     const handleComment = async () => {
         console.log('Handle comment action for post:', post.id)
-        setShowCreateComment(true)
-        setPost(post)
+        setShowCreateComment?.(true)
+        setPost?.(post)
     }
 
     const handleShare = async () => {
