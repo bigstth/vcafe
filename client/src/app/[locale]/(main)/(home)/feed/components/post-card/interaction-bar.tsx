@@ -50,8 +50,7 @@ export const InteractionBar = (
         console.log('Handle share action for post:', post.id)
     }
 
-    return (
-        
+    return (   
         <div className="flex items-center gap-6 text-foreground/50">
             <button className="group flex items-center gap-2" 
             onClick={() => {handleLike()}}

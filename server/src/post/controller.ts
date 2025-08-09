@@ -125,11 +125,12 @@ export const toggleLikePostController = async (c: Context) => {
 
     try {
         const liked = await toggleLikePostService(id, user.id)
+        const isLiked = liked && typeof liked === 'object' && 'isLiked' in liked ? liked.isLiked : false;
         const result = { 
             success: true, 
-            message: liked ? 'Post liked' : 'Post unliked' ,
-            th: liked ? 'กดถูกใจโพสต์' : 'ยกเลิกถูกใจโพสต์', 
-            en: liked ? 'Post liked' : 'Post unliked'
+            message: isLiked ? 'Post liked' : 'Post unliked' ,
+            th: isLiked ? 'กดถูกใจโพสต์' : 'ยกเลิกถูกใจโพสต์', 
+            en: isLiked ? 'Post liked' : 'Post unliked'
         }
         return c.json(result)
     } catch (error) {

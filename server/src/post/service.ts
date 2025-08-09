@@ -337,7 +337,7 @@ export const getPostLikeService = async (postId: string, userId: string) => {
 
 export const toggleLikePostService = async (postId: string, userId: string) => {
     const checkLiked = await getPostLikeRepository(postId, userId)
-    var result = null
+    let result = null
 
     if (!checkLiked) {
         throw new AppError(noPostFoundError)
