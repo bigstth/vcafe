@@ -43,3 +43,8 @@ export type LikeSuccessData = {
     en: string
 }
 export type PostLikeSchemaType = { postId: string }
+
+export type commentSchemaType = {
+    postId: string;
+    content: string;
+}

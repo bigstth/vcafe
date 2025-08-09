@@ -7,10 +7,19 @@ import { useGlobalErrorStore } from '@/store/global-error'
 import { ErrorResponse, useFormatError,} from '@/hooks/use-format-error'
 import React, { useState, useEffect } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
+import { debounce } from 'lodash'
 
-export const InteractionBar = (
-    post: PostItem
-) => {
+type InteractionBarProps = {
+    post: PostItem;
+    setShowCreateComment: React.Dispatch<React.SetStateAction<boolean>>;
+    setPost: React.Dispatch<React.SetStateAction<string | null>>;
+};
+
+const InteractionBar: React.FC<InteractionBarProps> = ({
+    post,
+    setShowCreateComment,
+    setPost,
+}) => {
     const { data: comments, isLoading: commentLoading } = useGetPostComments(post.id)
     const commentCount = comments?.length ?? ""
     const { data: likes, isLoading: likeLoading } = useGetPostLike(post.id)
@@ -19,7 +28,7 @@ export const InteractionBar = (
     const { formatErrorMessage } = useFormatError()
     const [localHasLiked, setLocalHasLiked] = useState(likes?.hasLiked ?? false);
 
-    const handleLike = async () => {
+    const handleLike = debounce(async () => {
         const previousState = localHasLiked;
         const newState = !previousState;
         setLocalHasLiked(newState);
@@ -29,7 +38,7 @@ export const InteractionBar = (
         } catch (error) {
             setLocalHasLiked(previousState);
         }
-    };
+    }, 500);
 
     useEffect(() => {
         setLocalHasLiked(likes?.hasLiked ?? false);
@@ -44,6 +53,8 @@ export const InteractionBar = (
 
     const handleComment = async () => {
         console.log('Handle comment action for post:', post.id)
+        setShowCreateComment(true)
+        setPost(post)
     }
 
     const handleShare = async () => {
@@ -52,8 +63,8 @@ export const InteractionBar = (
 
     return (   
         <div className="flex items-center gap-6 text-foreground/50">
-            <button className="group flex items-center gap-2" 
-            onClick={() => {handleLike()}}
+            <button className="group flex items-center gap-2"
+                onClick={() => { handleLike() }}
             >
                 <Heart
                     className={`stroke-primary  ${localHasLiked ? 'fill-primary' : ''}`}
@@ -83,3 +94,5 @@ export const InteractionBar = (
         </div>
     )
 }
+
+export default InteractionBar

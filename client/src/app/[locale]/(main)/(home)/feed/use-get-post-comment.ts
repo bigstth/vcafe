@@ -27,7 +27,7 @@ export const useGetPostComments = (
         },
         retry: false,
         refetchOnWindowFocus: false,
-        enabled: !!postId, // Only run query if postId is provided
+        enabled: !!postId,
         ...options,
     })
 }

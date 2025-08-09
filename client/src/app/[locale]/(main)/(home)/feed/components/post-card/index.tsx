@@ -6,9 +6,19 @@ import Link from 'next/link'
 import { renderImages } from './image-render'
 import { useTimeAgo } from '@/hooks/use-get-time-ago'
 import AvatarRole from '@/components/avatar-with-role-border'
-import { InteractionBar } from './interaction-bar'
+import InteractionBar from './interaction-bar'
 
-const PostCard = ({ post }: { post: PostItem }) => {
+type PostCardProps = {
+    post: PostItem;
+    setShowCreateComment: React.Dispatch<React.SetStateAction<boolean>>;
+    setPost: React.Dispatch<React.SetStateAction<string | null>>;
+};
+
+const PostCard: React.FC<PostCardProps> = ({
+    post,
+    setShowCreateComment,
+    setPost,
+}) => {
     const getTimeAgo = useTimeAgo()
     return (
         <Card>
@@ -44,7 +54,11 @@ const PostCard = ({ post }: { post: PostItem }) => {
                             {post?.content}
                         </pre>
                         {renderImages(post)}
-                        {InteractionBar(post)}
+                        <InteractionBar
+                            post={post}
+                            setShowCreateComment={setShowCreateComment}
+                            setPost={setPost}
+                        />
                     </div>
                 </div>
             </CardContent>
