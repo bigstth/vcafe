@@ -124,11 +124,16 @@ export const toggleLikePostController = async (c: Context) => {
     const user = c.get('user')
 
     try {
-        await toggleLikePostService(id, user.id)
-        const result = { success: true, message: 'Post unliked' }
+        const liked = await toggleLikePostService(id, user.id)
+        const result = { 
+            success: true, 
+            message: liked ? 'Post liked' : 'Post unliked' ,
+            th: liked ? 'กดถูกใจโพสต์' : 'ยกเลิกถูกใจโพสต์', 
+            en: liked ? 'Post liked' : 'Post unliked'
+        }
         return c.json(result)
     } catch (error) {
-        CustomLogger.error('Error unliking post', {
+        CustomLogger.error('Error toggling like post', {
             postId: id,
             userId: user.id,
             error,

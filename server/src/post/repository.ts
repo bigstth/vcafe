@@ -414,7 +414,7 @@ export const getPostLikeRepository = async (postId: string, userId: string) => {
     }
 }
 
-const likePostRepository = async (postId: string, userId: string) => {
+export const likePostRepository = async (postId: string, userId: string) => {
     const result = await db
         .insert(postLikes)
         .values({ postId, userId })
@@ -423,7 +423,7 @@ const likePostRepository = async (postId: string, userId: string) => {
     return result[0] || null
 }
 
-const unlikePostRepository = async (postId: string, userId: string) => {
+export const unlikePostRepository = async (postId: string, userId: string) => {
     const result = await db
         .delete(postLikes)
         .where(
@@ -432,28 +432,4 @@ const unlikePostRepository = async (postId: string, userId: string) => {
         .returning()
 
     return result[0] || null
-}
-
-export const toggleLikePostRepository = async (
-    postId: string,
-    userId: string
-) => {
-    const like = await db
-        .select()
-        .from(postLikes)
-        .where(and(eq(postLikes.postId, postId), eq(postLikes.userId, userId)))
-
-    const post = await db.query.posts.findFirst({
-        where: eq(posts.id, postId),
-    })
-
-    if (!post) {
-        throw noPostFoundError
-    }
-
-    if (like.length > 0) {
-        return await unlikePostRepository(postId, userId)
-    } else {
-        return await likePostRepository(postId, userId)
-    }
 }

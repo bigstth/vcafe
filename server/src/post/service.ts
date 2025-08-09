@@ -21,7 +21,9 @@ import {
     softDeletePostRepository,
     unarchivePostRepository,
     getPostLikeRepository,
-    toggleLikePostRepository,
+    likePostRepository,
+    unlikePostRepository
+
 } from './repository'
 import { CustomLogger } from '@server/lib/custom-logger'
 import { db } from '@server/db/db-instance'
@@ -334,7 +336,19 @@ export const getPostLikeService = async (postId: string, userId: string) => {
 }
 
 export const toggleLikePostService = async (postId: string, userId: string) => {
-    const result = await toggleLikePostRepository(postId, userId)
+    const checkLiked = await getPostLikeRepository(postId, userId)
+    var result = null
+
+    if (!checkLiked) {
+        throw new AppError(noPostFoundError)
+    }
+
+    if (checkLiked.hasLiked) { 
+        result = await unlikePostRepository(postId, userId)
+    } else {
+        result = await likePostRepository(postId, userId)
+    }
+
     if (!result) {
         throw new AppError(noPostFoundError)
     }

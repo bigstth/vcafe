@@ -6,6 +6,7 @@ import { useCreatePostLike } from './use-create-post-like'
 import { useGlobalErrorStore } from '@/store/global-error'
 import { ErrorResponse, useFormatError,} from '@/hooks/use-format-error'
 import React, { useState, useEffect } from 'react'
+import { Skeleton } from '@/components/ui/skeleton'
 
 export const InteractionBar = (
     post: PostItem
@@ -35,9 +36,6 @@ export const InteractionBar = (
     }, [likes?.hasLiked]);
 
     const { mutateAsync: likePost } = useCreatePostLike({
-        onSuccess: () => {
-            console.log('Post liked successfully')
-        },
         onError: async (error: ErrorResponse) => {
             const errorObj = await error
             setError(formatErrorMessage(errorObj))
@@ -53,6 +51,7 @@ export const InteractionBar = (
     }
 
     return (
+        
         <div className="flex items-center gap-6 text-foreground/50">
             <button className="group flex items-center gap-2" 
             onClick={() => {handleLike()}}
@@ -62,24 +61,20 @@ export const InteractionBar = (
                     size={20}
                 />
                 <span className="text-sm">
-                    {likeLoading ? '...' : likeCount}
+                    {likeLoading ? <Skeleton className="h-4 w-6" /> : likeCount}
                 </span>
             </button>
-            <button className="group flex items-center gap-2" onClick={() => {
-                handleComment()
-            }}>
+            <button className="group flex items-center gap-2" onClick={() => handleComment()}>
                 <MessageCircle
                     className="stroke-primary"
                     size={20}
                 />
                 <span className="text-sm">
-                    {commentLoading ? '...' : commentCount}
+                    {commentLoading ? <Skeleton className="h-4 w-6" /> : commentCount}
                 </span>
             </button>
             <div className="ml-auto flex items-center gap-6">
-                <button className="group flex items-center gap-2" onClick={() => {
-                    handleShare()
-                }}>
+                <button className="group flex items-center gap-2" onClick={() => handleShare()}>
                     <Share2
                         className="stroke-primary"
                         size={16}
