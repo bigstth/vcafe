@@ -32,6 +32,7 @@ import { v4 as uuidv4 } from 'uuid'
 import supabaseAdmin from '@server/db/supabase-instance'
 import { AppError } from '@server/lib/error'
 import { formatAvatarImageUrl, mapImageUrls } from '@server/lib/map-image-urls'
+import { auth } from '@server/lib/auth'
 
 interface CreatePostWithImagesData {
     userId: string
@@ -77,6 +78,15 @@ export const getPostService = async (id: string) => {
             ...post.author,
             image: formatAvatarImageUrl(post.author.id),
         },
+        comments: Array.isArray(post.comments)
+            ? post.comments.map((comment) => ({
+                  ...comment,
+                  author: {
+                      ...comment.author,
+                      image: formatAvatarImageUrl(comment.author.id),
+                  },
+              }))
+            : post.comments,
         images: formattedImgUrls,
     }
 }
