@@ -4,6 +4,7 @@ import { eq, desc, asc, and, count, sql } from 'drizzle-orm'
 import { activePostsCondition } from '@server/lib/soft-delete'
 import type { NewPost, Post } from '@server/types/schema'
 import { CustomLogger } from '@server/lib/custom-logger'
+import { noPostFoundError } from '@server/post/errors'
 
 export interface GetPostsOptions {
     limit: number
@@ -396,11 +397,39 @@ export const canModifyPostRepository = async (
     }
 }
 
-export const getLikeCountRepository = async (postId: string) => {
-    const result = await db
+export const getPostLikeRepository = async (postId: string, userId: string) => {
+    const likeCount = await db
         .select({ count: count() })
         .from(postLikes)
         .where(eq(postLikes.postId, postId))
 
-    return result[0]?.count || 0
+    const hasLiked = await db
+        .select()
+        .from(postLikes)
+        .where(and(eq(postLikes.postId, postId), eq(postLikes.userId, userId)))
+
+    return {
+        likeCount: likeCount[0]?.count || 0,
+        hasLiked: hasLiked.length > 0,
+    }
+}
+
+export const likePostRepository = async (postId: string, userId: string) => {
+    const result = await db
+        .insert(postLikes)
+        .values({ postId, userId })
+        .returning()
+
+    return result[0] || null
+}
+
+export const unlikePostRepository = async (postId: string, userId: string) => {
+    const result = await db
+        .delete(postLikes)
+        .where(
+            and(eq(postLikes.postId, postId), eq(postLikes.userId, userId))
+        )
+        .returning()
+
+    return result[0] || null
 }

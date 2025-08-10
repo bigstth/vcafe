@@ -6,6 +6,8 @@ import {
     softDeletePostService,
     archivePostService,
     unarchivePostService,
+    getPostLikeService,
+    toggleLikePostService,
 } from './service'
 import type { Context } from 'hono'
 import { errorResponseFormat } from '@server/lib/error'
@@ -97,5 +99,46 @@ export const unArchivePostController = async (c: Context) => {
             error,
         })
         return c.json({ error: 'Failed to unarchive post' }, 500)
+    }
+}
+
+export const getPostLikeController = async (c: Context) => {
+    const { id } = c.get('validatedParam')
+    const user = c.get('user')
+
+    try {
+        const result = await getPostLikeService(id, user.id)
+        return c.json(result)
+    } catch (error) {
+        CustomLogger.error('Error getting post likes', {
+            postId: id,
+            userId: user.id,
+            error,
+        })
+        return errorResponseFormat(c, error)
+    }
+}
+
+export const toggleLikePostController = async (c: Context) => {
+    const { id } = c.get('validatedParam')
+    const user = c.get('user')
+
+    try {
+        const liked = await toggleLikePostService(id, user.id)
+        const isLiked = liked && typeof liked === 'object' && 'isLiked' in liked ? liked.isLiked : false;
+        const result = { 
+            success: true, 
+            message: isLiked ? 'Post liked' : 'Post unliked' ,
+            th: isLiked ? 'กดถูกใจโพสต์' : 'ยกเลิกถูกใจโพสต์', 
+            en: isLiked ? 'Post liked' : 'Post unliked'
+        }
+        return c.json(result)
+    } catch (error) {
+        CustomLogger.error('Error toggling like post', {
+            postId: id,
+            userId: user.id,
+            error,
+        })
+        return errorResponseFormat(c, error)
     }
 }
