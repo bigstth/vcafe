@@ -27,16 +27,8 @@ export const createPostRateLimit = async (c: Context, next: Next) => {
             .orderBy(desc(posts.createdAt))
 
         if (recentPosts.length >= maxRequests) {
-            const latestPost = recentPosts[0]
-            if (!latestPost) {
-                return c.json(
-                    {
-                        error: 'Unexpected error: No recent post found.',
-                        message: 'Please try again.',
-                    },
-                    500,
-                )
-            }
+            const latestPost = recentPosts[0]!
+
             const latestPostTime = new Date(latestPost.createdAt).getTime()
             const waitUntil = latestPostTime + windowMs
             const waitTimeMs = waitUntil - Date.now()
