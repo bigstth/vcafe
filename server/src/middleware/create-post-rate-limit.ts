@@ -13,7 +13,7 @@ export const createPostRateLimit = async (c: Context, next: Next) => {
     }
 
     try {
-        const maxRequests = 1
+        const maxRequests = 5
         const windowMs = 60 * 1000 // 1 นาที
         const oneMinuteAgo = new Date(Date.now() - windowMs)
 
