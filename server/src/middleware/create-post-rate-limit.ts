@@ -1,48 +1,61 @@
 import type { Context, Next } from 'hono'
-
-interface UserRateLimit {
-    count: number
-    resetTime: number
-}
-
-const userLimits = new Map<string, UserRateLimit>()
+import { db } from '@server/db/db-instance'
+import { posts } from '@server/db/feed-schema'
+import { and, eq, gte, desc } from 'drizzle-orm'
+import { CustomLogger } from '@server/lib/custom-logger'
 
 export const createPostRateLimit = async (c: Context, next: Next) => {
     const user = c.get('user')
     const userId = user?.id
 
-    const now = Date.now()
-    const windowMs = 60 * 1000 // 1 นาที
-    const maxRequests = 5
+    if (!userId) {
+        return c.json({ error: 'User not authenticated' }, 401)
+    }
 
-    const userLimit = userLimits.get(userId)
+    try {
+        const maxRequests = 1
+        const windowMs = 60 * 1000 // 1 นาที
+        const oneMinuteAgo = new Date(Date.now() - windowMs)
 
-    if (!userLimit || now > userLimit.resetTime) {
-        userLimits.set(userId, {
-            count: 1,
-            resetTime: now + windowMs,
-        })
+        const recentPosts = await db
+            .select({
+                id: posts.id,
+                createdAt: posts.createdAt,
+            })
+            .from(posts)
+            .where(and(eq(posts.userId, userId), gte(posts.createdAt, oneMinuteAgo)))
+            .orderBy(desc(posts.createdAt))
+
+        if (recentPosts.length >= maxRequests) {
+            const latestPost = recentPosts[0]
+            if (!latestPost) {
+                return c.json(
+                    {
+                        error: 'Unexpected error: No recent post found.',
+                        message: 'Please try again.',
+                    },
+                    500,
+                )
+            }
+            const latestPostTime = new Date(latestPost.createdAt).getTime()
+            const waitUntil = latestPostTime + windowMs
+            const waitTimeMs = waitUntil - Date.now()
+            const waitTimeSeconds = Math.ceil(waitTimeMs / 1000)
+
+            return c.json(
+                {
+                    error: 'Too many posts created',
+                    message: `You can only create ${maxRequests} post per minute. Please wait ${waitTimeSeconds} seconds.`,
+                    th: `คุณสร้างโพสต์ได้เพียง ${maxRequests} โพสต์ต่อนาที กรุณารออีก ${waitTimeSeconds} วินาที`,
+                    en: `You can only create ${maxRequests} post per minute. Please wait ${waitTimeSeconds} seconds.`,
+                },
+                429,
+            )
+        }
+
         await next()
-        return
+    } catch (error) {
+        CustomLogger.error('Rate limit error:', error)
+        await next()
     }
-
-    if (userLimit.count >= maxRequests) {
-        const resetInSeconds = Math.ceil((userLimit.resetTime - now) / 1000)
-
-        return c.json(
-            {
-                error: 'Too many posts created',
-                message: `You can only create ${maxRequests} posts per minute. Try again in ${resetInSeconds} seconds.`,
-                th: `คุณสร้างโพสต์ได้เพียง ${maxRequests} โพสต์ต่อนาที กรุณารออีก ${resetInSeconds} วินาที`,
-                en: `You can only create ${maxRequests} posts per minute. Try again in ${resetInSeconds} seconds.`,
-                resetTime: new Date(userLimit.resetTime),
-            },
-            429,
-        )
-    }
-
-    userLimit.count++
-    userLimits.set(userId, userLimit)
-
-    await next()
 }
