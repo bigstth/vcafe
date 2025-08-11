@@ -1,7 +1,7 @@
 import {
     useMutation,
     useQueryClient,
-    type UseMutationOptions,
+    type UseMutationOptions
 } from '@tanstack/react-query'
 import type { PostSchemaType } from './types'
 import type { ErrorResponse } from '@/hooks/use-format-error'
@@ -26,7 +26,7 @@ export const useCreatePost = (
 
             const response = await fetch('/api/posts', {
                 method: 'POST',
-                body: formData,
+                body: formData
             })
 
             if (!response.ok) {
@@ -38,9 +38,9 @@ export const useCreatePost = (
         ...options,
         onSuccess: (data, variables, context) => {
             queryClient.invalidateQueries({
-                queryKey: ['get-post'],
+                queryKey: ['get-post']
             })
             options?.onSuccess?.(data, variables, context)
-        },
+        }
     })
 }

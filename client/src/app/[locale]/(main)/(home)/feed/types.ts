@@ -13,14 +13,14 @@ export type Posts = PostsSuccessData['posts']
 export type PostItem = Posts[number]
 
 export interface Comment {
-    id: string;
-    content: string;
+    id: string
+    content: string
     author: {
-        id: string;
-        name: string;
-    };
-    createdAt: string;
-    updatedAt?: string;
+        id: string
+        name: string
+    }
+    createdAt: string
+    updatedAt?: string
 }
 export type GetCommentsData = Comment[]
 export type CommentsSuccessData = Exclude<GetCommentsData, { error: any }>
@@ -45,6 +45,6 @@ export type LikeSuccessData = {
 export type PostLikeSchemaType = { postId: string }
 
 export type commentSchemaType = {
-    postId: string;
-    content: string;
+    postId: string
+    content: string
 }

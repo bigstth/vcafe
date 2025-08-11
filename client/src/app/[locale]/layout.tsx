@@ -10,7 +10,7 @@ import { Toaster } from '@/components/ui/sonner'
 import { headers } from 'next/headers'
 
 export const generateMetadata = async ({
-    params,
+    params
 }: {
     params: Promise<{ locale: string }>
 }) => {
@@ -24,18 +24,18 @@ export const generateMetadata = async ({
 
     const t = await getTranslations({
         locale: validLocale,
-        namespace: 'meta',
+        namespace: 'meta'
     })
 
     return {
         title: t('title'),
-        description: t('description'),
+        description: t('description')
     }
 }
 
 export default async function RootLayout({
     children,
-    params,
+    params
 }: {
     children: React.ReactNode
     params: Promise<{ locale: string }>
@@ -73,8 +73,8 @@ export default async function RootLayout({
                                                 'bg-primary/90 border !text-foreground rounded-lg py-2 px-4 shadow-lg text-white w-96 flex gap-4 items-center',
                                             warning:
                                                 'bg-secondary/90 border !text-foreground rounded-lg py-2 px-4 shadow-lg text-white w-96 flex gap-4 items-center',
-                                            error: 'bg-destructive/90 border !text-foreground rounded-lg py-2 px-4 shadow-lg text-white w-96 flex gap-4 items-center',
-                                        },
+                                            error: 'bg-destructive/90 border !text-foreground rounded-lg py-2 px-4 shadow-lg text-white w-96 flex gap-4 items-center'
+                                        }
                                     }}
                                 />
                                 <UpdateUserInfoDialog />

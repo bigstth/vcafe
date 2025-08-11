@@ -21,7 +21,7 @@ const LoginFormPopover = () => {
         signIn
             .social({
                 provider,
-                callbackURL: process.env.NEXT_PUBLIC_API_URL,
+                callbackURL: process.env.NEXT_PUBLIC_API_URL
             })
             .catch((error) => {
                 console.error('Login failed:', error)
@@ -39,8 +39,8 @@ const LoginFormPopover = () => {
                 >
                     {React.cloneElement(<UserIcon />, {
                         ...createIconProps(POPOVER_KEY, {
-                            className: '[&>svg]:size-5! mt-3',
-                        }),
+                            className: '[&>svg]:size-5! mt-3'
+                        })
                     })}
                     <div className="absolute bottom-0 -left-1 bg-border/50 w-20 h-5 z-1" />
                     <span className="text-xs text-background z-2">

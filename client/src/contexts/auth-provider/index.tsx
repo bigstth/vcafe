@@ -28,9 +28,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const {
         data: userData,
         isFetching,
-        refetch: refreshUserData,
+        refetch: refreshUserData
     } = useGetMe({
-        enabled: !!session,
+        enabled: !!session
     })
 
     React.useEffect(() => {
@@ -46,8 +46,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 fetchOptions: {
                     onSuccess: () => {
                         window.location.href = '/'
-                    },
-                },
+                    }
+                }
             })
 
             setUser(null)
@@ -62,14 +62,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         social: async (options: { provider: string; callbackURL?: string }) => {
             try {
                 await authClient.signIn.social({
-                    provider: options.provider,
+                    provider: options.provider
                     // callbackURL: options.callbackURL || window.location.origin,
                 })
             } catch (error) {
                 console.error('Sign in error:', error)
                 throw error
             }
-        },
+        }
     }
 
     // Better Auth automatically handles the session state
@@ -78,7 +78,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         isLoading: isLoading || isPending || isFetching,
         signOut,
         signIn,
-        refreshUserData,
+        refreshUserData
     }
 
     return (

@@ -14,11 +14,11 @@ export const VISIBILITY_OPTIONS: Record<string, VisibilityOptionsType> = {
     follower_only: {
         value: 'follower_only',
         icon: <UserRound />,
-        active: true,
+        active: true
     },
     membership_only: {
         value: 'membership_only',
         icon: <UserLock />,
-        active: false,
-    },
+        active: false
+    }
 }

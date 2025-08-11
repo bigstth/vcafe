@@ -58,7 +58,7 @@ export default function middleware(request: NextRequest) {
             httpOnly: false,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'lax',
-            maxAge: 60 * 60 * 24 * 365,
+            maxAge: 60 * 60 * 24 * 365
         })
         return response
     }
@@ -76,7 +76,7 @@ export default function middleware(request: NextRequest) {
             httpOnly: false,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'lax',
-            maxAge: 60 * 60 * 24 * 365,
+            maxAge: 60 * 60 * 24 * 365
         })
     }
 
@@ -84,5 +84,5 @@ export default function middleware(request: NextRequest) {
 }
 
 export const config = {
-    matcher: ['/((?!api|trpc|_next|_vercel|.*\\..*).*)'],
+    matcher: ['/((?!api|trpc|_next|_vercel|.*\\..*).*)']
 }

@@ -15,14 +15,14 @@ import { toast } from 'sonner'
 import debounce from 'lodash/debounce'
 
 type CreateCommentComponentProps = {
-    post: PostItem | null;
-    setShowCreateComment?: React.Dispatch<React.SetStateAction<boolean>>;
-    setPost?: React.Dispatch<React.SetStateAction<PostItem | null>>;
-};
+    post: PostItem | null
+    setShowCreateComment?: React.Dispatch<React.SetStateAction<boolean>>
+    setPost?: React.Dispatch<React.SetStateAction<PostItem | null>>
+}
 const CreateCommentComponent: React.FC<CreateCommentComponentProps> = ({
     post,
     setShowCreateComment,
-    setPost,
+    setPost
 }) => {
     const { user } = useAuth()
     const form = useForm({ defaultValues: { content: '' } })
@@ -37,22 +37,22 @@ const CreateCommentComponent: React.FC<CreateCommentComponentProps> = ({
         },
         onError: (error) => {
             toast.error(`Error creating comment: ${error.message}`)
-        },
+        }
     })
 
     const onSubmit = debounce((data: { content: string }) => {
         if (!post?.id) {
-            toast.error('Post not found');
-            return;
+            toast.error('Post not found')
+            return
         }
         const payload: commentSchemaType = {
             postId: post.id,
-            content: data.content,
-        };
+            content: data.content
+        }
         toast.promise(createComment(payload), {
             loading: 'Commenting...',
-            success: 'Commented successfully!',
-        });
+            success: 'Commented successfully!'
+        })
     }, 500)
 
     return (
@@ -80,7 +80,9 @@ const CreateCommentComponent: React.FC<CreateCommentComponentProps> = ({
                         >
                             <span className="text-foreground/50 font-medium">
                                 {` `}·{' '}
-                                {post?.createdAt ? getTimeAgo(new Date(post.createdAt)) : ''}
+                                {post?.createdAt
+                                    ? getTimeAgo(new Date(post.createdAt))
+                                    : ''}
                             </span>
                         </Link>
                     </div>
@@ -100,9 +102,7 @@ const CreateCommentComponent: React.FC<CreateCommentComponentProps> = ({
                 <div className="flex-1 flex flex-col gap-2">
                     <Form {...form}>
                         <div>
-                            <form
-                                onSubmit={form.handleSubmit(onSubmit)}
-                            >
+                            <form onSubmit={form.handleSubmit(onSubmit)}>
                                 <FormField
                                     control={form.control}
                                     name="content"
@@ -111,7 +111,7 @@ const CreateCommentComponent: React.FC<CreateCommentComponentProps> = ({
                                             <FormControl>
                                                 <Textarea
                                                     // placeholder={t('post_placeholder')}
-                                                    placeholder='Write a comment...'
+                                                    placeholder="Write a comment..."
                                                     className="resize-none"
                                                     {...field}
                                                 />
@@ -122,7 +122,7 @@ const CreateCommentComponent: React.FC<CreateCommentComponentProps> = ({
                             </form>
                         </div>
 
-                        <div className='flex justify-end'>
+                        <div className="flex justify-end">
                             <Button
                                 type="submit"
                                 disabled={!form.watch('content')?.trim()}
@@ -135,8 +135,7 @@ const CreateCommentComponent: React.FC<CreateCommentComponentProps> = ({
                 </div>
             </div>
         </div>
-
-    );
+    )
 }
 
-export default CreateCommentComponent;
+export default CreateCommentComponent

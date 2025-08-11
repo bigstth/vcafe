@@ -1,7 +1,7 @@
 'use client'
 import {
     NavigationMenu,
-    NavigationMenuLink,
+    NavigationMenuLink
 } from '@/components/ui/navigation-menu'
 import { Button } from '../ui/button'
 import { Globe, Menu, MoonStar, Sun } from 'lucide-react'
@@ -127,7 +127,7 @@ const Navbar = () => {
                                         isActive(item.href)
                                             ? ' [&>svg]:text-primary!'
                                             : ' [&>svg]:text-primary-foreground!'
-                                    }`,
+                                    }`
                                 })}
                             </Link>
                         </NavigationMenuLink>
@@ -177,7 +177,7 @@ const Navbar = () => {
                                                 isActive(item.href)
                                                     ? ' [&>svg]:text-primary!'
                                                     : ' [&>svg]:text-primary-foreground!'
-                                            }`,
+                                            }`
                                         })}
                                         {t(item.key)}
                                     </Link>

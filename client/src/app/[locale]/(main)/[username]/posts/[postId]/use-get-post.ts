@@ -13,7 +13,7 @@ export const useGetPosts = (id: string, options?: GetPostsOptions) => {
         queryKey: ['get-post', id],
         queryFn: async () => {
             const response = await api.posts[':id'].$get({
-                param: { id },
+                param: { id }
             })
             const data = (await response.json()) as GetSinglePostData
 
@@ -27,6 +27,6 @@ export const useGetPosts = (id: string, options?: GetPostsOptions) => {
         retry: false,
         refetchOnWindowFocus: false,
         enabled: !!id,
-        ...options,
+        ...options
     })
 }

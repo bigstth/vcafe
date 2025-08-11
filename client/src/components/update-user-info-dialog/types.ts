@@ -5,7 +5,7 @@ const ACCEPTED_IMAGE_TYPES = [
     'image/jpeg',
     'image/jpg',
     'image/png',
-    'image/webp',
+    'image/webp'
 ]
 
 export const userInfoFormSchema = z.object({
@@ -14,7 +14,7 @@ export const userInfoFormSchema = z.object({
             error: (issue) =>
                 issue.input === undefined
                     ? 'This field is required'
-                    : 'Please input a valid username',
+                    : 'Please input a valid username'
         })
         .max(30, 'Username must be at most 30 characters long'),
     displayUsername: z
@@ -22,7 +22,7 @@ export const userInfoFormSchema = z.object({
             error: (issue) =>
                 issue.input === undefined
                     ? 'This field is required'
-                    : 'Please input a valid display name',
+                    : 'Please input a valid display name'
         })
         .max(30, 'Display name must be at most 30 characters long'),
     birthDate: z.date().optional(),
@@ -31,7 +31,7 @@ export const userInfoFormSchema = z.object({
             error: (issue) =>
                 issue.input === undefined
                     ? 'This field is required'
-                    : 'Please upload a valid image file',
+                    : 'Please upload a valid image file'
         })
         .refine((file) => file.size <= MAX_FILE_SIZE, `Max image size is 5MB.`)
         .refine(
@@ -47,7 +47,7 @@ export const userInfoFormSchema = z.object({
         .regex(
             /[@$!%*#?&]/,
             'Password must contain at least one special character (@$!%*#?&)'
-        ),
+        )
 })
 
 export type UserInfoFormValues = z.infer<typeof userInfoFormSchema>

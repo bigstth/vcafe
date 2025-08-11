@@ -25,6 +25,6 @@ export const useLocaleNoPath = () => {
     return {
         locale,
         changeLocale,
-        availableLocales: ['en', 'th'] as const,
+        availableLocales: ['en', 'th'] as const
     }
 }

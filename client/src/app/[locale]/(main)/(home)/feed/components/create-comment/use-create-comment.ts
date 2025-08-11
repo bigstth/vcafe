@@ -1,7 +1,7 @@
 import {
     useMutation,
     useQueryClient,
-    type UseMutationOptions,
+    type UseMutationOptions
 } from '@tanstack/react-query'
 import type { commentSchemaType } from '../../types'
 import type { ErrorResponse } from '@/hooks/use-format-error'
@@ -18,11 +18,11 @@ export const useCreateComment = (
             const response = await fetch(`/api/comments/post/${postId}`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    content: data.content,
-                }),
+                    content: data.content
+                })
             })
 
             if (!response.ok) {
@@ -34,9 +34,9 @@ export const useCreateComment = (
         ...options,
         onSuccess: (data, variables, context) => {
             queryClient.invalidateQueries({
-                queryKey: ['get-comments', { postId: variables.postId }],
+                queryKey: ['get-comments', { postId: variables.postId }]
             })
             options?.onSuccess?.(data, variables, context)
-        },
+        }
     })
 }

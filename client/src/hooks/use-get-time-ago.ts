@@ -33,7 +33,7 @@ export const useTimeAgo = () => {
         const options: Intl.DateTimeFormatOptions = {
             year: 'numeric',
             month: 'long',
-            day: 'numeric',
+            day: 'numeric'
         }
         return created_at.toLocaleDateString(locale, options)
     }

@@ -1,14 +1,18 @@
 import {
     useMutation,
     useQueryClient,
-    type UseMutationOptions,
+    type UseMutationOptions
 } from '@tanstack/react-query'
 import { api } from '@/lib/api-instance'
-import type { LikeSuccessData , PostLikeSchemaType } from '../../types'
+import type { LikeSuccessData, PostLikeSchemaType } from '../../types'
 import { ErrorResponse } from '@/hooks/use-format-error'
 
 export const useCreatePostLike = (
-    options?: UseMutationOptions<LikeSuccessData, ErrorResponse, PostLikeSchemaType>
+    options?: UseMutationOptions<
+        LikeSuccessData,
+        ErrorResponse,
+        PostLikeSchemaType
+    >
 ) => {
     const queryClient = useQueryClient()
     return useMutation<LikeSuccessData, ErrorResponse, PostLikeSchemaType>({
@@ -21,16 +25,16 @@ export const useCreatePostLike = (
 
             if (response.status >= 400) {
                 throw data
-            }   
+            }
 
             return data as LikeSuccessData
         },
         ...options,
         onSuccess: (data, variables, context) => {
             queryClient.invalidateQueries({
-                queryKey: ['get-post-likes', variables.postId],
+                queryKey: ['get-post-likes', variables.postId]
             })
             options?.onSuccess?.(data, variables, context)
-        },
+        }
     })
 }

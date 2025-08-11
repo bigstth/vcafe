@@ -28,6 +28,6 @@ export const useGetPostComments = (
         retry: false,
         refetchOnWindowFocus: false,
         enabled: !!postId,
-        ...options,
+        ...options
     })
 }

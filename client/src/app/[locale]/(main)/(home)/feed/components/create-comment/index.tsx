@@ -8,19 +8,19 @@ import { commentSchemaType } from '../../types'
 import { toast } from 'sonner'
 import debounce from 'lodash/debounce'
 import CreateCommentComponent from './comment'
-import { X } from 'lucide-react';
+import { X } from 'lucide-react'
 
 type CreateCommentProps = {
-    post: PostItem | null;
-    showCreateComment: boolean;
-    setShowCreateComment?: React.Dispatch<React.SetStateAction<boolean>>;
-    setPost?: React.Dispatch<React.SetStateAction<PostItem | null>>;
-};
+    post: PostItem | null
+    showCreateComment: boolean
+    setShowCreateComment?: React.Dispatch<React.SetStateAction<boolean>>
+    setPost?: React.Dispatch<React.SetStateAction<PostItem | null>>
+}
 const CreateComment: React.FC<CreateCommentProps> = ({
     post,
     showCreateComment,
     setShowCreateComment,
-    setPost,
+    setPost
 }) => {
     const { user } = useAuth()
     const form = useForm({ defaultValues: { content: '' } })
@@ -35,22 +35,22 @@ const CreateComment: React.FC<CreateCommentProps> = ({
         },
         onError: (error) => {
             toast.error(`Error creating comment: ${error.message}`)
-        },
+        }
     })
 
     const onSubmit = debounce((data: { content: string }) => {
         if (!post?.id) {
-            toast.error('Post not found');
-            return;
+            toast.error('Post not found')
+            return
         }
         const payload: commentSchemaType = {
             postId: post.id,
-            content: data.content,
-        };
+            content: data.content
+        }
         toast.promise(createComment(payload), {
             loading: 'Commenting...',
-            success: 'Commented successfully!',
-        });
+            success: 'Commented successfully!'
+        })
     }, 500)
 
     return (
@@ -58,10 +58,8 @@ const CreateComment: React.FC<CreateCommentProps> = ({
             <div className="fixed inset-0 z-40 bg-black/40 backdrop-blur-xs" />
             <div className="z-50 fixed w-[600px] top-1/8 left-1/2 -translate-x-1/2">
                 <Card>
-                    <CardContent >
-                        <button
-                            onClick={() => setShowCreateComment?.(false)}
-                        >
+                    <CardContent>
+                        <button onClick={() => setShowCreateComment?.(false)}>
                             <X className="absolute top-4 right-4 cursor-pointer text-xl mx-4 my-2" />
                         </button>
 
@@ -72,10 +70,9 @@ const CreateComment: React.FC<CreateCommentProps> = ({
                         />
                     </CardContent>
                 </Card>
-
             </div>
         </div>
-    );
+    )
 }
 
-export default CreateComment;
+export default CreateComment

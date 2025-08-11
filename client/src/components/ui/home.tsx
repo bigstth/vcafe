@@ -17,18 +17,18 @@ interface HomeIconProps extends HTMLAttributes<HTMLDivElement> {
 
 const defaultTransition: Transition = {
     duration: 0.6,
-    opacity: { duration: 0.2 },
+    opacity: { duration: 0.2 }
 }
 
 const pathVariants: Variants = {
     normal: {
         pathLength: 1,
-        opacity: 1,
+        opacity: 1
     },
     animate: {
         opacity: [0, 1],
-        pathLength: [0, 1],
-    },
+        pathLength: [0, 1]
+    }
 }
 
 const HomeIcon = forwardRef<HomeIconHandle, HomeIconProps>(
@@ -41,7 +41,7 @@ const HomeIcon = forwardRef<HomeIconHandle, HomeIconProps>(
 
             return {
                 startAnimation: () => controls.start('animate'),
-                stopAnimation: () => controls.start('normal'),
+                stopAnimation: () => controls.start('normal')
             }
         })
 

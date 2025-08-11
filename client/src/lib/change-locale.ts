@@ -19,6 +19,6 @@ export const useChangeLocale = () => {
     return {
         changeLocale,
         currentLocale,
-        availableLocales: ['en', 'th'] as const,
+        availableLocales: ['en', 'th'] as const
     }
 }

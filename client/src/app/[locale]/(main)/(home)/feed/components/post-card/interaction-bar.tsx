@@ -19,7 +19,7 @@ type InteractionBarProps = {
 const InteractionBar: React.FC<InteractionBarProps> = ({
     post,
     setShowCreateComment,
-    setPost,
+    setPost
 }) => {
     const { data: comments, isLoading: commentLoading } = useGetPostComments(
         post.id
@@ -39,7 +39,7 @@ const InteractionBar: React.FC<InteractionBarProps> = ({
         onError: async (error: ErrorResponse) => {
             const errorObj = await error
             setError(formatErrorMessage(errorObj))
-        },
+        }
     })
 
     const handleComment = async () => {

@@ -15,7 +15,7 @@ import { useGlobalErrorStore } from '@/store/global-error'
 import {
     Popover,
     PopoverContent,
-    PopoverTrigger,
+    PopoverTrigger
 } from '@/components/ui/popover'
 import { MAX_IMAGES, VISIBILITY_OPTIONS } from './constants'
 
@@ -42,8 +42,8 @@ const CreatePostComponent = () => {
         defaultValues: {
             content: '',
             visibility: 'public',
-            images: [],
-        },
+            images: []
+        }
     })
 
     const { mutateAsync: createPost } = useCreatePost({
@@ -54,13 +54,13 @@ const CreatePostComponent = () => {
         onError: async (error: ErrorResponse) => {
             const errorObj = await error
             setError(formatErrorMessage(errorObj))
-        },
+        }
     })
 
     const onSubmit = (data: PostSchemaType) => {
         toast.promise(createPost(data), {
             loading: t('creating_post'),
-            success: t('post_created'),
+            success: t('post_created')
         })
     }
 
@@ -152,7 +152,7 @@ const CreatePostComponent = () => {
                                                                 t(
                                                                     'errors.max_images',
                                                                     {
-                                                                        max: MAX_IMAGES,
+                                                                        max: MAX_IMAGES
                                                                     }
                                                                 )
                                                             )
@@ -161,7 +161,7 @@ const CreatePostComponent = () => {
 
                                                         field.onChange([
                                                             ...currentImages,
-                                                            ...files,
+                                                            ...files
                                                         ])
                                                     }}
                                                     onBlur={field.onBlur}
@@ -225,7 +225,7 @@ const CreatePostComponent = () => {
                                                                         }`,
                                                                         {
                                                                             'opacity-50 cursor-not-allowed':
-                                                                                !option.active,
+                                                                                !option.active
                                                                         }
                                                                     )}
                                                                     onClick={() => {

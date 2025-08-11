@@ -5,7 +5,7 @@ import {
     DialogContent,
     DialogFooter,
     DialogHeader,
-    DialogTitle,
+    DialogTitle
 } from '@/components/ui/dialog'
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
@@ -21,7 +21,7 @@ import {
     FormField,
     FormItem,
     FormLabel,
-    FormMessage,
+    FormMessage
 } from '../ui/form'
 import { useUpdateUser } from './use-update-user'
 import { toast } from 'sonner'
@@ -35,13 +35,13 @@ const UpdateUserInfoDialog = () => {
             refreshUserData()
             setShowDialog(false)
             toast.success(t('features.update_user.welcome'))
-        },
+        }
     })
     const form = useForm<z.infer<typeof userInfoFormSchema>>({
         resolver: zodResolver(userInfoFormSchema),
         defaultValues: {
-            username: '',
-        },
+            username: ''
+        }
     })
 
     useEffect(() => {

@@ -8,7 +8,7 @@ export const postSchema = z.object({
     visibility: z
         .enum(['public', 'follower_only', 'membership_only'])
         .default('public'),
-    images: z.array(z.instanceof(File)).optional(),
+    images: z.array(z.instanceof(File)).optional()
 })
 
 export type PostSchemaType = z.infer<typeof postSchema>

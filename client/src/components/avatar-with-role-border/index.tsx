@@ -8,7 +8,7 @@ const AvatarRole = ({
     image,
     username,
     role = 'gold',
-    classNames = '',
+    classNames = ''
 }: {
     image?: string
     username?: string | null

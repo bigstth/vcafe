@@ -7,10 +7,7 @@ type GetLikesOptions = Omit<
     'queryKey' | 'queryFn'
 >
 
-export const useGetPostLike = (
-    postId: string,
-    options?: GetLikesOptions
-) => {
+export const useGetPostLike = (postId: string, options?: GetLikesOptions) => {
     return useQuery<LikesSuccessData, Error>({
         queryKey: ['get-post-likes', postId],
         queryFn: async () => {
@@ -28,6 +25,6 @@ export const useGetPostLike = (
         retry: false,
         refetchOnWindowFocus: false,
         enabled: !!postId,
-        ...options,
+        ...options
     })
 }

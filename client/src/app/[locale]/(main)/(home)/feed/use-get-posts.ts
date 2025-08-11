@@ -14,7 +14,7 @@ export const useGetPosts = (
         queryKey: ['get-post', payload],
         queryFn: async () => {
             const response = await api.posts.$get({
-                query: { offset: payload.offset },
+                query: { offset: payload.offset }
             })
             const data = (await response.json()) as GetPostsData
 
@@ -26,6 +26,6 @@ export const useGetPosts = (
         },
         retry: false,
         refetchOnWindowFocus: false,
-        ...options,
+        ...options
     })
 }

@@ -6,7 +6,7 @@ import PostCard from './components/post-card'
 import PostSkeleton from './components/post-card/post-skeleton'
 import CreateComment from './components/create-comment'
 import { Card, CardContent } from '@/components/ui/card'
-import { X } from 'lucide-react';
+import { X } from 'lucide-react'
 import { PostItem } from './types'
 
 const Feed = () => {
@@ -35,12 +35,12 @@ const Feed = () => {
                     </>
                 ) : (
                     posts?.posts.map((post) => (
-                        <PostCard 
-                            key={post.id} 
-                            post={post} 
+                        <PostCard
+                            key={post.id}
+                            post={post}
                             setShowCreateComment={setShowCreateComment}
                             setPost={setPost}
-                        />   
+                        />
                     ))
                 )}
             </div>

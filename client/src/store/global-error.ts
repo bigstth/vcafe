@@ -12,5 +12,5 @@ export const useGlobalErrorStore = create<GlobalErrorState>((set) => ({
         setTimeout(() => {
             set({ error: null })
         }, 1000)
-    },
+    }
 }))

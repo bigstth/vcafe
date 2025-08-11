@@ -25,7 +25,7 @@ export const useUpdateUser = (
             const response = await fetch('/api/user/register', {
                 method: 'POST',
                 body: formData,
-                credentials: 'include',
+                credentials: 'include'
             })
 
             if (response.ok) {
@@ -50,6 +50,6 @@ export const useUpdateUser = (
                 )
             }
         },
-        ...options,
+        ...options
     })
 }

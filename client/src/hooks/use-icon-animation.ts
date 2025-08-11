@@ -25,7 +25,7 @@ export function useIconAnimation(): IconAnimationHandlers {
             ref: (ref: HomeIconHandle) => {
                 iconRefs.current[key] = ref
             },
-            ...additionalProps,
+            ...additionalProps
         }),
         []
     )
@@ -34,6 +34,6 @@ export function useIconAnimation(): IconAnimationHandlers {
         iconRefs,
         handleIconHover,
         handleIconLeave,
-        createIconProps,
+        createIconProps
     }
 }
