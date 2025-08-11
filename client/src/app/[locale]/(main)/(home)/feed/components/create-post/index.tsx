@@ -46,7 +46,7 @@ const CreatePostComponent = () => {
         }
     })
 
-    const { mutateAsync: createPost } = useCreatePost({
+    const { mutateAsync: createPost, isPending } = useCreatePost({
         onSuccess: () => {
             form.reset()
             setIsVisibilityOpen(false)
@@ -262,7 +262,7 @@ const CreatePostComponent = () => {
                                     )}
                                 />
 
-                                <Button type="submit">
+                                <Button type="submit" disabled={isPending}>
                                     {t('post_button')}
                                 </Button>
                             </div>

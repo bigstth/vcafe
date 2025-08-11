@@ -26,6 +26,8 @@ export const useGetPosts = (
         },
         retry: false,
         refetchOnWindowFocus: false,
+        refetchInterval: 60 * 1000,
+        refetchIntervalInBackground: true,
         ...options
     })
 }
