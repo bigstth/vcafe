@@ -11,38 +11,38 @@ export const auth = betterAuth({
             user,
             session,
             account,
-            verification,
-        },
+            verification
+        }
     }),
     rateLimit: {
         enabled: true,
         window: 10,
         max: 20,
         storage: 'memory',
-        modelName: 'rateLimit',
+        modelName: 'rateLimit'
     },
     emailAndPassword: {
-        enabled: true,
+        enabled: true
     },
     socialProviders: {
         google: {
             clientId: process.env.GOOGLE_CLIENT_ID!,
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET!
         },
         twitch: {
             clientId: process.env.TWITCH_CLIENT_ID!,
-            clientSecret: process.env.TWITCH_CLIENT_SECRET!,
+            clientSecret: process.env.TWITCH_CLIENT_SECRET!
         },
         twitter: {
             clientId: process.env.TWITTER_CLIENT_ID!,
-            clientSecret: process.env.TWITTER_CLIENT_SECRET!,
-        },
+            clientSecret: process.env.TWITTER_CLIENT_SECRET!
+        }
     },
     account: {
         accountLinking: {
             enabled: true,
-            trustedProviders: ['google', 'twitch', 'twitter'],
-        },
+            trustedProviders: ['google', 'twitch', 'twitter']
+        }
     },
     cors: {
         origin: [
@@ -50,13 +50,15 @@ export const auth = betterAuth({
             'http://localhost:5173',
             'http://127.0.0.1:5173',
             'http://localhost:3000',
+            'https://vcafe.vercel.app'
         ],
-        credentials: true,
+        credentials: true
     },
     trustedOrigins: [
         'https://vcafe.xyz',
         'http://localhost:5173',
         'http://127.0.0.1:5173',
         'http://localhost:3000',
-    ],
+        'https://vcafe.vercel.app'
+    ]
 }) as ReturnType<typeof betterAuth>
