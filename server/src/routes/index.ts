@@ -6,6 +6,7 @@ import postRoutes from './post/index.js'
 import userRoutes from './user/index.js'
 
 export const appRoutes = new Hono()
+    .get('/', (c) => c.text('Hi'))
     .route('/auth', authRoutes)
     .route('/posts', postRoutes)
     .route('/user', userRoutes)
