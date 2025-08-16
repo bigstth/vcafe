@@ -5,6 +5,7 @@
     "scripts": {
         "install:full": "bun install --backend=copyfile",
         "build": "tsc",
+        "start": "bun dist/index.js",
         "dev": "bun --watch run src/index.ts && tsc --watch -p 3000"
     },
     "dependencies": {
