@@ -1,4 +1,4 @@
-import { hcWithType } from 'server/dist/client'
+import { hcWithType } from '../../../server/dist/client'
 
 export const api = hcWithType('/api', {
     headers: {
