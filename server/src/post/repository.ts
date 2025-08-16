@@ -1,10 +1,9 @@
-import { db } from '@server/db/db-instance'
-import { posts, postImages, comments, postLikes } from '@server/db/feed-schema'
 import { eq, desc, asc, and, count, sql } from 'drizzle-orm'
-import { activePostsCondition } from '@server/lib/soft-delete'
-import type { NewPost, Post } from '@server/types/schema'
-import { CustomLogger } from '@server/lib/custom-logger'
-import { noPostFoundError } from '@server/post/errors'
+import { NewPost, Post } from '../types/schema.js'
+import { activePostsCondition } from '../lib/soft-delete.js'
+import { db } from '../db/db-instance.js'
+import { posts, postImages, comments, postLikes } from '../db/feed-schema.js'
+import { CustomLogger } from '../lib/custom-logger.js'
 
 export interface GetPostsOptions {
     limit: number
@@ -30,7 +29,7 @@ export const getPostsWithImagesRepository = async (
 
     const whereConditions = [
         activePostsCondition(),
-        eq(posts.visibility, 'public'),
+        eq(posts.visibility, 'public')
     ]
 
     const result = await db.query.posts.findMany({
@@ -43,11 +42,11 @@ export const getPostsWithImagesRepository = async (
                     displayUsername: true,
                     bio: true,
                     role: true,
-                    image: true,
-                },
+                    image: true
+                }
             },
             images: {
-                orderBy: [asc(postImages.displayOrder)],
+                orderBy: [asc(postImages.displayOrder)]
             },
             comments: {
                 where: eq(comments.isDeleted, false),
@@ -59,20 +58,20 @@ export const getPostsWithImagesRepository = async (
                             displayUsername: true,
                             bio: true,
                             role: true,
-                            image: true,
-                        },
-                    },
+                            image: true
+                        }
+                    }
                 },
-                orderBy: [desc(comments.createdAt)],
+                orderBy: [desc(comments.createdAt)]
             },
-            likes: true,
+            likes: true
         },
         orderBy:
             orderBy === 'desc'
                 ? [desc(posts.createdAt)]
                 : [asc(posts.createdAt)],
         offset,
-        limit,
+        limit
     })
 
     const totalQuery = await db
@@ -86,7 +85,7 @@ export const getPostsWithImagesRepository = async (
     return {
         posts: result,
         total,
-        hasMore,
+        hasMore
     }
 }
 
@@ -101,14 +100,14 @@ export const getUserArchivedPostsRepository = async (
         return {
             posts: [],
             total: 0,
-            hasMore: false,
+            hasMore: false
         }
     }
 
     const whereConditions = [
         eq(posts.userId, userId),
         eq(posts.isDeleted, false),
-        eq(posts.isArchived, true),
+        eq(posts.isArchived, true)
     ]
 
     const result = await db.query.posts.findMany({
@@ -121,16 +120,16 @@ export const getUserArchivedPostsRepository = async (
                     displayUsername: true,
                     bio: true,
                     role: true,
-                    image: true,
-                },
+                    image: true
+                }
             },
             images: {
-                orderBy: [asc(postImages.displayOrder)],
-            },
+                orderBy: [asc(postImages.displayOrder)]
+            }
         },
         orderBy: [desc(posts.archivedAt)],
         offset,
-        limit,
+        limit
     })
 
     const totalQuery = await db
@@ -144,7 +143,7 @@ export const getUserArchivedPostsRepository = async (
     return {
         posts: result || [],
         total,
-        hasMore,
+        hasMore
     }
 }
 
@@ -160,13 +159,13 @@ export const getUserDeletedPostsRepository = async (
         return {
             posts: [],
             total: 0,
-            hasMore: false,
+            hasMore: false
         }
     }
 
     const whereConditions = [
         eq(posts.userId, userId),
-        eq(posts.isDeleted, true),
+        eq(posts.isDeleted, true)
     ]
 
     const result = await db.query.posts.findMany({
@@ -179,16 +178,16 @@ export const getUserDeletedPostsRepository = async (
                     displayUsername: true,
                     bio: true,
                     role: true,
-                    image: true,
-                },
+                    image: true
+                }
             },
             images: {
-                orderBy: [asc(postImages.displayOrder)],
-            },
+                orderBy: [asc(postImages.displayOrder)]
+            }
         },
         orderBy: [desc(posts.deletedAt)],
         offset,
-        limit,
+        limit
     })
 
     const totalQuery = await db
@@ -202,7 +201,7 @@ export const getUserDeletedPostsRepository = async (
     return {
         posts: result,
         total,
-        hasMore,
+        hasMore
     }
 }
 
@@ -221,13 +220,13 @@ export const getDeletedPostsRepository = async (
                     displayUsername: true,
                     bio: true,
                     role: true,
-                    image: true,
-                },
-            },
+                    image: true
+                }
+            }
         },
         orderBy: [desc(posts.deletedAt)],
         offset,
-        limit,
+        limit
     })
 
     return result || null
@@ -238,7 +237,7 @@ export const getPostRepository = async (id: string) => {
         where: eq(posts.id, id),
         with: {
             images: {
-                orderBy: asc(postImages.displayOrder),
+                orderBy: asc(postImages.displayOrder)
             },
             author: {
                 columns: {
@@ -247,8 +246,8 @@ export const getPostRepository = async (id: string) => {
                     displayUsername: true,
                     bio: true,
                     role: true,
-                    image: true,
-                },
+                    image: true
+                }
             },
             comments: {
                 orderBy: desc(posts.createdAt),
@@ -260,13 +259,13 @@ export const getPostRepository = async (id: string) => {
                             displayUsername: true,
                             bio: true,
                             role: true,
-                            image: true,
-                        },
-                    },
-                },
+                            image: true
+                        }
+                    }
+                }
             },
-            likes: true,
-        },
+            likes: true
+        }
     })
 }
 
@@ -288,7 +287,7 @@ export const createPostRepository = async (
         content: data.content,
         visibility: data.visibility || 'public',
         createdAt: new Date(),
-        updatedAt: new Date(),
+        updatedAt: new Date()
     }
 
     const result = await db.insert(posts).values(newPost).returning()
@@ -308,7 +307,7 @@ export const softDeletePostRepository = async (
         .update(posts)
         .set({
             isDeleted: true,
-            deletedAt: new Date(),
+            deletedAt: new Date()
         })
         .where(
             and(
@@ -327,7 +326,7 @@ export const archivePostRepository = async (postId: string, userId: string) => {
         .update(posts)
         .set({
             isArchived: true,
-            archivedAt: new Date(),
+            archivedAt: new Date()
         })
         .where(
             and(
@@ -350,7 +349,7 @@ export const unarchivePostRepository = async (
         .update(posts)
         .set({
             isArchived: false,
-            archivedAt: null,
+            archivedAt: null
         })
         .where(
             and(
@@ -375,8 +374,8 @@ export const canModifyPostRepository = async (
             columns: {
                 id: true,
                 isDeleted: true,
-                isArchived: true,
-            },
+                isArchived: true
+            }
         })
 
         return {
@@ -385,13 +384,13 @@ export const canModifyPostRepository = async (
             isArchived: post?.isArchived || false,
             canDelete: post && !post.isDeleted,
             canArchive: post && !post.isDeleted && !post.isArchived,
-            canUnarchive: post && !post.isDeleted && post.isArchived,
+            canUnarchive: post && !post.isDeleted && post.isArchived
         }
     } catch (error) {
         CustomLogger.error('Database error in canModifyPostRepository', {
             postId,
             userId,
-            error,
+            error
         })
         throw error
     }
@@ -410,7 +409,7 @@ export const getPostLikeRepository = async (postId: string, userId: string) => {
 
     return {
         likeCount: likeCount[0]?.count || 0,
-        hasLiked: hasLiked.length > 0,
+        hasLiked: hasLiked.length > 0
     }
 }
 
@@ -426,9 +425,7 @@ export const likePostRepository = async (postId: string, userId: string) => {
 export const unlikePostRepository = async (postId: string, userId: string) => {
     const result = await db
         .delete(postLikes)
-        .where(
-            and(eq(postLikes.postId, postId), eq(postLikes.userId, userId))
-        )
+        .where(and(eq(postLikes.postId, postId), eq(postLikes.userId, userId)))
         .returning()
 
     return result[0] || null

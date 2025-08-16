@@ -1,6 +1,6 @@
-import { db } from '@server/db/db-instance'
-import { followers } from '@server/db/feed-schema'
 import { eq, and, count } from 'drizzle-orm'
+import { db } from '../db/db-instance.js'
+import { followers } from '../db/feed-schema.js'
 
 export const followUserRepository = async (
     followerId: string,

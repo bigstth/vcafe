@@ -8,14 +8,14 @@ import {
     pgEnum,
     pgTable,
     uuid,
-    boolean,
+    boolean
 } from 'drizzle-orm/pg-core'
-import { user } from './user-schema'
+import { user } from './user-schema.js'
 
 export const postVisibilityEnum = pgEnum('post_visibility', [
     'public',
     'follower_only',
-    'membership_only',
+    'membership_only'
 ])
 
 export const posts = pgTable('posts', {
@@ -32,7 +32,7 @@ export const posts = pgTable('posts', {
     deletedAt: timestamp('deleted_at'),
     archivedAt: timestamp('archived_at'),
     createdAt: timestamp('created_at').defaultNow().notNull(),
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull()
 })
 
 export const comments = pgTable('comments', {
@@ -52,7 +52,7 @@ export const comments = pgTable('comments', {
     updatedAt: timestamp('updated_at')
         .notNull()
         .defaultNow()
-        .$onUpdate(() => new Date()),
+        .$onUpdate(() => new Date())
 })
 
 export const followers = pgTable(
@@ -64,11 +64,11 @@ export const followers = pgTable(
         followingId: text('following_id')
             .notNull()
             .references(() => user.id, { onDelete: 'cascade' }),
-        createdAt: timestamp('created_at').defaultNow().notNull(),
+        createdAt: timestamp('created_at').defaultNow().notNull()
     },
     (table) => {
         return {
-            pk: primaryKey({ columns: [table.followerId, table.followingId] }),
+            pk: primaryKey({ columns: [table.followerId, table.followingId] })
         }
     }
 )
@@ -84,11 +84,11 @@ export const memberships = pgTable(
             .references(() => user.id, { onDelete: 'cascade' }),
         createdAt: timestamp('created_at').defaultNow().notNull(),
         updatedAt: timestamp('updated_at').defaultNow().notNull(),
-        expiredAt: timestamp('expired_at').notNull(),
+        expiredAt: timestamp('expired_at').notNull()
     },
     (table) => {
         return {
-            pk: primaryKey({ columns: [table.memberId, table.creatorId] }),
+            pk: primaryKey({ columns: [table.memberId, table.creatorId] })
         }
     }
 )
@@ -103,7 +103,7 @@ export const postImages = pgTable('post_images', {
     url: text('url').notNull(),
     altText: text('alt_text'),
     displayOrder: integer('display_order').default(0).notNull(),
-    createdAt: timestamp('created_at').defaultNow().notNull(),
+    createdAt: timestamp('created_at').defaultNow().notNull()
 })
 
 export const postLikes = pgTable(
@@ -115,11 +115,11 @@ export const postLikes = pgTable(
         postId: uuid('post_id')
             .notNull()
             .references(() => posts.id, { onDelete: 'cascade' }),
-        createdAt: timestamp('created_at').defaultNow().notNull(),
+        createdAt: timestamp('created_at').defaultNow().notNull()
     },
     (table) => {
         return {
-            pk: primaryKey({ columns: [table.userId, table.postId] }),
+            pk: primaryKey({ columns: [table.userId, table.postId] })
         }
     }
 )
@@ -133,18 +133,18 @@ export const commentLikes = pgTable(
         commentId: uuid('comment_id')
             .notNull()
             .references(() => comments.id, { onDelete: 'cascade' }),
-        createdAt: timestamp('created_at').defaultNow().notNull(),
+        createdAt: timestamp('created_at').defaultNow().notNull()
     },
     (table) => {
         return {
-            pk: primaryKey({ columns: [table.userId, table.commentId] }),
+            pk: primaryKey({ columns: [table.userId, table.commentId] })
         }
     }
 )
 
 export const hashtags = pgTable('hashtags', {
     id: serial('id').primaryKey(),
-    tag: text('tag').notNull().unique(),
+    tag: text('tag').notNull().unique()
 })
 
 export const postHashtags = pgTable(
@@ -155,11 +155,11 @@ export const postHashtags = pgTable(
             .references(() => posts.id, { onDelete: 'cascade' }),
         hashtagId: integer('hashtag_id')
             .notNull()
-            .references(() => hashtags.id, { onDelete: 'cascade' }),
+            .references(() => hashtags.id, { onDelete: 'cascade' })
     },
     (table) => {
         return {
-            pk: primaryKey({ columns: [table.postId, table.hashtagId] }),
+            pk: primaryKey({ columns: [table.postId, table.hashtagId] })
         }
     }
 )
@@ -172,11 +172,11 @@ export const postMentions = pgTable(
             .references(() => posts.id, { onDelete: 'cascade' }),
         mentionedUserId: text('user_id')
             .notNull()
-            .references(() => user.id, { onDelete: 'cascade' }),
+            .references(() => user.id, { onDelete: 'cascade' })
     },
     (table) => {
         return {
-            pk: primaryKey({ columns: [table.postId, table.mentionedUserId] }),
+            pk: primaryKey({ columns: [table.postId, table.mentionedUserId] })
         }
     }
 )
@@ -189,7 +189,7 @@ export const userRelations = relations(user, ({ many }) => ({
     following: many(followers, { relationName: 'following' }),
     followers: many(followers, { relationName: 'followers' }),
     membershipsAsMember: many(memberships, { relationName: 'member' }),
-    membershipsAsCreator: many(memberships, { relationName: 'creator' }),
+    membershipsAsCreator: many(memberships, { relationName: 'creator' })
 }))
 
 export const postRelations = relations(posts, ({ one, many }) => ({
@@ -198,74 +198,74 @@ export const postRelations = relations(posts, ({ one, many }) => ({
     comments: many(comments),
     likes: many(postLikes),
     hashtags: many(postHashtags),
-    mentions: many(postMentions),
+    mentions: many(postMentions)
 }))
 
 export const commentRelations = relations(comments, ({ one, many }) => ({
     author: one(user, { fields: [comments.userId], references: [user.id] }),
     post: one(posts, { fields: [comments.postId], references: [posts.id] }),
-    likes: many(commentLikes),
+    likes: many(commentLikes)
 }))
 
 export const postImageRelations = relations(postImages, ({ one }) => ({
-    post: one(posts, { fields: [postImages.postId], references: [posts.id] }),
+    post: one(posts, { fields: [postImages.postId], references: [posts.id] })
 }))
 
 export const postLikesRelations = relations(postLikes, ({ one }) => ({
     post: one(posts, { fields: [postLikes.postId], references: [posts.id] }),
-    user: one(user, { fields: [postLikes.userId], references: [user.id] }),
+    user: one(user, { fields: [postLikes.userId], references: [user.id] })
 }))
 
 export const commentLikesRelations = relations(commentLikes, ({ one }) => ({
     comment: one(comments, {
         fields: [commentLikes.commentId],
-        references: [comments.id],
+        references: [comments.id]
     }),
-    user: one(user, { fields: [commentLikes.userId], references: [user.id] }),
+    user: one(user, { fields: [commentLikes.userId], references: [user.id] })
 }))
 
 export const hashtagRelations = relations(hashtags, ({ many }) => ({
-    postHashtags: many(postHashtags),
+    postHashtags: many(postHashtags)
 }))
 
 export const postHashtagRelations = relations(postHashtags, ({ one }) => ({
     post: one(posts, { fields: [postHashtags.postId], references: [posts.id] }),
     hashtag: one(hashtags, {
         fields: [postHashtags.hashtagId],
-        references: [hashtags.id],
-    }),
+        references: [hashtags.id]
+    })
 }))
 
 export const postMentionRelations = relations(postMentions, ({ one }) => ({
     post: one(posts, { fields: [postMentions.postId], references: [posts.id] }),
     mentionedUser: one(user, {
         fields: [postMentions.mentionedUserId],
-        references: [user.id],
-    }),
+        references: [user.id]
+    })
 }))
 
 export const followerRelations = relations(followers, ({ one }) => ({
     follower: one(user, {
         fields: [followers.followerId],
         references: [user.id],
-        relationName: 'followers',
+        relationName: 'followers'
     }),
     following: one(user, {
         fields: [followers.followingId],
         references: [user.id],
-        relationName: 'following',
-    }),
+        relationName: 'following'
+    })
 }))
 
 export const membershipRelations = relations(memberships, ({ one }) => ({
     member: one(user, {
         fields: [memberships.memberId],
         references: [user.id],
-        relationName: 'member',
+        relationName: 'member'
     }),
     creator: one(user, {
         fields: [memberships.creatorId],
         references: [user.id],
-        relationName: 'creator',
-    }),
+        relationName: 'creator'
+    })
 }))

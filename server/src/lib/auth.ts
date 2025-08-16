@@ -1,8 +1,8 @@
-import { db } from '@server/db/db-instance'
-import { user, session, account, verification } from '../db/user-schema'
+import { user, session, account, verification } from '../db/user-schema.js'
 import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import 'dotenv/config'
+import { db } from '../db/db-instance.js'
 
 export const auth = betterAuth({
     database: drizzleAdapter(db, {

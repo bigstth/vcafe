@@ -1,5 +1,5 @@
-import { AppError } from '@server/lib/error'
-import { CustomLogger } from '@server/lib/custom-logger'
+import { CustomLogger } from '../lib/custom-logger.js'
+import { AppError } from '../lib/error.js'
 import {
     invalidFollowError,
     alreadyFollowingError,
@@ -9,16 +9,16 @@ import {
     getFollowersFailedError,
     getFollowingFailedError,
     getFollowStatusFailedError,
-    getFollowStatsFailedError,
-} from './errors'
+    getFollowStatsFailedError
+} from './errors.js'
 import {
     followUserRepository,
     unfollowUserRepository,
     isFollowingRepository,
     getFollowersRepository,
     getFollowingRepository,
-    getFollowStatsRepository,
-} from './repository'
+    getFollowStatsRepository
+} from './repository.js'
 
 export const followUserService = async (
     followerId: string,
@@ -45,7 +45,7 @@ export const followUserService = async (
         CustomLogger.error('Error following user', {
             followerId,
             followingId,
-            error,
+            error
         })
 
         throw new AppError(followFailedError)
@@ -72,7 +72,7 @@ export const unfollowUserService = async (
         CustomLogger.error('Error unfollowing user', {
             followerId,
             followingId,
-            error,
+            error
         })
         throw new AppError(unfollowFailedError)
     }
@@ -115,7 +115,7 @@ export const getFollowStatusService = async (
         CustomLogger.error('Error getting follow status', {
             followerId,
             followingId,
-            error,
+            error
         })
         throw new AppError(getFollowStatusFailedError)
     }

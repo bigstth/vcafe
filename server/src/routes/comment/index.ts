@@ -1,15 +1,15 @@
-import { protect } from '@server/middleware/auth'
-import { validateJson, validateParam } from '@server/middleware/validator'
 import { Hono } from 'hono'
-import { createCommentSchema, getCommentsSchema } from './validate-schema'
-import { createCommentController, getCommentsController } from '@server/comment/controller'
+import {
+    getCommentsController,
+    createCommentController
+} from '../../comment/controller.js'
+import { protect } from '../../middleware/auth.js'
+import { validateParam, validateJson } from '../../middleware/validator.js'
+import { getCommentsSchema, createCommentSchema } from './validate-schema.js'
 
 const commentRoutes = new Hono()
-    .get(
-        '/post/:postId',
-        protect,
-        validateParam(getCommentsSchema),
-        (c) => getCommentsController(c)
+    .get('/post/:postId', protect, validateParam(getCommentsSchema), (c) =>
+        getCommentsController(c)
     )
     .post(
         '/post/:postId',

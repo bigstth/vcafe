@@ -1,8 +1,8 @@
 import type { Context, Next } from 'hono'
-import { db } from '@server/db/db-instance'
-import { posts } from '@server/db/feed-schema'
 import { and, eq, gte, desc } from 'drizzle-orm'
-import { CustomLogger } from '@server/lib/custom-logger'
+import { db } from '../db/db-instance.js'
+import { posts } from '../db/feed-schema.js'
+import { CustomLogger } from '../lib/custom-logger.js'
 
 export const createPostRateLimit = async (c: Context, next: Next) => {
     const user = c.get('user')
@@ -20,10 +20,15 @@ export const createPostRateLimit = async (c: Context, next: Next) => {
         const recentPosts = await db
             .select({
                 id: posts.id,
-                createdAt: posts.createdAt,
+                createdAt: posts.createdAt
             })
             .from(posts)
-            .where(and(eq(posts.userId, userId), gte(posts.createdAt, oneMinuteAgo)))
+            .where(
+                and(
+                    eq(posts.userId, userId),
+                    gte(posts.createdAt, oneMinuteAgo)
+                )
+            )
             .orderBy(desc(posts.createdAt))
 
         if (recentPosts.length >= maxRequests) {
@@ -39,9 +44,9 @@ export const createPostRateLimit = async (c: Context, next: Next) => {
                     error: 'Too many posts created',
                     message: `You can only create ${maxRequests} post per minute. Please wait ${waitTimeSeconds} seconds.`,
                     th: `คุณสร้างโพสต์ได้เพียง ${maxRequests} โพสต์ต่อนาที กรุณารออีก ${waitTimeSeconds} วินาที`,
-                    en: `You can only create ${maxRequests} post per minute. Please wait ${waitTimeSeconds} seconds.`,
+                    en: `You can only create ${maxRequests} post per minute. Please wait ${waitTimeSeconds} seconds.`
                 },
-                429,
+                429
             )
         }
 

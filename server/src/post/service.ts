@@ -10,8 +10,8 @@ import {
     postAlreadyArchived,
     postAlreadyDeleted,
     postNotArchived,
-    insufficientPermissionToArchive,
-} from './errors'
+    insufficientPermissionToArchive
+} from './errors.js'
 import {
     archivePostRepository,
     canModifyPostRepository,
@@ -23,16 +23,15 @@ import {
     getPostLikeRepository,
     likePostRepository,
     unlikePostRepository
+} from './repository.js'
 
-} from './repository'
-import { CustomLogger } from '@server/lib/custom-logger'
-import { db } from '@server/db/db-instance'
-import { posts, postImages } from '@server/db/feed-schema'
 import { v4 as uuidv4 } from 'uuid'
-import supabaseAdmin from '@server/db/supabase-instance'
-import { AppError } from '@server/lib/error'
-import { formatAvatarImageUrl, mapImageUrls } from '@server/lib/map-image-urls'
-
+import { CustomLogger } from '../lib/custom-logger.js'
+import { AppError } from '../lib/error.js'
+import { formatAvatarImageUrl, mapImageUrls } from '../lib/map-image-urls.js'
+import { db } from '../db/db-instance.js'
+import { postImages, posts } from '../db/feed-schema.js'
+import supabaseAdmin from '../db/supabase-instance.js'
 interface CreatePostWithImagesData {
     userId: string
     content: string
@@ -51,14 +50,14 @@ export const getPostsService = async (options: GetPostsOptions) => {
         ...post,
         author: {
             ...post.author,
-            image: formatAvatarImageUrl(post.author.id),
+            image: formatAvatarImageUrl(post.author.id)
         },
-        images: mapImageUrls(post.images),
+        images: mapImageUrls(post.images)
     }))
 
     return {
         ...result,
-        posts: postsWithImageUrls,
+        posts: postsWithImageUrls
     }
 }
 
@@ -75,9 +74,9 @@ export const getPostService = async (id: string) => {
         ...post,
         author: {
             ...post.author,
-            image: formatAvatarImageUrl(post.author.id),
+            image: formatAvatarImageUrl(post.author.id)
         },
-        images: formattedImgUrls,
+        images: formattedImgUrls
     }
 }
 
@@ -94,7 +93,7 @@ export const createPostWithImagesService = async (
                     id: postId,
                     userId: data.userId,
                     content: data.content,
-                    visibility: data.visibility || 'public',
+                    visibility: data.visibility || 'public'
                 })
                 .returning()
 
@@ -115,7 +114,7 @@ export const createPostWithImagesService = async (
 
                 return {
                     ...newPost,
-                    images: createdImages,
+                    images: createdImages
                 }
             }
 
@@ -149,12 +148,12 @@ export const softDeletePostService = async (postId: string, userId: string) => {
     CustomLogger.info('Post soft deleted successfully', {
         postId,
         userId,
-        deletedAt: deletedPost.deletedAt,
+        deletedAt: deletedPost.deletedAt
     })
 
     return {
         success: true,
-        message: 'Post deleted successfully',
+        message: 'Post deleted successfully'
     }
 }
 
@@ -186,12 +185,12 @@ export const archivePostService = async (postId: string, userId: string) => {
     CustomLogger.info('Post archived successfully', {
         postId,
         userId,
-        archivedAt: archivedPost.archivedAt,
+        archivedAt: archivedPost.archivedAt
     })
 
     return {
         success: true,
-        message: 'Post archived successfully',
+        message: 'Post archived successfully'
     }
 }
 
@@ -221,12 +220,12 @@ export const unarchivePostService = async (postId: string, userId: string) => {
 
     CustomLogger.info('Post unarchived successfully', {
         postId,
-        userId,
+        userId
     })
 
     return {
         success: true,
-        message: 'Post unarchived successfully',
+        message: 'Post unarchived successfully'
     }
 }
 
@@ -237,7 +236,13 @@ const uploadPostImages = async (
 ) => {
     if (!images?.length) return
     const uploadedImagePaths: string[] = []
-    const imageRecords = []
+    const imageRecords: {
+        id: string
+        postId: string
+        url: string
+        displayOrder: number
+        altText: string
+    }[] = []
     const MAX_FILE_SIZE = 10 * 1024 * 1024
 
     try {
@@ -286,8 +291,8 @@ const uploadPostImages = async (
                         upsert: false,
                         metadata: {
                             uploadedBy: userId,
-                            postId: postId,
-                        },
+                            postId: postId
+                        }
                     })
 
             if (uploadError) {
@@ -303,7 +308,7 @@ const uploadPostImages = async (
                 postId,
                 url: uploadData.path,
                 displayOrder: i,
-                altText: `Image ${i + 1}`,
+                altText: `Image ${i + 1}`
             })
         }
         return imageRecords
@@ -318,7 +323,7 @@ const uploadPostImages = async (
                 } catch (deleteError) {
                     CustomLogger.error('Failed to delete uploaded image', {
                         imagePath,
-                        error: deleteError,
+                        error: deleteError
                     })
                 }
             }
@@ -337,13 +342,14 @@ export const getPostLikeService = async (postId: string, userId: string) => {
 
 export const toggleLikePostService = async (postId: string, userId: string) => {
     const checkLiked = await getPostLikeRepository(postId, userId)
-    let result = null
+    let result: { userId: string; createdAt: Date; postId: string } | null =
+        null
 
     if (!checkLiked) {
         throw new AppError(noPostFoundError)
     }
 
-    if (checkLiked.hasLiked) { 
+    if (checkLiked.hasLiked) {
         result = await unlikePostRepository(postId, userId)
     } else {
         result = await likePostRepository(postId, userId)

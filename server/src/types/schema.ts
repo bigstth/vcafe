@@ -1,4 +1,4 @@
-import { posts, postImages } from '@server/db/feed-schema'
+import type { postImages, posts } from '../db/index.js'
 
 export type Post = typeof posts.$inferSelect
 export type NewPost = typeof posts.$inferInsert

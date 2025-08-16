@@ -1,5 +1,5 @@
-import { eq, and, ne, or, type SQL } from 'drizzle-orm'
-import { posts, comments } from '@server/db/feed-schema'
+import { eq, and, type SQL } from 'drizzle-orm'
+import { posts, comments } from '../db/feed-schema.js'
 
 export const activePostsCondition = () =>
     and(eq(posts.isDeleted, false), eq(posts.isArchived, false)) as SQL<unknown>

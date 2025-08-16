@@ -1,6 +1,6 @@
-import { errorResponseFormat } from '@server/lib/error'
-import { createCommentService, getCommentsService } from './service'
-import type { Context } from 'hono'
+import { Context } from 'hono'
+import { errorResponseFormat } from '../lib/error.js'
+import { getCommentsService, createCommentService } from './service.js'
 
 export const getCommentsController = async (c: Context) => {
     const { postId } = c.get('validatedParam')
@@ -20,7 +20,7 @@ export const createCommentController = async (c: Context) => {
     const commentData = {
         postId: postId,
         userId: user.id,
-        content: body.content,
+        content: body.content
     }
 
     try {

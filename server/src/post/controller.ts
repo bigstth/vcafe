@@ -1,4 +1,4 @@
-import { CustomLogger } from '@server/lib/custom-logger'
+import { CustomLogger } from '../lib/custom-logger.js'
 import {
     getPostsService,
     createPostWithImagesService,
@@ -7,10 +7,10 @@ import {
     archivePostService,
     unarchivePostService,
     getPostLikeService,
-    toggleLikePostService,
-} from './service'
+    toggleLikePostService
+} from './service.js'
 import type { Context } from 'hono'
-import { errorResponseFormat } from '@server/lib/error'
+import { errorResponseFormat } from '../lib/error.js'
 
 export const getPostsController = async (c: Context) => {
     try {
@@ -19,7 +19,7 @@ export const getPostsController = async (c: Context) => {
         const posts = await getPostsService({
             limit,
             offset,
-            orderBy,
+            orderBy
         })
 
         return c.json(posts)
@@ -48,7 +48,7 @@ export const createPostWithImagesController = async (c: Context) => {
 
         const result = await createPostWithImagesService({
             userId: user.id,
-            ...formData,
+            ...formData
         })
 
         return c.json(result, 201)
@@ -96,7 +96,7 @@ export const unArchivePostController = async (c: Context) => {
         CustomLogger.error('Error unarchiving post', {
             postId: id,
             userId: user.id,
-            error,
+            error
         })
         return c.json({ error: 'Failed to unarchive post' }, 500)
     }
@@ -113,7 +113,7 @@ export const getPostLikeController = async (c: Context) => {
         CustomLogger.error('Error getting post likes', {
             postId: id,
             userId: user.id,
-            error,
+            error
         })
         return errorResponseFormat(c, error)
     }
@@ -125,11 +125,14 @@ export const toggleLikePostController = async (c: Context) => {
 
     try {
         const liked = await toggleLikePostService(id, user.id)
-        const isLiked = liked && typeof liked === 'object' && 'isLiked' in liked ? liked.isLiked : false;
-        const result = { 
-            success: true, 
-            message: isLiked ? 'Post liked' : 'Post unliked' ,
-            th: isLiked ? 'กดถูกใจโพสต์' : 'ยกเลิกถูกใจโพสต์', 
+        const isLiked =
+            liked && typeof liked === 'object' && 'isLiked' in liked
+                ? liked.isLiked
+                : false
+        const result = {
+            success: true,
+            message: isLiked ? 'Post liked' : 'Post unliked',
+            th: isLiked ? 'กดถูกใจโพสต์' : 'ยกเลิกถูกใจโพสต์',
             en: isLiked ? 'Post liked' : 'Post unliked'
         }
         return c.json(result)
@@ -137,7 +140,7 @@ export const toggleLikePostController = async (c: Context) => {
         CustomLogger.error('Error toggling like post', {
             postId: id,
             userId: user.id,
-            error,
+            error
         })
         return errorResponseFormat(c, error)
     }

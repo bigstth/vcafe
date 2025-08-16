@@ -1,9 +1,9 @@
 import { Hono } from 'hono'
-import authRoutes from './auth'
-import postRoutes from './post'
-import userRoutes from './user'
-import commentRoutes from './comment'
-import followRoutes from './follow'
+import authRoutes from './auth/index.js'
+import commentRoutes from './comment/index.js'
+import followRoutes from './follow/index.js'
+import postRoutes from './post/index.js'
+import userRoutes from './user/index.js'
 
 export const appRoutes = new Hono()
     .route('/auth', authRoutes)

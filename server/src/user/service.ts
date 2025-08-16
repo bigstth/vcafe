@@ -4,23 +4,23 @@ import {
     getUserPostsRepository,
     getUserRepository,
     updateUserRepository
-} from './repository'
+} from './repository.js'
 import {
     setPasswordError,
     updateUserError,
     uploadAvatarError,
     userAlreadyExistsError,
     userNotFoundError
-} from './errors'
-import { auth } from '@server/lib/auth'
+} from './errors.js'
 import type { Context } from 'hono'
-import { AppError } from '@server/lib/error'
-import { noPostFoundError } from '@server/post/errors'
-import { mapImageUrls } from '@server/lib/map-image-urls'
-import { CustomLogger } from '@server/lib/custom-logger'
-import supabaseAdmin from '@server/db/supabase-instance'
-import { mapImageUrl } from '@server/lib/format-image-url'
-import { getFollowStatsService } from '@server/follow/service'
+import supabaseAdmin from '../db/supabase-instance.js'
+import { getFollowStatsService } from '../follow/service.js'
+import { auth } from '../lib/auth.js'
+import { CustomLogger } from '../lib/custom-logger.js'
+import { AppError } from '../lib/error.js'
+import { mapImageUrl } from '../lib/format-image-url.js'
+import { mapImageUrls } from '../lib/map-image-urls.js'
+import { noPostFoundError } from '../post/errors.js'
 
 export const getMeService = async (c: Context) => {
     const user = c.get('user')

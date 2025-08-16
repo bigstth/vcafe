@@ -1,31 +1,19 @@
 {
-  "extends": "../tsconfig.json",
   "compilerOptions": {
-    // Environment settings
+    "target": "ES2022",
+    "module": "Node16",
     "lib": ["ESNext"],
-    "target": "ESNext",
-    "module": "ESNext",
-    "jsx": "react-jsx",
-    "jsxImportSource": "hono/jsx",
-
-    // Types
-    "types": ["bun-types"],
-
-    // Output settings
     "declaration": true,
-    "outDir": "dist",
-    "noEmit": false,
-    "emitDecoratorMetadata": true,
-
-    // Module resolution
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": false,
-    "baseUrl": ".",
-    "paths": {
-        "@server/*": ["./src/*"]
-    },
-    "skipLibCheck": true
-
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "moduleResolution": "nodenext", // เปลี่ยนจาก "node" เป็น "nodenext"
+    "esModuleInterop": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
+    "noImplicitAny": false,
+    "resolveJsonModule": true, // รองรับการ import ไฟล์ JSON
+    
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]

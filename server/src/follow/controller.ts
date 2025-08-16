@@ -1,5 +1,4 @@
 import type { Context } from 'hono'
-import { errorResponseFormat } from '@server/lib/error'
 import {
     followUserService,
     unfollowUserService,
@@ -7,7 +6,8 @@ import {
     getFollowingService,
     getFollowStatusService,
     getFollowStatsService
-} from './service'
+} from './service.js'
+import { errorResponseFormat } from '../lib/error.js'
 
 export const followUserController = async (c: Context) => {
     try {

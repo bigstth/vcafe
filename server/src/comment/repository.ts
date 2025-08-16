@@ -1,7 +1,7 @@
-import { db } from '@server/db/db-instance'
-import { comments } from '@server/db/feed-schema'
 import { eq } from 'drizzle-orm'
-import type { CreateComment } from './service'
+import { db } from '../db/db-instance.js'
+import { comments } from '../db/feed-schema.js'
+import { CreateComment } from './service.js'
 
 export const getCommentsRepository = async (postId: string) => {
     const result = await db.query.comments.findMany({
@@ -12,10 +12,10 @@ export const getCommentsRepository = async (postId: string) => {
                     id: true,
                     name: true,
                     username: true,
-                    image: true,
-                },
-            },
-        },
+                    image: true
+                }
+            }
+        }
     })
 
     return result
@@ -27,7 +27,7 @@ export const createCommentRepository = async (comment: CreateComment) => {
         .values({
             postId: comment.postId,
             userId: comment.userId,
-            content: comment.content,
+            content: comment.content
         })
         .returning()
 

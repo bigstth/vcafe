@@ -4,9 +4,9 @@ import {
     getUserPostsService,
     getUserService,
     registerService
-} from './service'
-import { errorResponseFormat } from '@server/lib/error'
-import { CustomLogger } from '@server/lib/custom-logger'
+} from './service.js'
+import { CustomLogger } from '../lib/custom-logger.js'
+import { errorResponseFormat } from '../lib/error.js'
 
 export const getMeController = async (c: Context) => {
     try {

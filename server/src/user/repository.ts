@@ -1,7 +1,8 @@
-import { postImages, posts, comments, user } from '@server/db'
-import { db } from '@server/db/db-instance'
-import { activePostsCondition } from '@server/lib/soft-delete'
 import { and, asc, desc, count, eq } from 'drizzle-orm'
+import { db } from '../db/db-instance.js'
+import { posts, postImages, comments } from '../db/feed-schema.js'
+import { user } from '../db/user-schema.js'
+import { activePostsCondition } from '../lib/soft-delete.js'
 
 export interface GetUserPostsOptions {
     userId: string

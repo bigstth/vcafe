@@ -1,7 +1,7 @@
-import { CustomLogger } from '@server/lib/custom-logger'
-import { AppError } from '@server/lib/error'
 import type { Context, Next } from 'hono'
-import type { ContentfulStatusCode } from 'hono/utils/http-status'
+import { ContentfulStatusCode } from 'hono/utils/http-status'
+import { CustomLogger } from '../lib/custom-logger.js'
+import { AppError } from '../lib/error.js'
 
 export const errorHandler = async (c: Context, next: Next) => {
     try {
@@ -19,7 +19,7 @@ export const errorHandler = async (c: Context, next: Next) => {
             method: c.req.method,
             userAgent: c.req.header('User-Agent'),
             ip: c.req.header('X-Forwarded-For') || c.req.header('X-Real-IP'),
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().toISOString()
         }
 
         try {
@@ -40,9 +40,9 @@ export const errorHandler = async (c: Context, next: Next) => {
                         th: e.th,
                         status: e.statusName,
                         statusCode: e.status,
-                        message: e.message,
+                        message: e.message
                     },
-                    requestContext,
+                    requestContext
                 })
             }
 
@@ -51,7 +51,7 @@ export const errorHandler = async (c: Context, next: Next) => {
                     en: e.en,
                     th: e.th,
                     status: e.statusName,
-                    message: e.message,
+                    message: e.message
                 },
                 e.status as ContentfulStatusCode
             )
@@ -61,7 +61,7 @@ export const errorHandler = async (c: Context, next: Next) => {
             CustomLogger.error('System error occurred', {
                 message: e.message,
                 stack: e.stack,
-                requestContext,
+                requestContext
             })
 
             return c.json(
@@ -69,8 +69,8 @@ export const errorHandler = async (c: Context, next: Next) => {
                     error: {
                         en: e.message,
                         th: 'เกิดข้อผิดพลาด',
-                        status: 'internal_error',
-                    },
+                        status: 'internal_error'
+                    }
                 },
                 500
             )
@@ -79,7 +79,7 @@ export const errorHandler = async (c: Context, next: Next) => {
         CustomLogger.error('Unknown error type', {
             error: String(e),
             type: typeof e,
-            requestContext,
+            requestContext
         })
 
         return c.json(
@@ -87,8 +87,8 @@ export const errorHandler = async (c: Context, next: Next) => {
                 error: {
                     en: 'Unknown error',
                     th: 'ข้อผิดพลาดที่ไม่รู้จัก',
-                    status: 'unknown_error',
-                },
+                    status: 'unknown_error'
+                }
             },
             500
         )

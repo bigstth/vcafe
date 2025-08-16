@@ -1,5 +1,5 @@
 import { createMiddleware } from 'hono/factory'
-import { auth } from '../lib/auth'
+import { auth } from '../lib/auth.js'
 import { HTTPException } from 'hono/http-exception'
 
 export const protect = createMiddleware(async (c, next) => {

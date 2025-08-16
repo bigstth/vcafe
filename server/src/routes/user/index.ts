@@ -1,22 +1,22 @@
-import { protect } from '@server/middleware/auth'
+import { Hono } from 'hono'
+import { protect } from '../../middleware/auth.js'
 import {
     validateFormData,
     validateParam,
     validateQuery
-} from '@server/middleware/validator'
+} from '../../middleware/validator.js'
 import {
     getMeController,
+    registerController,
     getUserController,
-    getUserPostsController,
-    registerController
-} from '@server/user/controller'
-import { Hono } from 'hono'
+    getUserPostsController
+} from '../../user/controller.js'
 import {
-    userIdSchema,
-    getUserPostsSchema,
     registerSchema,
-    usernameSchema
-} from './validate-schema'
+    usernameSchema,
+    userIdSchema,
+    getUserPostsSchema
+} from './validate-schema.js'
 
 const userRoutes = new Hono()
     .get('/me', protect, getMeController)

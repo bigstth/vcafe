@@ -1,2 +1,2 @@
-export * from './user-schema'
-export * from './feed-schema'
+export * from './user-schema.js'
+export * from './feed-schema.js'

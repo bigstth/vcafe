@@ -1,15 +1,15 @@
-import { protect } from '@server/middleware/auth'
-import { validateParam, validateQuery } from '@server/middleware/validator'
+import { Hono } from 'hono'
 import {
     followUserController,
     unfollowUserController,
     getFollowersController,
     getFollowingController,
     getFollowStatusController,
-    getFollowStatsController,
-} from '@server/follow/controller'
-import { Hono } from 'hono'
-import { userIdSchema, followListSchema } from './validate-schema'
+    getFollowStatsController
+} from '../../follow/controller.js'
+import { protect } from '../../middleware/auth.js'
+import { validateParam, validateQuery } from '../../middleware/validator.js'
+import { userIdSchema, followListSchema } from './validate-schema.js'
 
 const followRoutes = new Hono()
     .post('/:userId', protect, validateParam(userIdSchema), (c) =>
