@@ -10,7 +10,7 @@ const AvatarRole = ({
     role = 'gold',
     classNames = ''
 }: {
-    image?: string
+    image?: string | null
     username?: string | null
     role?: UserProfile['role'] | string
     classNames?: string

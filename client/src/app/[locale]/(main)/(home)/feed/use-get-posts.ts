@@ -24,8 +24,6 @@ export const useGetPosts = (
 
             return data as PostsSuccessData
         },
-        retry: false,
-        refetchOnWindowFocus: false,
         refetchInterval: 60 * 1000,
         refetchIntervalInBackground: true,
         ...options

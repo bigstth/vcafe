@@ -19,10 +19,8 @@ const ThemeProviderContext = createContext<
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
     const [theme, setTheme] = useState<Theme>('light')
-    const [mounted, setMounted] = useState(false)
 
     useEffect(() => {
-        setMounted(true)
         const savedTheme = localStorage.getItem('theme') as Theme
         if (savedTheme) {
             setTheme(savedTheme)
@@ -30,8 +28,6 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     }, [])
 
     useEffect(() => {
-        if (!mounted) return
-
         const root = window.document.documentElement
         root.classList.remove('light', 'dark')
 
@@ -47,12 +43,9 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
         }
 
         localStorage.setItem('theme', theme)
-    }, [theme, mounted])
+    }, [theme])
 
     // Prevent hydration mismatch by not applying theme until mounted
-    if (!mounted) {
-        return <div style={{ visibility: 'hidden' }}>{children}</div>
-    }
 
     return (
         <ThemeProviderContext.Provider value={{ theme, setTheme }}>

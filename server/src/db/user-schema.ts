@@ -12,6 +12,7 @@ export const user = pgTable('user', {
         .$defaultFn(() => false)
         .notNull(),
     image: text('image'),
+    coverImage: text('cover_image'),
     role: text('role')
         .notNull()
         .references(() => role.name, { onDelete: 'set default' })
@@ -21,7 +22,7 @@ export const user = pgTable('user', {
         .notNull(),
     updatedAt: timestamp('updated_at')
         .$defaultFn(() => /* @__PURE__ */ new Date())
-        .notNull(),
+        .notNull()
 })
 
 export const session = pgTable('session', {
@@ -34,7 +35,7 @@ export const session = pgTable('session', {
     userAgent: text('user_agent'),
     userId: text('user_id')
         .notNull()
-        .references(() => user.id, { onDelete: 'cascade' }),
+        .references(() => user.id, { onDelete: 'cascade' })
 })
 
 export const account = pgTable('account', {
@@ -52,7 +53,7 @@ export const account = pgTable('account', {
     scope: text('scope'),
     password: text('password'),
     createdAt: timestamp('created_at').notNull(),
-    updatedAt: timestamp('updated_at').notNull(),
+    updatedAt: timestamp('updated_at').notNull()
 })
 
 export const verification = pgTable('verification', {
@@ -65,7 +66,7 @@ export const verification = pgTable('verification', {
     ),
     updatedAt: timestamp('updated_at').$defaultFn(
         () => /* @__PURE__ */ new Date()
-    ),
+    )
 })
 
 export const role = pgTable('role', {
@@ -73,5 +74,5 @@ export const role = pgTable('role', {
     name: text('name').notNull().unique(),
     createdAt: timestamp('created_at')
         .$defaultFn(() => new Date())
-        .notNull(),
+        .notNull()
 })

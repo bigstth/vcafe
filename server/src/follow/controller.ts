@@ -6,7 +6,7 @@ import {
     getFollowersService,
     getFollowingService,
     getFollowStatusService,
-    getFollowStatsService,
+    getFollowStatsService
 } from './service'
 
 export const followUserController = async (c: Context) => {
@@ -20,7 +20,7 @@ export const followUserController = async (c: Context) => {
             {
                 success: true,
                 message: 'Successfully followed user',
-                data: result,
+                data: result
             },
             201
         )
@@ -39,7 +39,7 @@ export const unfollowUserController = async (c: Context) => {
         return c.json({
             success: true,
             message: 'Successfully unfollowed user',
-            data: result,
+            data: result
         })
     } catch (e: unknown) {
         return errorResponseFormat(c, e)

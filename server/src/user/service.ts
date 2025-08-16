@@ -3,14 +3,14 @@ import {
     getUserByUsernameRepository,
     getUserPostsRepository,
     getUserRepository,
-    updateUserRepository,
+    updateUserRepository
 } from './repository'
 import {
     setPasswordError,
     updateUserError,
     uploadAvatarError,
     userAlreadyExistsError,
-    userNotFoundError,
+    userNotFoundError
 } from './errors'
 import { auth } from '@server/lib/auth'
 import type { Context } from 'hono'
@@ -20,6 +20,7 @@ import { mapImageUrls } from '@server/lib/map-image-urls'
 import { CustomLogger } from '@server/lib/custom-logger'
 import supabaseAdmin from '@server/db/supabase-instance'
 import { mapImageUrl } from '@server/lib/format-image-url'
+import { getFollowStatsService } from '@server/follow/service'
 
 export const getMeService = async (c: Context) => {
     const user = c.get('user')
@@ -30,29 +31,35 @@ export const getMeService = async (c: Context) => {
     }
 
     const accounts = await auth.api.listUserAccounts({
-        headers: new Headers(c.req.header()),
+        headers: new Headers(c.req.header())
     })
 
     const linkedProviders = accounts.map((account: any) => ({
         provider: account.provider,
-        providerAccountId: account.id,
+        providerAccountId: account.id
     }))
 
     return {
         ...userInfo,
         image: mapImageUrl(userInfo?.image as string, 'user'),
-        linkedProviders,
+        linkedProviders
     }
 }
 
-export const getUserService = async (id: string) => {
-    const user = await getUserRepository(id)
+export const getUserService = async (username: string) => {
+    const userInfo = await getUserByUsernameRepository(username)
 
-    if (!user) {
+    if (!userInfo) {
         throw new AppError(userNotFoundError)
     }
 
-    return user
+    const followStats = await getFollowStatsService(userInfo.id)
+
+    return {
+        ...userInfo,
+        ...followStats,
+        image: mapImageUrl(userInfo?.image as string, 'user')
+    }
 }
 
 export const getUserPostsService = async (c: Context) => {
@@ -61,7 +68,7 @@ export const getUserPostsService = async (c: Context) => {
         offset,
         limit,
         orderBy,
-        includeArchived = false,
+        includeArchived = false
     } = c.get('validatedQuery')
 
     const posts = await getUserPostsRepository({
@@ -70,7 +77,7 @@ export const getUserPostsService = async (c: Context) => {
         limit,
         orderBy,
         includeArchived,
-        currentUserId: c.get('user').id,
+        currentUserId: c.get('user').id
     })
 
     if (!posts) {
@@ -78,12 +85,12 @@ export const getUserPostsService = async (c: Context) => {
     }
     const postsWithImageUrls = posts.posts.map((post) => ({
         ...post,
-        images: mapImageUrls(post.images),
+        images: mapImageUrls(post.images)
     }))
 
     return {
         ...posts,
-        posts: postsWithImageUrls,
+        posts: postsWithImageUrls
     }
 }
 
@@ -102,7 +109,7 @@ export const registerService = async (c: Context) => {
     try {
         await auth.api.setPassword({
             body: { newPassword: formData.password },
-            headers: new Headers(c.req.header()),
+            headers: new Headers(c.req.header())
         })
     } catch (error) {
         CustomLogger.error(`Error setting password for user ${user.id}`, error)
@@ -119,7 +126,7 @@ export const registerService = async (c: Context) => {
     const result = await updateUserRepository(user.id, {
         username: formData.username,
         displayUsername: formData.displayUsername,
-        image: uploadResult?.path || null,
+        image: uploadResult?.path || null
     })
 
     if (!result) {
@@ -176,8 +183,8 @@ const uploadAvatarImage = async (image: File, userId: string) => {
                 cacheControl: '3600',
                 upsert: true,
                 metadata: {
-                    uploadedBy: userId,
-                },
+                    uploadedBy: userId
+                }
             })
         return uploadData
     } catch (error) {

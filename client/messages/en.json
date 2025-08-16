@@ -22,6 +22,8 @@
         "m": "{count}m",
         "h": "{count}h",
         "d": "{count}d",
+        "followers": "followers",
+        "following": "following",
         "actions": {
             "sign_in": "Sign In",
             "sign_out": "Sign Out",

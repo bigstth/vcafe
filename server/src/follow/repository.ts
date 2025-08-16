@@ -10,7 +10,7 @@ export const followUserRepository = async (
         .insert(followers)
         .values({
             followerId,
-            followingId,
+            followingId
         })
         .returning()
 
@@ -42,7 +42,7 @@ export const isFollowingRepository = async (
         where: and(
             eq(followers.followerId, followerId),
             eq(followers.followingId, followingId)
-        ),
+        )
     })
 
     return !!result
@@ -61,13 +61,13 @@ export const getFollowersRepository = async (
                     id: true,
                     username: true,
                     displayUsername: true,
-                    image: true,
-                },
-            },
+                    image: true
+                }
+            }
         },
         offset,
         limit,
-        orderBy: (followers, { desc }) => [desc(followers.createdAt)],
+        orderBy: (followers, { desc }) => [desc(followers.createdAt)]
     })
 
     const totalQuery = await db
@@ -81,7 +81,7 @@ export const getFollowersRepository = async (
     return {
         followers: result.map((f) => f.follower),
         total,
-        hasMore,
+        hasMore
     }
 }
 
@@ -98,13 +98,13 @@ export const getFollowingRepository = async (
                     id: true,
                     username: true,
                     displayUsername: true,
-                    image: true,
-                },
-            },
+                    image: true
+                }
+            }
         },
         offset,
         limit,
-        orderBy: (followers, { desc }) => [desc(followers.createdAt)],
+        orderBy: (followers, { desc }) => [desc(followers.createdAt)]
     })
 
     const totalQuery = await db
@@ -118,7 +118,7 @@ export const getFollowingRepository = async (
     return {
         following: result.map((f) => f.following),
         total,
-        hasMore,
+        hasMore
     }
 }
 
@@ -131,11 +131,11 @@ export const getFollowStatsRepository = async (userId: string) => {
         db
             .select({ count: count() })
             .from(followers)
-            .where(eq(followers.followerId, userId)),
+            .where(eq(followers.followerId, userId))
     ])
 
     return {
-        followersCount: followersCount[0]?.count || 0,
-        followingCount: followingCount[0]?.count || 0,
+        followers: followersCount[0]?.count || 0,
+        following: followingCount[0]?.count || 0
     }
 }

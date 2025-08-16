@@ -2,19 +2,20 @@ import { protect } from '@server/middleware/auth'
 import {
     validateFormData,
     validateParam,
-    validateQuery,
+    validateQuery
 } from '@server/middleware/validator'
 import {
     getMeController,
     getUserController,
     getUserPostsController,
-    registerController,
+    registerController
 } from '@server/user/controller'
 import { Hono } from 'hono'
 import {
     userIdSchema,
     getUserPostsSchema,
     registerSchema,
+    usernameSchema
 } from './validate-schema'
 
 const userRoutes = new Hono()
@@ -25,7 +26,9 @@ const userRoutes = new Hono()
         validateFormData(registerSchema),
         registerController
     )
-    .get('/:id', validateParam(userIdSchema), (c) => getUserController(c))
+    .get('/:username', validateParam(usernameSchema), (c) =>
+        getUserController(c)
+    )
     .get(
         '/:id/posts',
         protect,
