@@ -3,7 +3,7 @@ import {
     getMeService,
     getUserPostsService,
     getUserService,
-    registerService,
+    registerService
 } from './service'
 import { errorResponseFormat } from '@server/lib/error'
 import { CustomLogger } from '@server/lib/custom-logger'
@@ -18,12 +18,12 @@ export const getMeController = async (c: Context) => {
 }
 
 export const getUserController = async (c: Context) => {
-    const { id } = c.get('validatedParam')
+    const { username } = c.get('validatedParam')
     try {
-        const user = await getUserService(id)
+        const user = await getUserService(username)
         return c.json(user)
     } catch (e: unknown) {
-        CustomLogger.error(`Error in getUserController for user ${id}`, e)
+        CustomLogger.error(`Error in getUserController for user ${username}`, e)
         return errorResponseFormat(c, e)
     }
 }

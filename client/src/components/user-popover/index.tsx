@@ -5,10 +5,10 @@ import { useTranslations } from 'next-intl'
 import { Button } from '../ui/button'
 import { useAuth } from '@/contexts/auth-provider'
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-
 import './styles.css'
 import AvatarRole from '../avatar-with-role-border'
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 const UserPopOver = () => {
     const t = useTranslations()
@@ -29,7 +29,9 @@ const UserPopOver = () => {
                 </Button>
             </PopoverTrigger>
             <PopoverContent className="mt-1 mr-2 flex flex-col gap-2">
-                <Button>{t('re_use.my_profile')}</Button>
+                <Link href={`/${user?.username}`}>
+                    <Button className="w-full">{t('re_use.my_profile')}</Button>
+                </Link>
                 <Button onClick={() => signOut()} variant="outline">
                     {t('re_use.actions.sign_out')}
                 </Button>

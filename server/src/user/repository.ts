@@ -22,7 +22,7 @@ export const getUserRepository = async (id: string) => {
 
 export const getUserByUsernameRepository = async (username: string) => {
     return db.query.user.findFirst({
-        where: (u, { eq }) => eq(u.username, username),
+        where: (u, { eq }) => eq(u.username, username)
     })
 }
 
@@ -33,7 +33,7 @@ export const getUserPostsRepository = async (options: GetUserPostsOptions) => {
         limit = 10,
         orderBy = 'desc',
         includeArchived = false,
-        currentUserId,
+        currentUserId
     } = options
 
     const isOwner = currentUserId === userId
@@ -61,11 +61,11 @@ export const getUserPostsRepository = async (options: GetUserPostsOptions) => {
                     id: true,
                     name: true,
                     username: true,
-                    image: true,
-                },
+                    image: true
+                }
             },
             images: {
-                orderBy: [asc(postImages.displayOrder)],
+                orderBy: [asc(postImages.displayOrder)]
             },
             comments: {
                 where: eq(comments.isDeleted, false),
@@ -75,20 +75,20 @@ export const getUserPostsRepository = async (options: GetUserPostsOptions) => {
                             id: true,
                             name: true,
                             username: true,
-                            image: true,
-                        },
-                    },
+                            image: true
+                        }
+                    }
                 },
-                orderBy: [desc(comments.createdAt)],
+                orderBy: [desc(comments.createdAt)]
             },
-            likes: true,
+            likes: true
         },
         orderBy:
             orderBy === 'desc'
                 ? [desc(posts.createdAt)]
                 : [asc(posts.createdAt)],
         offset,
-        limit,
+        limit
     })
 
     const totalQuery = await db
@@ -103,7 +103,7 @@ export const getUserPostsRepository = async (options: GetUserPostsOptions) => {
         posts: result,
         total,
         hasMore,
-        isOwner,
+        isOwner
     }
 }
 
