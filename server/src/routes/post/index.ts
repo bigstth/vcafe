@@ -23,9 +23,7 @@ import {
 } from './validate-schema.js'
 
 const postRoutes = new Hono()
-    .get('/', protect, validateQuery(getAllPostsSchema), (c) =>
-        getPostsController(c)
-    )
+    .get('/', validateQuery(getAllPostsSchema), (c) => getPostsController(c))
     .get('/:id', protect, validateParam(idParamSchema), (c) =>
         getPostController(c)
     )

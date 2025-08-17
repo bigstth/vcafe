@@ -62,8 +62,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         social: async (options: { provider: string; callbackURL?: string }) => {
             try {
                 await authClient.signIn.social({
-                    provider: options.provider
-                    // callbackURL: options.callbackURL || window.location.origin,
+                    provider: options.provider,
+                    callbackURL: process.env.NEXT_PUBLIC_BASE_URL
                 })
             } catch (error) {
                 console.error('Sign in error:', error)

@@ -4,8 +4,8 @@ import { errorHandler } from './middleware/error-handler.js'
 import { appRoutes } from './routes/index.js'
 
 const app = new Hono()
-app.use('*', logger())
-app.use('*', errorHandler)
-app.route('/', appRoutes)
+    .use('*', logger())
+    .use('*', errorHandler)
+    .route('/api', appRoutes)
 
 export default app

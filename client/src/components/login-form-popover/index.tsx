@@ -20,8 +20,7 @@ const LoginFormPopover = () => {
     const loginWithProvider = async (provider: string) => {
         signIn
             .social({
-                provider,
-                callbackURL: process.env.NEXT_PUBLIC_API_URL
+                provider
             })
             .catch((error) => {
                 console.error('Login failed:', error)

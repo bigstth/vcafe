@@ -10,18 +10,18 @@ const nextConfig: NextConfig = {
                 protocol: 'https',
                 hostname: 'zxfsynefrmyhoqkzjwge.supabase.co',
                 port: '',
-                pathname: '/storage/v1/object/public/**',
-            },
-        ],
+                pathname: '/storage/v1/object/public/**'
+            }
+        ]
     },
     async rewrites() {
         return [
             {
                 source: '/api/:path*',
-                destination: 'http://localhost:3000/api/:path*',
-            },
+                destination: `${process.env.NEXT_PUBLIC_API_URL}/:path*`
+            }
         ]
-    },
+    }
 }
 
 const withNextIntl = createNextIntlPlugin()

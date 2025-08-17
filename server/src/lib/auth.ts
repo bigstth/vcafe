@@ -47,9 +47,8 @@ export const auth = betterAuth({
     cors: {
         origin: [
             'https://vcafe.xyz',
-            'http://localhost:5173',
-            'http://127.0.0.1:5173',
-            'http://localhost:3000',
+            'localhost:5173',
+            'localhost:3000',
             'https://vcafe.vercel.app'
         ],
         credentials: true
