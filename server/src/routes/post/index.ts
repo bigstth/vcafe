@@ -24,9 +24,7 @@ import {
 
 const postRoutes = new Hono()
     .get('/', validateQuery(getAllPostsSchema), (c) => getPostsController(c))
-    .get('/:id', protect, validateParam(idParamSchema), (c) =>
-        getPostController(c)
-    )
+    .get('/:id', validateParam(idParamSchema), (c) => getPostController(c))
     .post(
         '/',
         protect,

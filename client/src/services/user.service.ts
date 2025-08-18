@@ -4,7 +4,7 @@ export async function fetchUserByUsername(
     username: string
 ): Promise<any | null> {
     try {
-        const response = await fetch(`${API_URL}/api/user/${username}`, {
+        const response = await fetch(`${API_URL}/user/${username}`, {
             next: {
                 revalidate: 60,
                 tags: [`user:${username}`]
