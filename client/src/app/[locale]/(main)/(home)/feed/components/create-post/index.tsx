@@ -261,8 +261,13 @@ const CreatePostComponent = () => {
                                     )}
                                 />
 
-                                <Button type="submit" disabled={isPending}>
-                                    {t('post_button')}
+                                <Button
+                                    type="submit"
+                                    disabled={isPending || !user}
+                                >
+                                    {!user
+                                        ? t('login_to_post')
+                                        : t('post_button')}
                                 </Button>
                             </div>
                         </div>

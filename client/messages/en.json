@@ -47,6 +47,7 @@
             "creating_post": "Creating post...",
             "post_created": "Post created :)",
             "post_create_error": "Error creating post :(",
+            "login_to_post": "Sign in to post",
             "action": {
                 "public": "Public",
                 "follower_only": "Followers Only",
