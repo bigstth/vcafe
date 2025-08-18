@@ -80,11 +80,10 @@ const Navbar = () => {
                 <Image
                     src="/logo.png"
                     alt="Mairu Logo"
-                    width={32}
-                    height={32}
+                    width={96}
+                    height={40}
                     priority
                 />
-                <span>VCAFE</span>
             </div>
             <div className="md:hidden">
                 <Button
