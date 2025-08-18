@@ -43,7 +43,7 @@ const postRoutes = new Hono()
     .post('/unarchive/:id', protect, validateParam(idParamSchema), (c) =>
         unArchivePostController(c)
     )
-    .get('/:id/like', protect, validateParam(idParamSchema), (c) =>
+    .get('/:id/like', validateParam(idParamSchema), (c) =>
         getPostLikeController(c)
     )
     .post('/:id/like', protect, validateParam(idParamSchema), (c) =>

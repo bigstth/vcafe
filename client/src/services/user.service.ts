@@ -1,9 +1,8 @@
-import type { GetUserData, UserSuccessData } from '@/hooks/api/user/types'
 import { API_URL } from 'env-constants'
 
 export async function fetchUserByUsername(
     username: string
-): Promise<UserSuccessData | null> {
+): Promise<any | null> {
     try {
         const response = await fetch(`${API_URL}/api/user/${username}`, {
             next: {
@@ -19,14 +18,14 @@ export async function fetchUserByUsername(
             return null
         }
 
-        const data = (await response.json()) as GetUserData
+        const data = await response.json()
 
         if ('error' in data) {
             console.error(`User ${username} not found:`, data.error)
             return null
         }
 
-        return data as UserSuccessData
+        return data
     } catch (error) {
         console.error(`Error fetching user ${username}:`, error)
         return null

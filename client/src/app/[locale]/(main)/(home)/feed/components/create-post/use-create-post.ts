@@ -20,20 +20,23 @@ export const useCreatePost = (
 
             if (data.images && data.images.length > 0) {
                 data.images.forEach((file: File) => {
-                    formData.append(`images`, file)
+                    formData.append('images', file)
                 })
             }
 
             const response = await fetch('/api/posts', {
                 method: 'POST',
-                body: formData
+                body: formData,
+                credentials: 'include'
             })
 
+            const result = await response.json()
+
             if (!response.ok) {
-                throw response.json()
+                throw result
             }
 
-            return response.json()
+            return result
         },
         ...options,
         onSuccess: (data, variables, context) => {

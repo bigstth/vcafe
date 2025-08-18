@@ -1,10 +1,8 @@
 'use client'
-import { useRouter } from 'next/navigation'
 import { useLocale } from 'next-intl'
 import { useEffect, useState } from 'react'
 
 export const useLocaleNoPath = () => {
-    const router = useRouter()
     const currentLocale = useLocale()
     const [locale, setLocale] = useState(currentLocale)
 

@@ -1,28 +1,31 @@
-import { api } from '@/lib/api-instance'
 import { useQuery, type UseQueryOptions } from '@tanstack/react-query'
-import type { GetPostPayload, GetPostsData, PostsSuccessData } from './types'
+import type { GetPostPayload } from './types'
 
-type GetPostsOptions = Omit<
-    UseQueryOptions<PostsSuccessData, Error>,
-    'queryKey' | 'queryFn'
->
+type GetPostsOptions = Omit<UseQueryOptions<any, Error>, 'queryKey' | 'queryFn'>
 export const useGetPosts = (
     payload: GetPostPayload,
     options?: GetPostsOptions
 ) => {
-    return useQuery<PostsSuccessData, Error>({
+    return useQuery<any, Error>({
         queryKey: ['get-post', payload],
         queryFn: async () => {
-            const response = await api.posts.$get({
-                query: { offset: payload.offset }
-            })
-            const data = (await response.json()) as GetPostsData
+            const response = await fetch(
+                `/api/posts?offset=${payload.offset}`,
+                {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include'
+                }
+            )
+            const data = await response.json()
 
             if ('error' in data) {
                 throw new Error(data.error.status || 'something_went_wrong')
             }
 
-            return data as PostsSuccessData
+            return data
         },
         refetchInterval: 60 * 1000,
         refetchIntervalInBackground: true,

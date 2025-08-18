@@ -1,5 +1,3 @@
-import { Card, CardContent } from '@/components/ui/card'
-import { PostItem } from '../../types'
 import AvatarRole from '@/components/avatar-with-role-border'
 import { useAuth } from '@/contexts/auth-provider'
 import { Form, FormControl, FormField, FormItem } from '@/components/ui/form'
@@ -15,9 +13,9 @@ import { toast } from 'sonner'
 import debounce from 'lodash/debounce'
 
 type CreateCommentComponentProps = {
-    post: PostItem | null
+    post: any | null
     setShowCreateComment?: React.Dispatch<React.SetStateAction<boolean>>
-    setPost?: React.Dispatch<React.SetStateAction<PostItem | null>>
+    setPost?: React.Dispatch<React.SetStateAction<any | null>>
 }
 const CreateCommentComponent: React.FC<CreateCommentComponentProps> = ({
     post,

@@ -16,7 +16,7 @@ function getLocale(request: NextRequest): string {
             const languages = acceptLanguage
                 .split(',')
                 .map((lang) => {
-                    const [language, quality] = lang.split(';q=')
+                    const [language] = lang.split(';q=')
                     return language.trim()
                 })
                 .filter(Boolean)

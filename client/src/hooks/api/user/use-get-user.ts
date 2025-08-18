@@ -1,23 +1,23 @@
-import { api } from '@/lib/api-instance'
 import { useQuery } from '@tanstack/react-query'
-import type { GetUserData, UserSuccessData } from './types'
 
 export const useGetUser = (username: string) => {
-    console.log('🔍 useGetUser called with:', username) // Debug line
-
-    return useQuery({
+    return useQuery<any, Error>({
         queryKey: ['get-user', username],
         queryFn: async () => {
-            const response = await api.user[':username'].$get({
-                param: { username: username }
+            const response = await fetch(`/api/user/${username}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include'
             })
-            const data = (await response.json()) as GetUserData
+            const data = await response.json()
 
             if ('error' in data) {
                 throw new Error(data.error.status || 'something_went_wrong')
             }
 
-            return data as UserSuccessData
+            return data as any
         },
         staleTime: 5 * 60 * 1000,
         enabled: !!username

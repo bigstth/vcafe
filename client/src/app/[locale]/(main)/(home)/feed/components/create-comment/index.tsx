@@ -1,8 +1,5 @@
 import { Card, CardContent } from '@/components/ui/card'
-import { PostItem } from '../../types'
-import { useAuth } from '@/contexts/auth-provider'
 import { useForm } from 'react-hook-form'
-import { useTimeAgo } from '@/hooks/use-get-time-ago'
 import { useCreateComment } from './use-create-comment'
 import { commentSchemaType } from '../../types'
 import { toast } from 'sonner'
@@ -11,10 +8,10 @@ import CreateCommentComponent from './comment'
 import { X } from 'lucide-react'
 
 type CreateCommentProps = {
-    post: PostItem | null
+    post: any | null
     showCreateComment: boolean
     setShowCreateComment?: React.Dispatch<React.SetStateAction<boolean>>
-    setPost?: React.Dispatch<React.SetStateAction<PostItem | null>>
+    setPost?: React.Dispatch<React.SetStateAction<any | null>>
 }
 const CreateComment: React.FC<CreateCommentProps> = ({
     post,
@@ -22,9 +19,7 @@ const CreateComment: React.FC<CreateCommentProps> = ({
     setShowCreateComment,
     setPost
 }) => {
-    const { user } = useAuth()
     const form = useForm({ defaultValues: { content: '' } })
-    const getTimeAgo = useTimeAgo()
 
     const { mutateAsync: createComment } = useCreateComment({
         onSuccess: () => {

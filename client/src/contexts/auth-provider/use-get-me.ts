@@ -1,17 +1,23 @@
-import { api } from '@/lib/api-instance'
-import type { UserProfile } from '@/types/user.type'
 import { useQuery, type UseQueryOptions } from '@tanstack/react-query'
+
 type GetMeOptions = Omit<
-    UseQueryOptions<UserProfile, Error, UserProfile>,
+    UseQueryOptions<any, Error, any>,
     'queryKey' | 'queryFn'
 >
+
 export const useGetMe = (options: GetMeOptions) => {
-    return useQuery<UserProfile, Error, UserProfile>({
+    return useQuery<any, Error, any>({
         queryKey: ['get-me'],
         queryFn: async () => {
-            const response = await api.user.me.$get()
+            const response = await fetch('/api/user/me', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include'
+            })
             if (response.ok) {
-                return response.json() as Promise<UserProfile>
+                return response.json() as Promise<any>
             } else {
                 throw new Error('Failed to fetch user')
             }

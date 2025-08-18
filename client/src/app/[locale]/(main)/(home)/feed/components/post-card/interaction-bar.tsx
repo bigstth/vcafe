@@ -1,4 +1,3 @@
-import type { PostItem } from '../../types'
 import { Heart, MessageCircle, Share2 } from 'lucide-react'
 import { useGetPostComments } from '../../use-get-post-comment'
 import { useGetPostLike } from '../../use-get-post-like'
@@ -11,9 +10,9 @@ import { Button } from '@/components/ui/button'
 import { useDebounce } from '@/hooks/use-debounce'
 
 type InteractionBarProps = {
-    post: PostItem
+    post: any
     setShowCreateComment?: React.Dispatch<React.SetStateAction<boolean>>
-    setPost?: React.Dispatch<React.SetStateAction<PostItem | null>>
+    setPost?: React.Dispatch<React.SetStateAction<any | null>>
 }
 
 const InteractionBar: React.FC<InteractionBarProps> = ({
@@ -60,7 +59,7 @@ const InteractionBar: React.FC<InteractionBarProps> = ({
 
             try {
                 await likePost({ postId: post.id })
-            } catch (error) {
+            } catch {
                 setLocalHasLiked(previousState)
             }
         },

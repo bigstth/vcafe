@@ -1,9 +1,7 @@
-import { api } from '@/lib/api-instance'
 import { useQuery, type UseQueryOptions } from '@tanstack/react-query'
-import type { CommentsSuccessData } from './types'
 
 type GetCommentsOptions = Omit<
-    UseQueryOptions<CommentsSuccessData, Error>,
+    UseQueryOptions<any, Error>,
     'queryKey' | 'queryFn'
 >
 
@@ -11,19 +9,24 @@ export const useGetPostComments = (
     postId: string,
     options?: GetCommentsOptions
 ) => {
-    return useQuery<CommentsSuccessData, Error>({
+    return useQuery<any, Error>({
         queryKey: ['get-comments', postId],
         queryFn: async () => {
-            const response = await api.comments.post[':postId'].$get({
-                param: { postId: postId }
+            const response = await fetch(`/api/comments/${postId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include'
             })
+
             const data = await response.json()
 
             if (response.status >= 400) {
                 throw data
             }
 
-            return data as CommentsSuccessData
+            return data
         },
         retry: false,
         refetchOnWindowFocus: false,

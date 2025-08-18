@@ -3,23 +3,22 @@ import {
     useQueryClient,
     type UseMutationOptions
 } from '@tanstack/react-query'
-import { api } from '@/lib/api-instance'
-import type { LikeSuccessData, PostLikeSchemaType } from '../../types'
+import type { PostLikeSchemaType } from '../../types'
 import { ErrorResponse } from '@/hooks/use-format-error'
 
 export const useCreatePostLike = (
-    options?: UseMutationOptions<
-        LikeSuccessData,
-        ErrorResponse,
-        PostLikeSchemaType
-    >
+    options?: UseMutationOptions<any, ErrorResponse, PostLikeSchemaType>
 ) => {
     const queryClient = useQueryClient()
-    return useMutation<LikeSuccessData, ErrorResponse, PostLikeSchemaType>({
+    return useMutation<any, ErrorResponse, PostLikeSchemaType>({
         mutationKey: ['create-post-like'],
         mutationFn: async ({ postId }) => {
-            const response = await api.posts[':id'].like.$post({
-                param: { id: postId }
+            const response = await fetch(`/api/posts/${postId}/like`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include'
             })
             const data = await response.json()
 
@@ -27,7 +26,7 @@ export const useCreatePostLike = (
                 throw data
             }
 
-            return data as LikeSuccessData
+            return data
         },
         ...options,
         onSuccess: (data, variables, context) => {

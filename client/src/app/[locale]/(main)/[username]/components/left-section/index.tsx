@@ -1,10 +1,9 @@
 'use client'
 import AvatarRole from '@/components/avatar-with-role-border'
-import type { UserSuccessData } from '@/hooks/api/user/types'
 import React from 'react'
 import { useTranslations } from 'next-intl'
 
-const LeftSection = ({ user }: { user: UserSuccessData }) => {
+const LeftSection = ({ user }: { user: any }) => {
     const t = useTranslations('re_use')
     return (
         <div className="relative w-full md:w-[400px] md:px-10 -mt-[94px] md:-mt-[124px]">

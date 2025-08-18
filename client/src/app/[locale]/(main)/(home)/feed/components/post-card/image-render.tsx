@@ -1,7 +1,6 @@
 import Image from 'next/image'
-import type { PostItem } from '../../types'
 
-export const renderImages = (post: PostItem) => {
+export const renderImages = (post: any) => {
     const images = post?.images || []
 
     if (images.length === 0) return null
@@ -23,7 +22,7 @@ export const renderImages = (post: PostItem) => {
     if (images.length === 2) {
         return (
             <div className="grid grid-cols-2 gap-2 w-full h-full">
-                {images.map((image) => (
+                {images.map((image: any) => (
                     <Image
                         key={image.url}
                         src={image.url}
@@ -70,7 +69,7 @@ export const renderImages = (post: PostItem) => {
     if (images.length >= 4) {
         return (
             <div className="grid grid-cols-2 gap-2 w-full h-full">
-                {images.slice(0, 4).map((image) => (
+                {images.slice(0, 4).map((image: any) => (
                     <div key={image.url} className="relative">
                         <Image
                             src={image.url}

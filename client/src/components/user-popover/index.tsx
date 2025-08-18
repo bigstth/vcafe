@@ -7,7 +7,6 @@ import { useAuth } from '@/contexts/auth-provider'
 
 import './styles.css'
 import AvatarRole from '../avatar-with-role-border'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
 const UserPopOver = () => {

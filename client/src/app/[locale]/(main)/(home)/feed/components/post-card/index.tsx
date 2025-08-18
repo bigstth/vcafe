@@ -1,7 +1,5 @@
 import React from 'react'
-import type { PostItem } from '../../types'
 import { Card, CardContent } from '@/components/ui/card'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import Link from 'next/link'
 import { renderImages } from './image-render'
 import { useTimeAgo } from '@/hooks/use-get-time-ago'
@@ -9,9 +7,9 @@ import AvatarRole from '@/components/avatar-with-role-border'
 import InteractionBar from './interaction-bar'
 
 type PostCardProps = {
-    post: PostItem
+    post: any
     setShowCreateComment?: React.Dispatch<React.SetStateAction<boolean>>
-    setPost?: React.Dispatch<React.SetStateAction<PostItem | null>>
+    setPost?: React.Dispatch<React.SetStateAction<any | null>>
 }
 
 const PostCard: React.FC<PostCardProps> = ({

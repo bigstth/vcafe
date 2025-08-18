@@ -1,18 +1,17 @@
-import { api } from '@/lib/api-instance'
 import { useQuery, type UseQueryOptions } from '@tanstack/react-query'
-import type { LikesSuccessData } from './types'
 
-type GetLikesOptions = Omit<
-    UseQueryOptions<LikesSuccessData, Error>,
-    'queryKey' | 'queryFn'
->
+type GetLikesOptions = Omit<UseQueryOptions<any, Error>, 'queryKey' | 'queryFn'>
 
 export const useGetPostLike = (postId: string, options?: GetLikesOptions) => {
-    return useQuery<LikesSuccessData, Error>({
+    return useQuery<any, Error>({
         queryKey: ['get-post-likes', postId],
         queryFn: async () => {
-            const response = await api.posts[':id'].like.$get({
-                param: { id: postId }
+            const response = await fetch(`/api/posts/${postId}/like`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include'
             })
             const data = await response.json()
 
@@ -20,7 +19,7 @@ export const useGetPostLike = (postId: string, options?: GetLikesOptions) => {
                 throw data
             }
 
-            return data as LikesSuccessData
+            return data
         },
         retry: false,
         refetchOnWindowFocus: false,
