@@ -1,5 +1,3 @@
-'use client'
-
 import Feed from './feed'
 
 export default function HomePage() {

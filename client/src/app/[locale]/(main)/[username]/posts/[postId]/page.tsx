@@ -2,7 +2,7 @@
 import React from 'react'
 import { notFound, useParams } from 'next/navigation'
 import { useGetPosts } from './use-get-post'
-import PostCard from '../../../(home)/feed/components/post-card'
+import PostCard from '../../../../../../components/post-card'
 
 const PostPage = () => {
     const { postId } = useParams<{

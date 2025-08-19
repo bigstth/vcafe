@@ -36,7 +36,7 @@ const Navbar = () => {
 
     const isActive = (href: string) => {
         const segments = pathname.split('/')
-        const pathWithoutLocale = '/' + segments.slice(2).join('/')
+        const pathWithoutLocale = '/' + segments.slice(1).join('/')
         return (
             pathWithoutLocale === href ||
             pathWithoutLocale.startsWith(href + '/')

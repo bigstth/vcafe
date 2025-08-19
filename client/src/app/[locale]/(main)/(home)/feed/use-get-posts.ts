@@ -1,12 +1,12 @@
 import { useQuery, type UseQueryOptions } from '@tanstack/react-query'
-import type { GetPostPayload } from './types'
+import type { GetPostPayload, PostResponse } from './types'
 
 type GetPostsOptions = Omit<UseQueryOptions<any, Error>, 'queryKey' | 'queryFn'>
 export const useGetPosts = (
     payload: GetPostPayload,
     options?: GetPostsOptions
 ) => {
-    return useQuery<any, Error>({
+    return useQuery<PostResponse, Error>({
         queryKey: ['get-post', payload],
         queryFn: async () => {
             const response = await fetch(

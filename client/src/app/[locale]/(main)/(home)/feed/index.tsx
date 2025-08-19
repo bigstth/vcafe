@@ -2,9 +2,9 @@
 import React, { useState } from 'react'
 import { useGetPosts } from './use-get-posts'
 import CreatePostComponent from './components/create-post'
-import PostCard from './components/post-card'
-import PostSkeleton from './components/post-card/post-skeleton'
 import CreateComment from './components/create-comment'
+import PostSkeleton from '@/components/post-card/post-skeleton'
+import PostCard from '@/components/post-card'
 
 const Feed = () => {
     const [pagination] = useState({ offset: 0, limit: 10 })

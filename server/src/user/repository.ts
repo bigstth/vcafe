@@ -60,8 +60,10 @@ export const getUserPostsRepository = async (options: GetUserPostsOptions) => {
             author: {
                 columns: {
                     id: true,
-                    name: true,
                     username: true,
+                    displayUsername: true,
+                    bio: true,
+                    role: true,
                     image: true
                 }
             },
@@ -74,8 +76,10 @@ export const getUserPostsRepository = async (options: GetUserPostsOptions) => {
                     author: {
                         columns: {
                             id: true,
-                            name: true,
                             username: true,
+                            displayUsername: true,
+                            bio: true,
+                            role: true,
                             image: true
                         }
                     }

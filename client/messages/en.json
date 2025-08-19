@@ -19,6 +19,7 @@
         "avatar_image": "Avatar Image",
         "my_profile": "My Profile",
         "just_now": "Just now",
+        "posts": "Posts",
         "m": "{count}m",
         "h": "{count}h",
         "d": "{count}d",
@@ -56,6 +57,10 @@
             "errors": {
                 "max_images": "Maximum {max} images allowed"
             }
+        },
+        "profile": {
+            "portfolio": "Portfolio",
+            "services": "Services"
         }
     },
     "home": {

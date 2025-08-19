@@ -2,7 +2,6 @@ import {
     getMeRepository,
     getUserByUsernameRepository,
     getUserPostsRepository,
-    getUserRepository,
     updateUserRepository
 } from './repository.js'
 import {
@@ -19,7 +18,7 @@ import { auth } from '../lib/auth.js'
 import { CustomLogger } from '../lib/custom-logger.js'
 import { AppError } from '../lib/error.js'
 import { mapImageUrl } from '../lib/format-image-url.js'
-import { mapImageUrls } from '../lib/map-image-urls.js'
+import { formatAvatarImageUrl, mapImageUrls } from '../lib/map-image-urls.js'
 import { noPostFoundError } from '../post/errors.js'
 
 export const getMeService = async (c: Context) => {
@@ -85,6 +84,10 @@ export const getUserPostsService = async (c: Context) => {
     }
     const postsWithImageUrls = posts.posts.map((post) => ({
         ...post,
+        author: {
+            ...post.author,
+            image: formatAvatarImageUrl(post.author.id)
+        },
         images: mapImageUrls(post.images)
     }))
 

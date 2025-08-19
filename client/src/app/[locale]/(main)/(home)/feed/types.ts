@@ -4,23 +4,65 @@ export type GetPostPayload = {
     orderBy?: 'createdAt' | 'updatedAt'
 }
 
+interface User {
+    id: string
+    username: string
+    displayUsername: string
+    bio: string | null
+    role: 'ruby' | 'silver'
+    image: string
+}
+
+interface Like {
+    userId: string
+    postId: string
+    createdAt: string
+}
+
+interface Post {
+    id: string
+    userId: string
+    content: string
+    visibility: 'public' | 'private' | 'friendsOnly'
+    isDeleted: boolean
+    isArchived: boolean
+    deletedAt: string | null
+    archivedAt: string | null
+    createdAt: string
+    updatedAt: string
+    author: User
+    images: Image[]
+    comments: Comment[]
+    likes: Like[]
+}
+
+export interface PostResponse {
+    posts: Post[]
+    total: number
+    hasMore: boolean
+}
+
 export interface Comment {
     id: string
     content: string
     author: {
         id: string
-        name: string
+        username: string
+        displayUsername: string
+        bio: string
+        role: string
+        image: string
     }
     createdAt: string
     updatedAt?: string
 }
-export type GetCommentsData = Comment[]
-export type CommentsSuccessData = Exclude<GetCommentsData, { error: any }>
+export type Comments = Comment[]
 
 export interface LikesData {
     likeCount: number
     hasLiked: boolean
 }
+
 export type GetLikesData = LikesData
 export type LikesSuccessData = Exclude<GetLikesData, { error: any }>
 

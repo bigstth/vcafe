@@ -5,12 +5,12 @@ import { Textarea } from '@/components/ui/textarea'
 import { useForm } from 'react-hook-form'
 import { Button } from '@/components/ui/button'
 import { useTimeAgo } from '@/hooks/use-get-time-ago'
-import { renderImages } from '../post-card/image-render'
 import Link from 'next/link'
 import { useCreateComment } from './use-create-comment'
 import { commentSchemaType } from '../../types'
 import { toast } from 'sonner'
 import debounce from 'lodash/debounce'
+import { renderImages } from '@/components/post-card/image-render'
 
 type CreateCommentComponentProps = {
     post: any | null

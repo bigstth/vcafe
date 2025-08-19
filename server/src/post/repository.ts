@@ -49,6 +49,12 @@ export const getPostsWithImagesRepository = async (
                 orderBy: [asc(postImages.displayOrder)]
             },
             comments: {
+                columns: {
+                    id: true,
+                    content: true,
+                    createdAt: true,
+                    updatedAt: true
+                },
                 where: eq(comments.isDeleted, false),
                 with: {
                     author: {

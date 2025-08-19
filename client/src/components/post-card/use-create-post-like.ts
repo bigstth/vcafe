@@ -3,7 +3,7 @@ import {
     useQueryClient,
     type UseMutationOptions
 } from '@tanstack/react-query'
-import type { PostLikeSchemaType } from '../../types'
+import type { PostLikeSchemaType } from '../../app/[locale]/(main)/(home)/feed/types'
 import { ErrorResponse } from '@/hooks/use-format-error'
 
 export const useCreatePostLike = (

@@ -1,6 +1,5 @@
+'use client'
 import { Heart, MessageCircle, Share2 } from 'lucide-react'
-import { useGetPostComments } from '../../use-get-post-comment'
-import { useGetPostLike } from '../../use-get-post-like'
 import { useCreatePostLike } from './use-create-post-like'
 import { useGlobalErrorStore } from '@/store/global-error'
 import { ErrorResponse, useFormatError } from '@/hooks/use-format-error'
@@ -8,6 +7,8 @@ import React, { useState, useEffect } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
 import { useDebounce } from '@/hooks/use-debounce'
+import { useGetPostComments } from '@/app/[locale]/(main)/(home)/feed/use-get-post-comment'
+import { useGetPostLike } from '@/app/[locale]/(main)/(home)/feed/use-get-post-like'
 
 type InteractionBarProps = {
     post: any
