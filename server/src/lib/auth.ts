@@ -48,17 +48,17 @@ export const auth = betterAuth({
         origin: [
             'https://vcafe.xyz',
             'https://www.vcafe.xyz',
-            'http://vcafe.xyz/api',
-            'localhost:5173',
-            'localhost:3000'
+            'https://www.vcafe.xyz/api',
+            'https://localhost:5173',
+            'https://localhost:3000'
         ],
         credentials: true
     },
     trustedOrigins: [
         'https://vcafe.xyz',
         'https://www.vcafe.xyz',
-        'http://vcafe.xyz/api',
-        'localhost:5173',
-        'localhost:3000'
+        'https://www.vcafe.xyz/api',
+        'https://localhost:5173',
+        'https://localhost:3000'
     ]
 }) as ReturnType<typeof betterAuth>
