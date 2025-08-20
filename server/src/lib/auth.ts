@@ -14,6 +14,11 @@ export const auth = betterAuth({
             verification
         }
     }),
+    advanced: {
+        crossSubDomainCookies: {
+            enabled: true
+        }
+    },
     rateLimit: {
         enabled: true,
         window: 10,
