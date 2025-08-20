@@ -5,6 +5,7 @@ import 'dotenv/config'
 import { db } from '../db/db-instance.js'
 
 export const auth = betterAuth({
+    baseURL: process.env.WEBSITE_URL,
     database: drizzleAdapter(db, {
         provider: 'pg',
         schema: {
