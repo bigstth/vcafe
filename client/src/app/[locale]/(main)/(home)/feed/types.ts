@@ -19,7 +19,7 @@ interface Like {
     createdAt: string
 }
 
-interface Post {
+export interface Post {
     id: string
     userId: string
     content: string
