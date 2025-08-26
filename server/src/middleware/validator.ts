@@ -17,8 +17,8 @@ export const validateQuery = <T extends ZodType>(schema: T) => {
                         received: err.path.reduce(
                             (obj: any, key: any) => obj?.[key],
                             queryData
-                        ),
-                    })),
+                        )
+                    }))
                 },
                 400
             )
@@ -45,8 +45,8 @@ export const validateJson = <T extends ZodType>(schema: T) => {
                         received: err.path.reduce(
                             (obj: any, key: any) => obj?.[key],
                             jsonData
-                        ),
-                    })),
+                        )
+                    }))
                 },
                 400
             )
@@ -73,8 +73,8 @@ export const validateParam = <T extends ZodType>(schema: T) => {
                         received: err.path.reduce(
                             (obj: any, key: any) => obj?.[key],
                             paramData
-                        ),
-                    })),
+                        )
+                    }))
                 },
                 400
             )
@@ -144,10 +144,10 @@ export const validateFormData = <T extends ZodType>(schema: T) => {
                                               (obj: any, key: any) =>
                                                   obj?.[key],
                                               formObject
-                                          ),
-                                      }),
+                                          )
+                                      })
                             }
-                        }),
+                        })
                     },
                     400
                 )
@@ -158,7 +158,7 @@ export const validateFormData = <T extends ZodType>(schema: T) => {
             return c.json(
                 {
                     status: 'parse_error',
-                    message: 'Failed to parse form data',
+                    message: 'Failed to parse form data'
                 },
                 400
             )

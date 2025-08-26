@@ -7,7 +7,7 @@ import { Check, ImagePlus, X } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import React, { useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { postSchema, type PostSchemaType } from './types'
+import { postPayloadSchema, type PostPayloadSchemaType } from './types'
 import { FormField, FormItem, FormControl, Form } from '@/components/ui/form'
 import Image from 'next/image'
 import { useGlobalErrorStore } from '@/store/global-error'
@@ -36,7 +36,7 @@ const CreatePostComponent = () => {
     const [isVisibilityOpen, setIsVisibilityOpen] = useState(false)
 
     const form = useForm({
-        resolver: zodResolver(postSchema),
+        resolver: zodResolver(postPayloadSchema),
         mode: 'onChange',
         defaultValues: {
             content: '',
@@ -56,7 +56,7 @@ const CreatePostComponent = () => {
         }
     })
 
-    const onSubmit = (data: PostSchemaType) => {
+    const onSubmit = (data: PostPayloadSchemaType) => {
         toast.promise(createPost(data), {
             loading: t('creating_post'),
             success: t('post_created')

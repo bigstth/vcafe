@@ -3,16 +3,24 @@ import {
     useQueryClient,
     type UseMutationOptions
 } from '@tanstack/react-query'
-import type { PostSchemaType } from './types'
+import type { PostPayloadSchemaType, PostResponseSchemaType } from './types'
 import type { ErrorResponse } from '@/hooks/use-format-error'
 
 export const useCreatePost = (
-    options?: UseMutationOptions<any, ErrorResponse, PostSchemaType>
+    options?: UseMutationOptions<
+        PostResponseSchemaType,
+        ErrorResponse,
+        PostPayloadSchemaType
+    >
 ) => {
     const queryClient = useQueryClient()
-    return useMutation<any, ErrorResponse, PostSchemaType>({
+    return useMutation<
+        PostResponseSchemaType,
+        ErrorResponse,
+        PostPayloadSchemaType
+    >({
         mutationKey: ['create-post'],
-        mutationFn: async (data: PostSchemaType) => {
+        mutationFn: async (data: PostPayloadSchemaType) => {
             const formData = new FormData()
 
             formData.append('content', data.content)
