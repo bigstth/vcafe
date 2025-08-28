@@ -10,6 +10,7 @@ import AvatarRole from '@/components/avatar-with-role-border'
 import { Link } from '@/i18n/navigation'
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden'
+import { useAuth } from '@/contexts/auth-provider'
 
 type CreateCommentProps = {
     post: Post | null
@@ -23,6 +24,8 @@ const CreateComment: React.FC<CreateCommentProps> = ({
 }) => {
     const form = useForm({ defaultValues: { content: '' } })
     const getTimeAgo = useTimeAgo()
+    const { user } = useAuth()
+
     const { mutateAsync: createComment } = useCreateComment({
         onSuccess: () => {
             form.reset()
@@ -88,7 +91,7 @@ const CreateComment: React.FC<CreateCommentProps> = ({
                     </div>
                 </div>
 
-                <CreateCommentForm onSubmit={onSubmit} />
+                {user && <CreateCommentForm onSubmit={onSubmit} />}
             </DialogContent>
         </Dialog>
     )
