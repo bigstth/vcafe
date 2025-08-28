@@ -18,7 +18,6 @@ const Feed = () => {
                 post={post}
                 showCreateComment={showCreateComment}
                 setShowCreateComment={setShowCreateComment}
-                setPost={setPost}
             />
 
             <CreatePostComponent />
