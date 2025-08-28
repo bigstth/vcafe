@@ -48,10 +48,11 @@
             "post_created": "โพสต์ถูกสร้างแล้ว :)",
             "post_create_error": "เกิดข้อผิดพลาดในการสร้างโพสต์ :(",
             "login_to_post": "เข้าสู่ระบบเพื่อโพสต์",
-            "action": {
+            "actions": {
                 "public": "สาธารณะ",
                 "follower_only": "เฉพาะผู้ติดตาม",
-                "membership_only": "เฉพาะสมาชิก"
+                "membership_only": "เฉพาะสมาชิก",
+                "reply": "ตอบกลับ"
             },
             "errors": {
                 "max_images": "ขออภัย คุณสามารถอัปโหลดได้สูงสุด {max} รูป"

@@ -3,16 +3,16 @@ import {
     useQueryClient,
     type UseMutationOptions
 } from '@tanstack/react-query'
-import type { commentSchemaType } from '../../types'
+import type { CommentSchemaType } from '../../types'
 import type { ErrorResponse } from '@/hooks/use-format-error'
 
 export const useCreateComment = (
-    options?: UseMutationOptions<any, ErrorResponse, commentSchemaType>
+    options?: UseMutationOptions<any, ErrorResponse, CommentSchemaType>
 ) => {
     const queryClient = useQueryClient()
-    return useMutation<any, ErrorResponse, commentSchemaType>({
+    return useMutation<any, ErrorResponse, CommentSchemaType>({
         mutationKey: ['create-comment'],
-        mutationFn: async (data: commentSchemaType) => {
+        mutationFn: async (data: CommentSchemaType) => {
             const postId = String(data?.postId)
 
             const response = await fetch(`/api/comments/post/${postId}`, {

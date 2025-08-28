@@ -202,7 +202,7 @@ const CreatePostComponent = () => {
                                                                 ]?.icon
                                                             }
                                                             {t(
-                                                                `action.${field.value}`
+                                                                `actions.${field.value}`
                                                             )}
                                                         </Button>
                                                     </FormControl>
@@ -245,7 +245,7 @@ const CreatePostComponent = () => {
                                                                         option.icon
                                                                     }
                                                                     {t(
-                                                                        `action.${key}`
+                                                                        `actions.${key}`
                                                                     )}
                                                                     {field.value ===
                                                                         key && (

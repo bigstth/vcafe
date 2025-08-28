@@ -23,7 +23,7 @@ export interface Post {
     id: string
     userId: string
     content: string
-    visibility: 'public' | 'private' | 'friendsOnly'
+    visibility: 'public' | 'follower_only' | 'membership_only'
     isDeleted: boolean
     isArchived: boolean
     deletedAt: string | null
@@ -78,7 +78,7 @@ export type LikeSuccessData = {
 }
 export type PostLikeSchemaType = { postId: string }
 
-export type commentSchemaType = {
+export type CommentSchemaType = {
     postId: string
     content: string
 }
