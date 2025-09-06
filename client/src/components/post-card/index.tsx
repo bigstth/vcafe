@@ -5,11 +5,12 @@ import { renderImages } from './image-render'
 import { useTimeAgo } from '@/hooks/use-get-time-ago'
 import AvatarRole from '@/components/avatar-with-role-border'
 import InteractionBar from './interaction-bar'
+import type { Post } from '@/app/[locale]/(main)/(home)/feed/types'
 
 type PostCardProps = {
-    post: any
+    post: Post
     setShowCreateComment?: React.Dispatch<React.SetStateAction<boolean>>
-    setPost?: React.Dispatch<React.SetStateAction<any | null>>
+    setPost?: React.Dispatch<React.SetStateAction<Post | null>>
 }
 
 const PostCard: React.FC<PostCardProps> = ({

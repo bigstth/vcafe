@@ -1,6 +1,7 @@
+import type { Post } from '@/app/[locale]/(main)/(home)/feed/types'
 import Image from 'next/image'
 
-export const renderImages = (post: any) => {
+export const renderImages = (post: Post) => {
     const images = post?.images || []
 
     if (images.length === 0) return null
@@ -22,7 +23,7 @@ export const renderImages = (post: any) => {
     if (images.length === 2) {
         return (
             <div className="grid grid-cols-2 gap-2 w-full h-full">
-                {images.map((image: any) => (
+                {images.map((image: Post['images'][number]) => (
                     <Image
                         key={image.url}
                         src={image.url}
@@ -69,7 +70,7 @@ export const renderImages = (post: any) => {
     if (images.length >= 4) {
         return (
             <div className="grid grid-cols-2 gap-2 w-full h-full">
-                {images.slice(0, 4).map((image: any) => (
+                {images.slice(0, 4).map((image: Post['images'][number]) => (
                     <div key={image.url} className="relative">
                         <Image
                             src={image.url}

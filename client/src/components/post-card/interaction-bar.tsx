@@ -9,11 +9,12 @@ import { Button } from '@/components/ui/button'
 import { useDebounce } from '@/hooks/use-debounce'
 import { useGetPostComments } from '@/app/[locale]/(main)/(home)/feed/use-get-post-comment'
 import { useGetPostLike } from '@/app/[locale]/(main)/(home)/feed/use-get-post-like'
+import type { Post } from '@/app/[locale]/(main)/(home)/feed/types'
 
 type InteractionBarProps = {
-    post: any
+    post: Post
     setShowCreateComment?: React.Dispatch<React.SetStateAction<boolean>>
-    setPost?: React.Dispatch<React.SetStateAction<any | null>>
+    setPost?: React.Dispatch<React.SetStateAction<Post | null>>
 }
 
 const InteractionBar: React.FC<InteractionBarProps> = ({

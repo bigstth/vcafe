@@ -2,8 +2,9 @@
 import AvatarRole from '@/components/avatar-with-role-border'
 import React from 'react'
 import { useTranslations } from 'next-intl'
+import type { User } from '../../../(home)/feed/types'
 
-const LeftSection = ({ user }: { user: any }) => {
+const LeftSection = ({ user }: { user: User }) => {
     const t = useTranslations('re_use')
     return (
         <div className="relative w-full md:w-[400px] md:px-10 -mt-[94px] md:-mt-[124px]">

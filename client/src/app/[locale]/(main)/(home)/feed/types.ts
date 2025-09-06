@@ -4,13 +4,15 @@ export type GetPostPayload = {
     orderBy?: 'createdAt' | 'updatedAt'
 }
 
-interface User {
+export interface User {
     id: string
     username: string
     displayUsername: string
     bio: string | null
     role: 'ruby' | 'silver'
     image: string
+    followers?: number
+    following?: number
 }
 
 interface Like {
