@@ -1,5 +1,6 @@
 import { useQuery, type UseQueryOptions } from '@tanstack/react-query'
 import type { GetPostPayload, PostResponse } from './types'
+import { api } from '@/lib/api-client'
 
 type GetPostsOptions = Omit<UseQueryOptions<any, Error>, 'queryKey' | 'queryFn'>
 export const useGetPosts = (
@@ -9,20 +10,13 @@ export const useGetPosts = (
     return useQuery<PostResponse, Error>({
         queryKey: ['get-post', payload],
         queryFn: async () => {
-            const response = await fetch(
-                `/api/posts?offset=${payload.offset}`,
-                {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    credentials: 'include'
-                }
-            )
-            const data = await response.json()
+            const data = await api.get<PostResponse>('/api/posts', {
+                params: { offset: payload.offset }
+            })
 
             if ('error' in data) {
-                throw new Error(data.error.status || 'something_went_wrong')
+                const error = data.error as { status?: string }
+                throw new Error(error.status || 'something_went_wrong')
             }
 
             return data
