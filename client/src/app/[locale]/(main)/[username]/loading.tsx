@@ -1,7 +1,8 @@
+import { Skeleton } from '@/components/ui/skeleton'
 import React from 'react'
 
 const Loading = () => {
-    return <div>Loading component</div>
+    return <Skeleton />
 }
 
 export default Loading
