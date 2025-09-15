@@ -1,30 +1,16 @@
 import { useQuery, type UseQueryOptions } from '@tanstack/react-query'
 import { useFormatError, type ErrorResponse } from '@/hooks/use-format-error'
+import type { Post } from '../../../(home)/feed/types'
+import { api } from '@/lib/api-client'
 
 type GetPostsOptions = Omit<
-    UseQueryOptions<any, ErrorResponse>,
+    UseQueryOptions<Post, ErrorResponse>,
     'queryKey' | 'queryFn'
 >
 export const useGetPosts = (id: string, options?: GetPostsOptions) => {
-    const { formatErrorMessage } = useFormatError()
-    return useQuery<any, ErrorResponse>({
+    return useQuery<Post, ErrorResponse>({
         queryKey: ['get-post', id],
-        queryFn: async () => {
-            const response = await fetch(`/api/posts/${id}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                credentials: 'include'
-            })
-            const data = await response.json()
-
-            if (!response.ok) {
-                throw new Error(formatErrorMessage(data))
-            }
-
-            return data as any
-        },
+        queryFn: async () => api.get<Post>(`/api/posts/${id}`),
         retry: false,
         refetchOnWindowFocus: false,
         enabled: !!id,

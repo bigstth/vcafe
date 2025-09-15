@@ -31,7 +31,6 @@ const userRoutes = new Hono()
     )
     .get(
         '/:id/posts',
-        protect,
         validateParam(userIdSchema),
         validateQuery(getUserPostsSchema),
         (c) => getUserPostsController(c)

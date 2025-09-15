@@ -12,18 +12,10 @@ export const useGetPosts = (
 ) => {
     return useQuery<PostResponse, ErrorResponse>({
         queryKey: ['get-post', payload],
-        queryFn: async () => {
-            const data = await api.get<PostResponse>('/api/posts', {
+        queryFn: () =>
+            api.get<PostResponse>('/api/posts', {
                 params: { offset: payload.offset }
-            })
-
-            if ('error' in data) {
-                const error = data.error as { status?: string }
-                throw new Error(error.status || 'something_went_wrong')
-            }
-
-            return data
-        },
+            }),
         refetchInterval: 60 * 1000,
         refetchIntervalInBackground: true,
         ...options

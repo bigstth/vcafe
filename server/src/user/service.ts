@@ -63,6 +63,8 @@ export const getUserService = async (username: string) => {
 
 export const getUserPostsService = async (c: Context) => {
     const userId = c.get('validatedParam').id
+    const currentUserId = c.get('user')?.id
+
     const {
         offset,
         limit,
@@ -76,7 +78,7 @@ export const getUserPostsService = async (c: Context) => {
         limit,
         orderBy,
         includeArchived,
-        currentUserId: c.get('user').id
+        currentUserId
     })
 
     if (!posts) {
