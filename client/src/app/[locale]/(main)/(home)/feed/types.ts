@@ -66,7 +66,7 @@ export interface LikesData {
 }
 
 export type GetLikesData = LikesData
-export type LikesSuccessData = Exclude<GetLikesData, { error: any }>
+export type LikesSuccessData = Exclude<GetLikesData, { error: ErrorResponse }>
 
 export interface CreateLikeSuccessData {
     likeCount: number

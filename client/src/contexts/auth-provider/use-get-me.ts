@@ -1,12 +1,12 @@
 import { useQuery, type UseQueryOptions } from '@tanstack/react-query'
 
 type GetMeOptions = Omit<
-    UseQueryOptions<any, Error, any>,
+    UseQueryOptions<any, ErrorResponse, any>,
     'queryKey' | 'queryFn'
 >
 
 export const useGetMe = (options: GetMeOptions) => {
-    return useQuery<any, Error, any>({
+    return useQuery<any, ErrorResponse, any>({
         queryKey: ['get-me'],
         queryFn: async () => {
             const response = await fetch('/api/user/me', {

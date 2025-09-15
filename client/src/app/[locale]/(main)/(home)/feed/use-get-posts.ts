@@ -2,12 +2,15 @@ import { useQuery, type UseQueryOptions } from '@tanstack/react-query'
 import type { GetPostPayload, PostResponse } from './types'
 import { api } from '@/lib/api-client'
 
-type GetPostsOptions = Omit<UseQueryOptions<any, Error>, 'queryKey' | 'queryFn'>
+type GetPostsOptions = Omit<
+    UseQueryOptions<any, ErrorResponse>,
+    'queryKey' | 'queryFn'
+>
 export const useGetPosts = (
     payload: GetPostPayload,
     options?: GetPostsOptions
 ) => {
-    return useQuery<PostResponse, Error>({
+    return useQuery<PostResponse, ErrorResponse>({
         queryKey: ['get-post', payload],
         queryFn: async () => {
             const data = await api.get<PostResponse>('/api/posts', {

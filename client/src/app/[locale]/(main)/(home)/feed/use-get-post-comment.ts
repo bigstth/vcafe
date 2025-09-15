@@ -1,7 +1,7 @@
 import { useQuery, type UseQueryOptions } from '@tanstack/react-query'
 
 type GetCommentsOptions = Omit<
-    UseQueryOptions<any, Error>,
+    UseQueryOptions<any, ErrorResponse>,
     'queryKey' | 'queryFn'
 >
 
@@ -9,7 +9,7 @@ export const useGetPostComments = (
     postId: string,
     options?: GetCommentsOptions
 ) => {
-    return useQuery<any, Error>({
+    return useQuery<any, ErrorResponse>({
         queryKey: ['get-comments', postId],
         queryFn: async () => {
             const response = await fetch(`/api/comments/${postId}`, {

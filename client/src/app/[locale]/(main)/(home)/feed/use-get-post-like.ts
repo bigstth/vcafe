@@ -1,9 +1,12 @@
 import { useQuery, type UseQueryOptions } from '@tanstack/react-query'
 
-type GetLikesOptions = Omit<UseQueryOptions<any, Error>, 'queryKey' | 'queryFn'>
+type GetLikesOptions = Omit<
+    UseQueryOptions<any, ErrorResponse>,
+    'queryKey' | 'queryFn'
+>
 
 export const useGetPostLike = (postId: string, options?: GetLikesOptions) => {
-    return useQuery<any, Error>({
+    return useQuery<any, ErrorResponse>({
         queryKey: ['get-post-likes', postId],
         queryFn: async () => {
             const response = await fetch(`/api/posts/${postId}/like`, {
