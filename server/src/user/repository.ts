@@ -1,6 +1,6 @@
 import { and, asc, desc, count, eq } from 'drizzle-orm'
 import { db } from '../db/db-instance.js'
-import { posts, postImages, comments } from '../db/feed-schema.js'
+import { posts, postImages } from '../db/feed-schema.js'
 import { user } from '../db/user-schema.js'
 import { activePostsCondition } from '../lib/soft-delete.js'
 
@@ -14,16 +14,16 @@ export interface GetUserPostsOptions {
 }
 
 export const getMeRepository = async (id: string) => {
-    return db.query.user.findFirst({ where: (u, { eq }) => eq(u.id, id) })
+    return db.query.user.findFirst({ where: eq(user.id, id) })
 }
 
 export const getUserRepository = async (id: string) => {
-    return db.query.user.findFirst({ where: (u, { eq }) => eq(u.id, id) })
+    return db.query.user.findFirst({ where: eq(user.id, id) })
 }
 
 export const getUserByUsernameRepository = async (username: string) => {
     return db.query.user.findFirst({
-        where: (u, { eq }) => eq(u.username, username)
+        where: eq(user.username, username)
     })
 }
 
