@@ -16,7 +16,7 @@ export const getPostsController = async (c: Context) => {
     try {
         const { limit, offset, orderBy } = c.get('validatedQuery')
 
-        const posts = await getPostsService({
+        const posts = await getPostsService(c, {
             limit,
             offset,
             orderBy

@@ -74,7 +74,7 @@ export const getUserPostsService = async (c: Context) => {
         includeArchived = false
     } = c.get('validatedQuery')
 
-    const posts = await getUserPostsRepository({
+    const result = await getUserPostsRepository({
         userId,
         offset,
         limit,
@@ -83,12 +83,12 @@ export const getUserPostsService = async (c: Context) => {
         currentUserId
     })
 
-    if (!posts) {
+    if (!result) {
         throw new AppError(noPostFoundError)
     }
 
-    const postsWithImageAndComments = await Promise.all(
-        posts.posts.map(async (post) => {
+    const postsWithAdditionalData = await Promise.all(
+        result.posts.map(async (post) => {
             const postResponse = {
                 ...post,
                 author: {
@@ -120,10 +120,10 @@ export const getUserPostsService = async (c: Context) => {
         })
     )
     return {
-        total: posts.total,
-        hasMore: posts.hasMore,
-        isOwner: posts.isOwner,
-        posts: postsWithImageAndComments
+        total: result.total,
+        hasMore: result.hasMore,
+        isOwner: result.isOwner,
+        posts: postsWithAdditionalData
     }
 }
 

@@ -1,15 +1,15 @@
 'use client'
 import React, { useState } from 'react'
-import { useGetPosts } from './use-get-posts'
 import CreatePostComponent from './components/create-post'
 import CreateComment from './components/create-comment'
-import PostSkeleton from '@/components/post-card/post-skeleton'
 import PostCard from '@/components/post-card'
-import type { Post } from './types'
+import type { Post, PostResponse } from './types'
 
-const Feed = () => {
-    const [pagination] = useState({ offset: 0, limit: 10 })
-    const { data: posts, isLoading } = useGetPosts(pagination)
+type Props = {
+    posts?: PostResponse
+}
+
+const Feed = ({ posts }: Props) => {
     const [showCreateComment, setShowCreateComment] = useState(false)
     const [post, setPost] = useState<Post | null>(null)
 
@@ -24,21 +24,14 @@ const Feed = () => {
             <CreatePostComponent />
 
             <div className="mt-8 flex flex-col gap-4">
-                {isLoading ? (
-                    <>
-                        <PostSkeleton />
-                        <PostSkeleton />
-                    </>
-                ) : (
-                    posts?.posts.map((post: Post) => (
-                        <PostCard
-                            key={post.id}
-                            post={post}
-                            setShowCreateComment={setShowCreateComment}
-                            setPost={setPost}
-                        />
-                    ))
-                )}
+                {posts?.posts?.map((post: Post) => (
+                    <PostCard
+                        key={post.id}
+                        post={post}
+                        setShowCreateComment={setShowCreateComment}
+                        setPost={setPost}
+                    />
+                ))}
             </div>
         </div>
     )

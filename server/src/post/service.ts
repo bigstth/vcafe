@@ -32,6 +32,8 @@ import { formatAvatarImageUrl, mapImageUrls } from '../lib/map-image-urls.js'
 import { db } from '../db/db-instance.js'
 import { postImages, posts } from '../db/feed-schema.js'
 import supabaseAdmin from '../db/supabase-instance.js'
+import { getCommentsRepository } from '../comment/repository.js'
+import type { Context } from 'hono'
 interface CreatePostWithImagesData {
     userId: string
     content: string
@@ -39,25 +41,52 @@ interface CreatePostWithImagesData {
     images?: File[] | Buffer[]
 }
 
-export const getPostsService = async (options: GetPostsOptions) => {
+export const getPostsService = async (c: Context, options: GetPostsOptions) => {
     const result = await getPostsWithImagesRepository(options)
+    const currentUserId = c.get('user')?.id
 
     if (!result) {
         throw new AppError(noPostFoundError)
     }
 
-    const postsWithImageUrls = result.posts.map((post) => ({
-        ...post,
-        author: {
-            ...post.author,
-            image: formatAvatarImageUrl(post.author.id)
-        },
-        images: mapImageUrls(post.images)
-    }))
+    const postsWithAdditionalData = await Promise.all(
+        result.posts.map(async (post) => {
+            const postResponse = {
+                ...post,
+                author: {
+                    ...post.author,
+                    image: formatAvatarImageUrl(post.author.id)
+                },
+                images: mapImageUrls(post.images)
+            }
+            try {
+                const comments = await getCommentsRepository(post.id)
+                const likes = await getPostLikeRepository(
+                    post.id,
+                    currentUserId
+                )
+
+                return {
+                    ...postResponse,
+                    likesCount: likes.likeCount,
+                    hasLiked: likes.hasLiked,
+                    commentsCount: comments?.length
+                }
+            } catch (error) {
+                return {
+                    ...postResponse,
+                    likesCount: 0,
+                    hasLiked: false,
+                    commentsCount: 0
+                }
+            }
+        })
+    )
 
     return {
-        ...result,
-        posts: postsWithImageUrls
+        total: result.total,
+        hasMore: result.hasMore,
+        posts: postsWithAdditionalData
     }
 }
 
