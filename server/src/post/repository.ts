@@ -4,6 +4,7 @@ import { activePostsCondition } from '../lib/soft-delete.js'
 import { db } from '../db/db-instance.js'
 import { posts, postImages, comments, postLikes } from '../db/feed-schema.js'
 import { CustomLogger } from '../lib/custom-logger.js'
+import type { Like } from './types.js'
 
 export interface GetPostsOptions {
     limit: number
@@ -402,20 +403,28 @@ export const canModifyPostRepository = async (
     }
 }
 
-export const getPostLikeRepository = async (postId: string, userId: string) => {
+export const getPostLikeRepository = async (
+    postId: string,
+    userId?: string
+) => {
     const likeCount = await db
         .select({ count: count() })
         .from(postLikes)
         .where(eq(postLikes.postId, postId))
 
-    const hasLiked = await db
-        .select()
-        .from(postLikes)
-        .where(and(eq(postLikes.postId, postId), eq(postLikes.userId, userId)))
+    let hasLiked: Like[] = []
+    if (userId) {
+        hasLiked = await db
+            .select()
+            .from(postLikes)
+            .where(
+                and(eq(postLikes.postId, postId), eq(postLikes.userId, userId))
+            )
+    }
 
     return {
         likeCount: likeCount[0]?.count || 0,
-        hasLiked: hasLiked.length > 0
+        hasLiked: userId ? hasLiked.length > 0 : false
     }
 }
 

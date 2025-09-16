@@ -20,6 +20,8 @@ import { AppError } from '../lib/error.js'
 import { mapImageUrl } from '../lib/format-image-url.js'
 import { formatAvatarImageUrl, mapImageUrls } from '../lib/map-image-urls.js'
 import { noPostFoundError } from '../post/errors.js'
+import { getCommentsRepository } from '../comment/repository.js'
+import { getPostLikeRepository } from '../post/repository.js'
 
 export const getMeService = async (c: Context) => {
     const user = c.get('user')
@@ -84,18 +86,44 @@ export const getUserPostsService = async (c: Context) => {
     if (!posts) {
         throw new AppError(noPostFoundError)
     }
-    const postsWithImageUrls = posts.posts.map((post) => ({
-        ...post,
-        author: {
-            ...post.author,
-            image: formatAvatarImageUrl(post.author.id)
-        },
-        images: mapImageUrls(post.images)
-    }))
 
+    const postsWithImageAndComments = await Promise.all(
+        posts.posts.map(async (post) => {
+            const postResponse = {
+                ...post,
+                author: {
+                    ...post.author,
+                    image: formatAvatarImageUrl(post.author.id)
+                },
+                images: mapImageUrls(post.images)
+            }
+            try {
+                const comments = await getCommentsRepository(post.id)
+                const likes = await getPostLikeRepository(
+                    post.id,
+                    currentUserId
+                )
+                return {
+                    ...postResponse,
+                    likesCount: likes.likeCount,
+                    hasLiked: likes.hasLiked,
+                    commentsCount: comments?.length
+                }
+            } catch (error) {
+                return {
+                    ...postResponse,
+                    likesCount: 0,
+                    hasLiked: false,
+                    commentsCount: 0
+                }
+            }
+        })
+    )
     return {
-        ...posts,
-        posts: postsWithImageUrls
+        total: posts.total,
+        hasMore: posts.hasMore,
+        isOwner: posts.isOwner,
+        posts: postsWithImageAndComments
     }
 }
 

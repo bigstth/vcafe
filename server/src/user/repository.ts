@@ -69,24 +69,7 @@ export const getUserPostsRepository = async (options: GetUserPostsOptions) => {
             },
             images: {
                 orderBy: [asc(postImages.displayOrder)]
-            },
-            comments: {
-                where: eq(comments.isDeleted, false),
-                with: {
-                    author: {
-                        columns: {
-                            id: true,
-                            username: true,
-                            displayUsername: true,
-                            bio: true,
-                            role: true,
-                            image: true
-                        }
-                    }
-                },
-                orderBy: [desc(comments.createdAt)]
-            },
-            likes: true
+            }
         },
         orderBy:
             orderBy === 'desc'

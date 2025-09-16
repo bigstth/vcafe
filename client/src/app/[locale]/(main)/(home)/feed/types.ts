@@ -34,8 +34,10 @@ export interface Post {
     updatedAt: string
     author: User
     images: Image[]
-    comments: Comment[]
-    likes: Like[]
+    comments?: Comment[]
+    likesCount: number
+    hasLiked: boolean
+    commentsCount: number
 }
 
 export interface PostResponse {

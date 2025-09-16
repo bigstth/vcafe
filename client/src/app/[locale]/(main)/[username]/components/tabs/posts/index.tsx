@@ -1,14 +1,13 @@
-'use client'
-import type {
-    Post,
-    PostResponse
-} from '@/app/[locale]/(main)/(home)/feed/types'
+import type { Post } from '@/app/[locale]/(main)/(home)/feed/types'
 import PostCard from '@/components/post-card'
-import { useGetUserPosts } from '@/hooks/user/use-get-user-posts'
+import { fetchUserPosts } from '@/services/user/user.service'
 import React from 'react'
 
-const UserPosts = ({ userId }: { userId: string }) => {
-    const { data } = useGetUserPosts(userId, { limit: 10 })
+const UserPosts = async ({ userId }: { userId: string }) => {
+    const data = await fetchUserPosts(userId, {
+        limit: 10
+    })
+
     return (
         <div className="mt-2 flex flex-col gap-4 max-w-[600px]">
             {data?.posts.map((post: Post) => (

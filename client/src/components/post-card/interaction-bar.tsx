@@ -7,8 +7,6 @@ import React, { useState, useEffect } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
 import { useDebounce } from '@/hooks/use-debounce'
-import { useGetPostComments } from '@/app/[locale]/(main)/(home)/feed/use-get-post-comment'
-import { useGetPostLike } from '@/app/[locale]/(main)/(home)/feed/use-get-post-like'
 import type { Post } from '@/app/[locale]/(main)/(home)/feed/types'
 
 type InteractionBarProps = {
@@ -22,29 +20,25 @@ const InteractionBar: React.FC<InteractionBarProps> = ({
     setShowCreateComment,
     setPost
 }) => {
-    const { data: comments, isLoading: commentLoading } = useGetPostComments(
-        post.id
-    )
-    const commentCount = comments?.length ?? ''
-    const { data: likes, isLoading: likeLoading } = useGetPostLike(post.id)
-    const likeCount = likes?.likeCount ?? ''
+    const likeCount = post?.likesCount ?? ''
     const { setError } = useGlobalErrorStore()
     const { formatErrorMessage } = useFormatError()
-    const [localHasLiked, setLocalHasLiked] = useState(likes?.hasLiked ?? false)
+    const [localHasLiked, setLocalHasLiked] = useState(post?.hasLiked ?? false)
 
     useEffect(() => {
-        setLocalHasLiked(likes?.hasLiked ?? false)
-    }, [likes?.hasLiked])
+        setLocalHasLiked(post?.hasLiked ?? false)
+    }, [post?.hasLiked])
 
-    const { mutateAsync: likePost } = useCreatePostLike({
-        onError: async (error: ErrorResponse) => {
-            const errorObj = await error
-            setError(formatErrorMessage(errorObj))
+    const { mutateAsync: likePost, isPending: likeLoading } = useCreatePostLike(
+        {
+            onError: async (error: ErrorResponse) => {
+                const errorObj = await error
+                setError(formatErrorMessage(errorObj))
+            }
         }
-    })
+    )
 
     const handleComment = async () => {
-        console.log('Handle comment action for post:', post.id)
         setShowCreateComment?.(true)
         setPost?.(post)
     }
@@ -94,13 +88,7 @@ const InteractionBar: React.FC<InteractionBarProps> = ({
                 onClick={() => handleComment()}
             >
                 <MessageCircle className="stroke-primary" size={20} />
-                <span className="text-sm">
-                    {commentLoading ? (
-                        <Skeleton className="h-4 w-6" />
-                    ) : (
-                        commentCount
-                    )}
-                </span>
+                <span className="text-sm">{post.commentsCount}</span>
             </Button>
             <div className="ml-auto flex items-center gap-6">
                 <Button

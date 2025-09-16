@@ -1,13 +1,17 @@
 type ApiOptions = RequestInit & { params?: Record<string, any> }
 
 function buildUrl(url: string, params?: Record<string, any>) {
-    if (!params) return url
+    const isAbsolute = url.startsWith('http')
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || ''
+    const fullUrl = isAbsolute ? url : baseUrl + url
+    if (!params || Object.keys(params).length === 0) return fullUrl
     const query = new URLSearchParams(params).toString()
-    return `${url}?${query}`
+    return `${fullUrl}?${query}`
 }
 
 export const api = {
     get: async <T>(url: string, options?: ApiOptions): Promise<T> => {
+        console.log(buildUrl(url, options?.params), 'urlzaza')
         const response = await fetch(buildUrl(url, options?.params), {
             method: 'GET',
             headers: {

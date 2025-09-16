@@ -7,7 +7,7 @@ import type { PostResponse } from '@/app/[locale]/(main)/(home)/feed/types'
 export const useGetUserPosts = (id: string, params: UserPostParams) => {
     return useQuery<PostResponse, Error>({
         queryKey: [...userQueryKeys.getUserPosts, id, params],
-        queryFn: async () => await fetchUserPosts(id, params),
+        queryFn: () => fetchUserPosts(id, params),
         staleTime: 5 * 60 * 1000,
         enabled: !!id
     })
