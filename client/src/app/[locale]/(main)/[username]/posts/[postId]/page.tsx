@@ -11,7 +11,7 @@ type PostPageProps = {
 }
 
 const PostPage = async ({ params }: PostPageProps) => {
-    const { postId } = params
+    const { postId } = await params
 
     const post = await fetchPost(postId)
 
