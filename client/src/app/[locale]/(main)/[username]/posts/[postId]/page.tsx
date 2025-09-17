@@ -1,18 +1,21 @@
-'use client'
 import React from 'react'
-import { notFound, useParams } from 'next/navigation'
-import { useGetPosts } from './use-get-post'
+import { notFound } from 'next/navigation'
 import PostCard from '../../../../../../components/post-card'
+import { fetchPost } from '@/services/post/post'
 
-const PostPage = () => {
-    const { postId } = useParams<{
+type PostPageProps = {
+    params: {
         username: string
         postId: string
-    }>()
+    }
+}
 
-    const { data: post, isFetching } = useGetPosts(postId)
+const PostPage = async ({ params }: PostPageProps) => {
+    const { postId } = params
 
-    if (!isFetching && !post) {
+    const post = await fetchPost(postId)
+
+    if (!post) {
         notFound()
     }
 

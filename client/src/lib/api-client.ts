@@ -11,7 +11,6 @@ function buildUrl(url: string, params?: Record<string, any>) {
 
 export const api = {
     get: async <T>(url: string, options?: ApiOptions): Promise<T> => {
-        console.log(buildUrl(url, options?.params), 'urlzaza')
         const response = await fetch(buildUrl(url, options?.params), {
             method: 'GET',
             headers: {
@@ -21,6 +20,16 @@ export const api = {
             credentials: 'include',
             ...options
         })
+
+        if (!response.ok) {
+            const error = await response.json()
+            throw new Error(
+                JSON.stringify({
+                    error
+                })
+            )
+        }
+
         return response.json()
     },
     post: async <T>(

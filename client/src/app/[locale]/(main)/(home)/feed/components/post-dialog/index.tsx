@@ -41,8 +41,6 @@ const PostDialog: React.FC<CreateCommentProps> = ({
         post.id
     )
 
-    console.log(commentData, 'commentData')
-
     const onSubmit = debounce((data: { content: string }) => {
         if (!post?.id) {
             toast.error('Post not found')

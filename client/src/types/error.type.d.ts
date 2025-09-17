@@ -5,10 +5,12 @@ type ValidateFieldError = {
 }
 
 type ErrorResponse = {
-    message?: string
-    code: number
-    status: string
-    details?: ValidateFieldError[]
-    th?: string
-    en?: string
+    error: {
+        message?: string
+        code: number
+        status: string
+        details?: ValidateFieldError[]
+        th?: string
+        en?: string
+    }
 }

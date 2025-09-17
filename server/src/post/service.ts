@@ -90,22 +90,38 @@ export const getPostsService = async (c: Context, options: GetPostsOptions) => {
     }
 }
 
-export const getPostService = async (id: string) => {
+export const getPostService = async (c: Context, id: string) => {
     const post = await getPostRepository(id)
+    const currentUserId = c.get('user')?.id
 
     if (!post) {
         throw new AppError(noPostFoundError)
     }
-
     const formattedImgUrls = mapImageUrls(post.images)
-
-    return {
+    const postResponse = {
         ...post,
         author: {
             ...post.author,
             image: formatAvatarImageUrl(post.author.id)
         },
         images: formattedImgUrls
+    }
+    try {
+        const comments = await getCommentsRepository(post.id)
+        const likes = await getPostLikeRepository(post.id, currentUserId)
+        return {
+            ...postResponse,
+            likesCount: likes.likeCount,
+            hasLiked: likes.hasLiked,
+            commentsCount: comments?.length
+        }
+    } catch (error) {
+        return {
+            ...postResponse,
+            likesCount: 0,
+            hasLiked: false,
+            commentsCount: 0
+        }
     }
 }
 

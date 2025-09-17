@@ -32,7 +32,7 @@ export const getPostsController = async (c: Context) => {
 export const getPostController = async (c: Context) => {
     const { id } = c.get('validatedParam')
     try {
-        const posts = await getPostService(id)
+        const posts = await getPostService(c, id)
 
         return c.json(posts)
     } catch (e: unknown) {
