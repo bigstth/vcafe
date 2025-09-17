@@ -11,13 +11,13 @@ import type { Post } from '@/app/[locale]/(main)/(home)/feed/types'
 
 type InteractionBarProps = {
     post: Post
-    setShowCreateComment?: React.Dispatch<React.SetStateAction<boolean>>
+    setShowPostDialog?: React.Dispatch<React.SetStateAction<boolean>>
     setPost?: React.Dispatch<React.SetStateAction<Post | null>>
 }
 
 const InteractionBar: React.FC<InteractionBarProps> = ({
     post,
-    setShowCreateComment,
+    setShowPostDialog,
     setPost
 }) => {
     const likeCount = post?.likesCount ?? ''
@@ -39,7 +39,7 @@ const InteractionBar: React.FC<InteractionBarProps> = ({
     )
 
     const handleComment = async () => {
-        setShowCreateComment?.(true)
+        setShowPostDialog?.(true)
         setPost?.(post)
     }
 

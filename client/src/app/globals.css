@@ -42,20 +42,15 @@
     --radius: 1rem;
     --shadow-2xs: 2.5px 2.5px 0px 0px hsl(0 0% 16.0784% / 0);
     --shadow-xs: 2.5px 2.5px 0px 0px hsl(0 0% 16.0784% / 0);
-    --shadow-sm:
-        2.5px 2.5px 0px 0px hsl(0 0% 16.0784% / 0),
+    --shadow-sm: 2.5px 2.5px 0px 0px hsl(0 0% 16.0784% / 0),
         2.5px 1px 2px -1px hsl(0 0% 16.0784% / 0);
-    --shadow:
-        2.5px 2.5px 0px 0px hsl(0 0% 16.0784% / 0),
+    --shadow: 2.5px 2.5px 0px 0px hsl(0 0% 16.0784% / 0),
         2.5px 1px 2px -1px hsl(0 0% 16.0784% / 0);
-    --shadow-md:
-        2.5px 2.5px 0px 0px hsl(0 0% 16.0784% / 0),
+    --shadow-md: 2.5px 2.5px 0px 0px hsl(0 0% 16.0784% / 0),
         2.5px 2px 4px -1px hsl(0 0% 16.0784% / 0);
-    --shadow-lg:
-        2.5px 2.5px 0px 0px hsl(0 0% 16.0784% / 0),
+    --shadow-lg: 2.5px 2.5px 0px 0px hsl(0 0% 16.0784% / 0),
         2.5px 4px 6px -1px hsl(0 0% 16.0784% / 0);
-    --shadow-xl:
-        2.5px 2.5px 0px 0px hsl(0 0% 16.0784% / 0),
+    --shadow-xl: 2.5px 2.5px 0px 0px hsl(0 0% 16.0784% / 0),
         2.5px 8px 10px -1px hsl(0 0% 16.0784% / 0);
     --shadow-2xl: 2.5px 2.5px 0px 0px hsl(0 0% 16.0784% / 0);
     --tracking-normal: 0em;
@@ -106,20 +101,15 @@
     --radius: 1rem;
     --shadow-2xs: 2.5px 2.5px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0);
     --shadow-xs: 2.5px 2.5px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0);
-    --shadow-sm:
-        2.5px 2.5px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0),
+    --shadow-sm: 2.5px 2.5px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0),
         2.5px 1px 2px -1px hsl(202.8169 89.1213% 53.1373% / 0);
-    --shadow:
-        2.5px 2.5px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0),
+    --shadow: 2.5px 2.5px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0),
         2.5px 1px 2px -1px hsl(202.8169 89.1213% 53.1373% / 0);
-    --shadow-md:
-        2.5px 2.5px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0),
+    --shadow-md: 2.5px 2.5px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0),
         2.5px 2px 4px -1px hsl(202.8169 89.1213% 53.1373% / 0);
-    --shadow-lg:
-        2.5px 2.5px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0),
+    --shadow-lg: 2.5px 2.5px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0),
         2.5px 4px 6px -1px hsl(202.8169 89.1213% 53.1373% / 0);
-    --shadow-xl:
-        2.5px 2.5px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0),
+    --shadow-xl: 2.5px 2.5px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0),
         2.5px 8px 10px -1px hsl(202.8169 89.1213% 53.1373% / 0);
     --shadow-2xl: 2.5px 2.5px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0);
     --silver: oklch(90.365% 0.0001 271.152);

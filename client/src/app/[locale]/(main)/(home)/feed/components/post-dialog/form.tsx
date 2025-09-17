@@ -36,7 +36,7 @@ const CreateCommentForm: React.FC<Props> = ({ onSubmit }) => {
     }
 
     return (
-        <div className="flex gap-4 mt-8">
+        <div className="flex gap-4">
             <AvatarRole
                 image={user?.image}
                 username={user?.username}

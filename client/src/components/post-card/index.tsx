@@ -6,22 +6,27 @@ import { useTimeAgo } from '@/hooks/use-get-time-ago'
 import AvatarRole from '@/components/avatar-with-role-border'
 import InteractionBar from './interaction-bar'
 import type { Post } from '@/app/[locale]/(main)/(home)/feed/types'
+import { getTextColorByRole } from '@/lib/role-preference'
 
 type PostCardProps = {
     post: Post
-    setShowCreateComment?: React.Dispatch<React.SetStateAction<boolean>>
+    setShowPostDialog?: React.Dispatch<React.SetStateAction<boolean>>
     setPost?: React.Dispatch<React.SetStateAction<Post | null>>
+    contentClassName?: string
+    cardClassName?: string
 }
 
 const PostCard: React.FC<PostCardProps> = ({
     post,
-    setShowCreateComment,
-    setPost
+    setShowPostDialog,
+    setPost,
+    contentClassName,
+    cardClassName
 }) => {
     const getTimeAgo = useTimeAgo()
     return (
-        <Card>
-            <CardContent>
+        <Card className={cardClassName}>
+            <CardContent className={contentClassName}>
                 <div className="flex items-start gap-4 w-full">
                     <AvatarRole
                         image={post?.author?.image}
@@ -29,33 +34,39 @@ const PostCard: React.FC<PostCardProps> = ({
                         role={post?.author?.role}
                     />
                     <div className="flex-1 flex flex-col gap-4 min-w-0">
-                        <div>
+                        <div className="flex flex-wrap">
                             <Link href={`/${post?.author.username}`}>
-                                <span className="font-semibold">
+                                <span
+                                    className={`${getTextColorByRole(
+                                        post?.author.role
+                                    )} font-semibold`}
+                                >
                                     {post?.author.displayUsername ||
                                         post?.author.username}
                                 </span>
-                                <span className="text-foreground/50 font-medium">
+                                {/* <span
+                                    className={`text-foreground/50 font-medium`}
+                                >
                                     {` @${post?.author.username}`}
-                                </span>
+                                </span> */}
                             </Link>
-
+                            <span className="mx-1"> </span>
                             <Link
                                 href={`${post?.author.username}/posts/${post?.id}`}
                             >
                                 <span className="text-foreground/50 font-medium">
-                                    {` `}·{' '}
                                     {getTimeAgo(new Date(post?.createdAt))}
                                 </span>
                             </Link>
                         </div>
+
                         <pre className="whitespace-pre-wrap break-words">
                             {post?.content}
                         </pre>
                         {renderImages(post)}
                         <InteractionBar
                             post={post}
-                            setShowCreateComment={setShowCreateComment}
+                            setShowPostDialog={setShowPostDialog}
                             setPost={setPost}
                         />
                     </div>

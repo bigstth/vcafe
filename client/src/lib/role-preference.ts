@@ -14,3 +14,17 @@ export const getBorderColorByRole = (role: UserProfile['role'] | string) => {
             return 'border-silver'
     }
 }
+export const getTextColorByRole = (role: UserProfile['role'] | string) => {
+    switch (role) {
+        case 'gold':
+            return 'text-gold'
+        case 'sapphire':
+            return 'text-sapphire'
+        case 'emerald':
+            return 'text-emerald'
+        case 'ruby':
+            return 'text-ruby'
+        default:
+            return 'text-silver'
+    }
+}

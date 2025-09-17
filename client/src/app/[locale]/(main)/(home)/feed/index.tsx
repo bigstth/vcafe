@@ -1,7 +1,7 @@
 'use client'
 import React, { useState } from 'react'
 import CreatePostComponent from './components/create-post'
-import CreateComment from './components/create-comment'
+import PostDialog from './components/post-dialog'
 import PostCard from '@/components/post-card'
 import type { Post, PostResponse } from './types'
 
@@ -10,16 +10,18 @@ type Props = {
 }
 
 const Feed = ({ posts }: Props) => {
-    const [showCreateComment, setShowCreateComment] = useState(false)
+    const [showPostDialog, setShowPostDialog] = useState(false)
     const [post, setPost] = useState<Post | null>(null)
 
     return (
         <div className="w-full max-w-[600px]">
-            <CreateComment
-                post={post}
-                showCreateComment={showCreateComment}
-                setShowCreateComment={setShowCreateComment}
-            />
+            {post && (
+                <PostDialog
+                    post={post}
+                    showPostDialog={showPostDialog}
+                    setShowPostDialog={setShowPostDialog}
+                />
+            )}
 
             <CreatePostComponent />
 
@@ -28,7 +30,7 @@ const Feed = ({ posts }: Props) => {
                     <PostCard
                         key={post.id}
                         post={post}
-                        setShowCreateComment={setShowCreateComment}
+                        setShowPostDialog={setShowPostDialog}
                         setPost={setPost}
                     />
                 ))}

@@ -55,7 +55,7 @@ export const getPostsService = async (c: Context, options: GetPostsOptions) => {
                 ...post,
                 author: {
                     ...post.author,
-                    image: formatAvatarImageUrl(post.author.id)
+                    image: formatAvatarImageUrl(post.author.image || '')
                 },
                 images: mapImageUrls(post.images)
             }

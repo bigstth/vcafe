@@ -1,5 +1,6 @@
 import { CustomLogger } from '../lib/custom-logger.js'
 import { AppError } from '../lib/error.js'
+import { formatAvatarImageUrl } from '../lib/map-image-urls.js'
 import { getCommentsFailed, createCommentError } from './errors.js'
 import { getCommentsRepository, createCommentRepository } from './repository.js'
 
@@ -10,13 +11,20 @@ export type CreateComment = {
 }
 export const getCommentsService = async (postId: string) => {
     const result = await getCommentsRepository(postId)
+
     if (!result) {
-        if (getCommentsFailed.status === undefined) {
-            throw new AppError(getCommentsFailed)
-        }
         throw new AppError(getCommentsFailed)
     }
-    return result
+
+    const commentsWithAdditionalData = result.map((comment) => ({
+        ...comment,
+        author: {
+            ...comment.author,
+            image: formatAvatarImageUrl(comment.author.image || '')
+        }
+    }))
+
+    return commentsWithAdditionalData
 }
 
 export const createCommentService = async (comment: CreateComment) => {

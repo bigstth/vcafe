@@ -12,7 +12,8 @@ export const getCommentsRepository = async (postId: string) => {
                     id: true,
                     name: true,
                     username: true,
-                    image: true
+                    image: true,
+                    role: true
                 }
             }
         }

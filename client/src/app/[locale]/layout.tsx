@@ -53,7 +53,7 @@ export default async function RootLayout({
 
     return (
         <html lang={validLocale}>
-            <body className="antialiased">
+            <body className="antialiased data-[scroll-locked]:!overflow-visible">
                 <NextIntlClientProvider
                     messages={messages}
                     locale={validLocale}

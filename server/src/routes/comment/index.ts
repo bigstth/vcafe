@@ -8,11 +8,11 @@ import { validateParam, validateJson } from '../../middleware/validator.js'
 import { getCommentsSchema, createCommentSchema } from './validate-schema.js'
 
 const commentRoutes = new Hono()
-    .get('/post/:postId', protect, validateParam(getCommentsSchema), (c) =>
+    .get('/:postId', validateParam(getCommentsSchema), (c) =>
         getCommentsController(c)
     )
     .post(
-        '/post/:postId',
+        '/:postId',
         protect,
         validateParam(getCommentsSchema),
         validateJson(createCommentSchema),
