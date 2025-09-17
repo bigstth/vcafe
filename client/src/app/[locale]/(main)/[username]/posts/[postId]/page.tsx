@@ -3,14 +3,11 @@ import { notFound } from 'next/navigation'
 import PostCard from '../../../../../../components/post-card'
 import { fetchPost } from '@/services/post/post'
 
-type PostPageProps = {
-    params: {
-        username: string
-        postId: string
-    }
-}
-
-const PostPage = async ({ params }: PostPageProps) => {
+const PostPage = async ({
+    params
+}: {
+    params: Promise<{ postId: string }>
+}) => {
     const { postId } = await params
 
     const post = await fetchPost(postId)
