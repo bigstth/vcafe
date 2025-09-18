@@ -5,7 +5,10 @@ import {
     type UseMutationOptions,
     type UseQueryOptions
 } from '@tanstack/react-query'
-import type { Comment, CommentSchemaType } from '../../types'
+import type {
+    Comment,
+    CommentSchemaType
+} from '../../app/[locale]/(main)/(home)/feed/types'
 import type { ErrorResponse } from '@/hooks/use-format-error'
 import { api } from '@/lib/api-client'
 import type { CommentList, CreateCommentResponse } from './types'

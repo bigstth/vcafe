@@ -1,7 +1,7 @@
 'use client'
 import React, { useState } from 'react'
-import CreatePostComponent from './components/create-post'
-import PostDialog from './components/post-dialog'
+import CreatePostComponent from '../../../../../components/create-post'
+import PostDialog from '../../../../../components/post-dialog'
 import PostCard from '@/components/post-card'
 import type { Post, PostResponse } from './types'
 

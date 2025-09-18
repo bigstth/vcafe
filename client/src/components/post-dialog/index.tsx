@@ -1,9 +1,12 @@
 import { useForm } from 'react-hook-form'
 import { useCreateComment, useGetComments } from './use-comment'
-import { CommentSchemaType, type Post } from '../../types'
+import {
+    CommentSchemaType,
+    type Post
+} from '../../app/[locale]/(main)/(home)/feed/types'
 import { toast } from 'sonner'
 import debounce from 'lodash/debounce'
-import CreateCommentForm from './form'
+import CreateCommentForm from '../comment-card/form'
 import { renderImages } from '@/components/post-card/image-render'
 import { useTimeAgo } from '@/hooks/use-get-time-ago'
 import AvatarRole from '@/components/avatar-with-role-border'
@@ -24,34 +27,13 @@ const PostDialog: React.FC<CreateCommentProps> = ({
     showPostDialog,
     setShowPostDialog
 }) => {
-    const form = useForm({ defaultValues: { content: '' } })
     const getTimeAgo = useTimeAgo()
-    const { user } = useAuth()
 
-    const { mutateAsync: createComment } = useCreateComment({
-        onSuccess: () => {
-            form.reset()
-        },
-        onError: (error) => {
-            toast.error(`Error creating comment: ${error.message}`)
-        }
-    })
-
-    const { data: commentData, isLoading: isCommentLoading } = useGetComments(
-        post.id
-    )
-
-    const onSubmit = debounce((data: { content: string }) => {
-        if (!post?.id) {
-            toast.error('Post not found')
-            return
-        }
-        const payload: CommentSchemaType = {
-            postId: post.id,
-            content: data.content
-        }
-        createComment(payload)
-    }, 500)
+    const {
+        data: commentData,
+        isLoading: isCommentLoading,
+        refetch
+    } = useGetComments(post.id)
 
     return (
         <Dialog
@@ -71,13 +53,14 @@ const PostDialog: React.FC<CreateCommentProps> = ({
                     contentClassName="px-0"
                 />
 
-                {user && <CreateCommentForm onSubmit={onSubmit} />}
-
-                <div className="flex flex-col gap-4 my-6">
-                    {commentData?.map((comment) => (
-                        <CommentCard key={comment.id} comment={comment} />
-                    ))}
-                </div>
+                <CommentCard
+                    postId={post.id}
+                    comments={commentData}
+                    refreshComment={(_) => {
+                        refetch()
+                        return Promise.resolve()
+                    }}
+                />
             </DialogContent>
         </Dialog>
     )
