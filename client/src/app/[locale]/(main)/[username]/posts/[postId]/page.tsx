@@ -5,6 +5,7 @@ import { fetchPost } from '@/services/post/post'
 import CommentCard from '@/components/comment-card'
 import { fetchComments } from '@/services/comment/comment'
 import { revalidateCommentTag } from '@/services/comment/actions'
+import { revalidatePostTag } from '@/services/post/actions'
 
 const PostPage = async ({
     params
@@ -32,9 +33,14 @@ const PostPage = async ({
                 )}
 
                 <CommentCard
-                    postId={post.id}
+                    post={post}
                     comments={commentData}
-                    refreshComment={revalidateCommentTag}
+                    refreshComment={async (postId) => {
+                        'use server'
+                        await revalidateCommentTag(postId)
+                        await revalidatePostTag(postId)
+                        return Promise.resolve()
+                    }}
                 />
             </div>
         </div>

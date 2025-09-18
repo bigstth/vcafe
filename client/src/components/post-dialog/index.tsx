@@ -1,21 +1,11 @@
-import { useForm } from 'react-hook-form'
-import { useCreateComment, useGetComments } from './use-comment'
-import {
-    CommentSchemaType,
-    type Post
-} from '../../app/[locale]/(main)/(home)/feed/types'
-import { toast } from 'sonner'
-import debounce from 'lodash/debounce'
-import CreateCommentForm from '../comment-card/form'
-import { renderImages } from '@/components/post-card/image-render'
-import { useTimeAgo } from '@/hooks/use-get-time-ago'
-import AvatarRole from '@/components/avatar-with-role-border'
-import { Link } from '@/i18n/navigation'
+import { useGetComments } from './use-comment'
+import { type Post } from '../../app/[locale]/(main)/(home)/feed/types'
+
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden'
-import { useAuth } from '@/contexts/auth-provider'
 import PostCard from '@/components/post-card'
 import CommentCard from '../comment-card'
+import { revalidatePostsTag } from '@/services/post/actions'
 
 type CreateCommentProps = {
     post: Post
@@ -27,8 +17,6 @@ const PostDialog: React.FC<CreateCommentProps> = ({
     showPostDialog,
     setShowPostDialog
 }) => {
-    const getTimeAgo = useTimeAgo()
-
     const {
         data: commentData,
         isLoading: isCommentLoading,
@@ -54,10 +42,11 @@ const PostDialog: React.FC<CreateCommentProps> = ({
                 />
 
                 <CommentCard
-                    postId={post.id}
+                    post={post}
                     comments={commentData}
                     refreshComment={(_) => {
                         refetch()
+                        revalidatePostsTag({ limit: 10, offset: 0 })
                         return Promise.resolve()
                     }}
                 />
